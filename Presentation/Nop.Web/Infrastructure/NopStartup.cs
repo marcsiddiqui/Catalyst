@@ -115,6 +115,12 @@ public partial class NopStartup : INopStartup
 
         //helpers classes
         services.AddScoped<ISummernoteHelper, SummernoteHelper>();
+
+        #region Customer Model Factories
+
+        // %AddNewServicesScopeHereWithNopCCodeGenerator%
+
+        #endregion
     }
 
     /// <summary>

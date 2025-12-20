@@ -246,6 +246,12 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IWidgetModelFactory, WidgetModelFactory>();
         services.AddScoped<IMenuService, MenuService>();
 
+        #region Custom New Services
+
+        // %AddNewModelFactoryScopeHereWithNopCCodeGenerator%
+
+        #endregion
+
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));
 
