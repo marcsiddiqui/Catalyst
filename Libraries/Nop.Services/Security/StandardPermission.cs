@@ -156,4 +156,6 @@ public partial class StandardPermission
         public const string PUBLIC_STORE_ALLOW_NAVIGATION = $"{nameof(PublicStore)}.PublicStoreAllowNavigation";
         public const string ACCESS_CLOSED_STORE = $"{nameof(PublicStore)}.AccessClosedStore";
     }
+
+    //{{NewPermissionsToken}}
 }
