@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
+
 using Nop.Core.Infrastructure;
 
 namespace Nop.Core;
@@ -137,6 +138,10 @@ public partial class CommonHelper
     public static string EnsureNotNull(string str)
     {
         return str ?? string.Empty;
+    }
+    public static string EnsureNotNullAndTrim(string str)
+    {
+        return EnsureNotNull(str).Trim();
     }
 
     /// <summary>
@@ -320,6 +325,17 @@ public partial class CommonHelper
         }
         catch { }
         return date;
+    }
+
+    public static T Initialize<T>() where T : class
+        => EngineContext.Current.Resolve<T>();
+
+    public static bool IsDefault<T>(T value)
+    {
+        if (value is string str)
+            return string.IsNullOrEmpty(EnsureNotNullAndTrim(str));
+
+        return EqualityComparer<T>.Default.Equals(value, default(T));
     }
 
     #endregion

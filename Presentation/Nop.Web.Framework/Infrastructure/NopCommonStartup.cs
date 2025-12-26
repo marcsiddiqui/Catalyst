@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
+using Nop.Core;
 using Nop.Core.Infrastructure;
 using Nop.Data;
 using Nop.Web.Framework.Infrastructure.Extensions;
@@ -77,21 +78,21 @@ public partial class NopCommonStartup : INopStartup
 
     private async void RunPreScriptAsync()
     {
-        var _fileProvider = EngineContext.Current.Resolve<INopFileProvider>();
+        var _fileProvider = CommonHelper.Initialize<INopFileProvider>();
         string directoryPath = _fileProvider.MapPath(@"wwwroot/MiscellaneousFile");
         // Check if the directory exists
         if (_fileProvider.DirectoryExists(directoryPath))
         {
-            var _logger = EngineContext.Current.Resolve<Services.Logging.ILogger>();
+            var _logger = CommonHelper.Initialize<Services.Logging.ILogger>();
             // Get all files in the directory
-            var files = _fileProvider.GetFiles(directoryPath).AsEnumerable();
+            var files = _fileProvider.GetFiles(directoryPath: directoryPath, searchPattern: "*.sql").AsEnumerable();
             try
             {
                 if (files?.Any() ?? false)
                 {
                     //so functions/procedure could be created first (_sp.ProcedureName)
                     files = files.OrderBy(_fileProvider.GetFileNameWithoutExtension);
-                    var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
+                    var _dataProvider = CommonHelper.Initialize<INopDataProvider>();
                     if (!await _dataProvider.DatabaseExistsAsync())
                     {
                         return;
@@ -99,28 +100,25 @@ public partial class NopCommonStartup : INopStartup
                     // Loop through each file and read its text
                     foreach (string filePath in files)
                     {
-                        if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
+                        var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
+                        fileContent = fileContent.Trim();
+
+                        var fileContentList = Regex.Split(fileContent, @"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline).AsEnumerable();
+                        fileContentList = fileContentList.Select(x => x?.Trim());
+
+                        foreach (var content in fileContentList)
                         {
-                            var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
-                            fileContent = fileContent.Trim();
-
-                            var fileContentList = Regex.Split(fileContent, @"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline).AsEnumerable();
-                            fileContentList = fileContentList.Select(x => x?.Trim());
-
-                            foreach (var content in fileContentList)
+                            if (string.IsNullOrEmpty(content))
                             {
-                                if (string.IsNullOrEmpty(content))
-                                {
-                                    continue;
-                                }
-                                try
-                                {
-                                    await _dataProvider.ExecuteNonQueryAsync(content);
-                                }
-                                catch (Exception ex)
-                                {
-                                    await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {content},\n{ex.Message}", ex);
-                                }
+                                continue;
+                            }
+                            try
+                            {
+                                await _dataProvider.ExecuteNonQueryAsync(content);
+                            }
+                            catch (Exception ex)
+                            {
+                                await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {content},\n{ex.Message}", ex);
                             }
                         }
                     }
