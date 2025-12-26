@@ -60,6 +60,7 @@ using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
+//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
 
 namespace Nop.Web.Framework.Infrastructure;
 
