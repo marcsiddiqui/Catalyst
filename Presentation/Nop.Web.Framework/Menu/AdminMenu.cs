@@ -1039,7 +1039,7 @@ public partial class AdminMenu : IAdminMenu
                     Title = await _localizationService.GetResourceAsync("Admin.Plugins"),
                     IconClass = "fas fa-bars"
                 },
-                //{{NextMenuItemFromCodeGen}}
+//{{NextMenuItemFromCodeGen}}
             }
         };
     }
