@@ -248,7 +248,7 @@ public partial class NopStartup : INopStartup
 
         #region Custom New Services
 
-        //{{AddNewModelFactoryScopeHereWithNopCCodeGenerator}}
+//{{AddNewServicesScopeHereWithNopCCodeGenerator}}
 
         #endregion
 
