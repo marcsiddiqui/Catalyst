@@ -18,30 +18,6 @@ permissions:
   contents: read
 
 jobs:
-  # deploy-1:
-  #   permissions:
-  #     contents: none
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: 'Development'
-  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-  #   steps:
-  #     - uses: actions/checkout@v4
-      
-  #     - name: Check temp app offline exists
-  #       run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
-        
-  #     - name: Upload app_offline.htm to FTP
-  #       uses: anvil-solutions/Fast-FTP-Action@2.1.3
-  #       with:
-  #         server: ${{ secrets.FTP_HOST }}
-  #         username: ${{ secrets.FTP_USERNAME }}
-  #         password: ${{ secrets.FTP_PASSWORD }}
-  #         method: ftp
-  #         local_dir: ${{ env.LOCAL_APP_OFFLINE_PATH }}
-  #         remote_dir: /
-    
   build:
     runs-on: ubuntu-latest
 
@@ -88,6 +64,19 @@ jobs:
         with:
           name: .net-app
           path: ${{ env.PUBLISHED_PATH }}
+
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+  
+      # ✅ STEP 1: DOWNLOAD FROM FTP
+      - name: Download existing App_Data from FTP
+        run: |
+          mkdir -p ${{ env.LOCAL_APP_DATA_PATH }}
+          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          set ftp:passive-mode on
+          mirror /thesamscents.com/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
+          bye
+          EOF
       
       - name: Check publish output exists
         run: ls -la ${{ env.PUBLISHED_PATH }}
