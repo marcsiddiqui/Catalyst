@@ -11,8 +11,8 @@ env:
   FTP_PASSWORD: QhnCr~kmSe8^z07p
 
 on:
-  # push:
-    # branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
