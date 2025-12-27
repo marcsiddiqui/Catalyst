@@ -19,17 +19,12 @@ permissions:
   contents: read
 
 jobs:
-  download:
+  upload-app-offline:
       permissions:
         contents: none
       runs-on: ubuntu-latest
-      environment:
-        name: 'Development'
-        url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
   
       steps:
-        - uses: actions/checkout@v4
-        
         - name: Check temp app offline exists
           run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
           
@@ -44,7 +39,7 @@ jobs:
             remote_dir: ${{ env.REMOTE_DIRECTORY }}
   build:
     runs-on: ubuntu-latest
-    needs: download
+    needs: upload-app-offline
     steps:
       - uses: actions/checkout@v4
       
