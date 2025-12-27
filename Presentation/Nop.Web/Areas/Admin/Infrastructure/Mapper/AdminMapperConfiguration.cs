@@ -70,6 +70,7 @@ using Nop.Web.Areas.Admin.Models.Vendors;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Models.Translation;
 using Nop.Web.Framework.WebOptimizer;
+//{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
 
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
 
@@ -1851,6 +1852,11 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(entity => entity.MenuItemType, options => options.Ignore())
             .ForMember(entity => entity.Template, options => options.Ignore())
             .ForMember(entity => entity.EntityId, options => options.Ignore());
+    }
+
+    protected virtual void CustomModelMaps()
+    {
+//{{AddNewModelMappingsHereWithNopCCodeGenerator}}
     }
 
     #endregion
