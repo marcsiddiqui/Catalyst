@@ -25,6 +25,8 @@ jobs:
       runs-on: ubuntu-latest
   
       steps:
+        - uses: actions/checkout@v4
+      
         - name: Check temp app offline exists
           run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
           
