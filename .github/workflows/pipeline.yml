@@ -7,8 +7,8 @@ env:
   LOCAL_APP_OFFLINE_PATH: ./DirectDeploy/App_offline
   REMOTE_DIRECTORY: /httpdocs
   FTP_HOST: '66.165.248.146'
-  FTP_USERNAME: samimaapparels
-  FTP_PASSWORD: QhnCr~kmSe8^z07p
+  FTP_USERNAME: 'samimaapparels'
+  FTP_PASSWORD: 'QhnCr~kmSe8^z07p'
 
 on:
   push:
