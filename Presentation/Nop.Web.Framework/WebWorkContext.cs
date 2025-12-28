@@ -50,6 +50,7 @@ public partial class WebWorkContext : IWorkContext
     protected Language _cachedLanguage;
     protected Currency _cachedCurrency;
     protected TaxDisplayType? _cachedTaxDisplayType;
+    protected Guid _sessionGuid;
 
     #endregion
 
@@ -208,8 +209,9 @@ public partial class WebWorkContext : IWorkContext
     /// Sets the current customer
     /// </summary>
     /// <param name="customer">Current customer</param>
+    /// <param name="sessionGuid">Current session guid</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task SetCurrentCustomerAsync(Customer customer = null)
+    public virtual async Task SetCurrentCustomerAsync(Customer customer = null, Guid sessionGuid = default)
     {
         if (customer == null)
         {
@@ -281,7 +283,21 @@ public partial class WebWorkContext : IWorkContext
 
             //cache the found customer
             _cachedCustomer = customer;
+            _sessionGuid = sessionGuid;
         }
+    }
+
+    /// <summary>
+    /// Gets the current authenticated Session Id
+    /// </summary>
+    /// <returns>The current session Guid</returns>
+    public virtual Guid? GetCurrentCustomerSession()
+    {
+        //whether there is a cached value
+        if (_sessionGuid != default)
+            return _sessionGuid;
+
+        return null;
     }
 
     /// <summary>

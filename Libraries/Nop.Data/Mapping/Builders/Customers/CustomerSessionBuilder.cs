@@ -1,7 +1,7 @@
 using FluentMigrator.Builders.Create.Table;
-using Nop.Core.Domain.CustomerSessions;
+using Nop.Core.Domain.Customers;
 
-namespace Nop.Data.Mapping.Builders.CustomerSessions;
+namespace Nop.Data.Mapping.Builders.Customers;
 
 public partial class CustomerSessionBuilder : NopEntityBuilder<CustomerSession>
 {

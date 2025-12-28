@@ -1,6 +1,6 @@
 using Nop.Core;
 
-namespace Nop.Core.Domain.CustomerSessions;
+namespace Nop.Core.Domain.Customers;
 
 public partial class CustomerSession : BaseEntity
 {

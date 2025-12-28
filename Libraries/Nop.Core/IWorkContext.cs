@@ -18,11 +18,18 @@ public partial interface IWorkContext
     Task<Customer> GetCurrentCustomerAsync();
 
     /// <summary>
+    /// Gets the current authenticated Session Id
+    /// </summary>
+    /// <returns>The current session Guid</returns>
+    Guid? GetCurrentCustomerSession();
+
+    /// <summary>
     /// Sets the current customer
     /// </summary>
     /// <param name="customer">Current customer</param>
+    /// <param name="sessionGuid">Current session guid</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    Task SetCurrentCustomerAsync(Customer customer = null);
+    Task SetCurrentCustomerAsync(Customer customer = null, Guid sessionGuid = default);
 
     /// <summary>
     /// Gets the original customer (in case the current one is impersonated)

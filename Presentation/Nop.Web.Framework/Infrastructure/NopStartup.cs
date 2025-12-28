@@ -60,7 +60,6 @@ using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
-using Nop.Services.CustomerSessions;
 //{AddNewServicesNamespacesHereWithNopCCodeGenerator}
 
 
@@ -251,7 +250,6 @@ public partial class NopStartup : INopStartup
 
         #region Custom New Services
 
-        services.AddScoped<ICustomerSessionService, CustomerSessionService>();
 //{AddNewServicesScopeHereWithNopCCodeGenerator}
 
 
