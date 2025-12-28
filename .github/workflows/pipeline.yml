@@ -5,6 +5,7 @@ env:
   PUBLISHED_PATH: ./publish_output
   LOCAL_APP_OFFLINE_PATH: ./App_offline/app_offline.htm
   REMOTE_DIRECTORY: /httpdocs
+  REMOTE_APP_OFFLINE_FILE: ${{ env.REMOTE_DIRECTORY }}/app_offline.htm
   FTP_HOST: '66.165.248.146'
   FTP_USERNAME: 'samimaap'
   FTP_PASSWORD: 'QhnCr~kmSe8^z07p'
@@ -88,6 +89,21 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y lftp
     
       # ----------------------------------------------------
+      # Download build artifacts from previous job
+      # ----------------------------------------------------
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ${{ env.PUBLISHED_PATH }}
+    
+      # ----------------------------------------------------
+      # Verify publish output exists (debug / safety check)
+      # ----------------------------------------------------
+      - name: Check publish output exists
+        run: ls -la ${{ env.PUBLISHED_PATH }}
+
+      # ----------------------------------------------------
       # Upload app_offline.htm ONLY if it does not already exist
       # Prevents overwriting an existing maintenance mode file
       # ----------------------------------------------------
@@ -107,21 +123,6 @@ jobs:
     
           bye
           EOF
-    
-      # ----------------------------------------------------
-      # Download build artifacts from previous job
-      # ----------------------------------------------------
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: .net-app
-          path: ${{ env.PUBLISHED_PATH }}
-    
-      # ----------------------------------------------------
-      # Verify publish output exists (debug / safety check)
-      # ----------------------------------------------------
-      - name: Check publish output exists
-        run: ls -la ${{ env.PUBLISHED_PATH }}
     
       # ----------------------------------------------------
       # Upload published application using lftp mirror
