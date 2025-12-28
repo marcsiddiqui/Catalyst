@@ -107,6 +107,9 @@ jobs:
       # Upload app_offline.htm ONLY if it does not already exist
       # Prevents overwriting an existing maintenance mode file
       # ----------------------------------------------------
+      - uses: actions/checkout@v4
+      - name: Check offline file exists in local
+        run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
       - name: Upload app_offline.htm only if missing
         run: |
           lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
@@ -117,7 +120,7 @@ jobs:
           set ftp:passive-mode ${{ env.LFTP_PASSIVE_MODE }}
     
           # Check if file exists remotely; upload only if missing
-          # cls ${{ env.REMOTE_APP_OFFLINE_FILE }} || \
+          # cls ${{ env.LOCAL_APP_OFFLINE_PATH }} || \
           put ${{ env.LOCAL_APP_OFFLINE_PATH }} \
               -o ${{ env.REMOTE_APP_OFFLINE_FILE }}
     
