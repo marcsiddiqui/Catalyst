@@ -4,7 +4,7 @@ env:
   DOTNET_VERSION: '9.0.x'                 # set this to the .NET Core version to use
   PUBLISHED_PATH: ./publish_output
   LOCAL_APP_DATA_PATH: ./DirectDeploy/App_Data
-  LOCAL_APP_OFFLINE_PATH: ./DirectDeploy/App_offline
+  LOCAL_APP_OFFLINE_PATH: ./App_offline
   REMOTE_DIRECTORY: /httpdocs
   FTP_HOST: '66.165.248.146'
   FTP_USERNAME: 'samimaap'
@@ -80,6 +80,17 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      - uses: actions/checkout@v4
+      
+      - name: Upload app_offline.htm
+        run: |
+          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          set ftp:ssl-allow no
+          set ftp:passive-mode on
+          put ${{ env.LOCAL_APP_OFFLINE_PATH }}/app_offline.htm -o ${{ env.REMOTE_DIRECTORY }}
+          bye
+          EOF
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
@@ -100,7 +111,6 @@ jobs:
           bye
           EOF
 
-      
       - name: Check publish output exists
         run: ls -la ${{ env.PUBLISHED_PATH }}
         
