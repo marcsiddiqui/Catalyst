@@ -3,7 +3,7 @@ name: Build and deploy ASP.Net Core app on a FTP
 env:
   DOTNET_VERSION: '9.0.x'                 # set this to the .NET Core version to use
   PUBLISHED_PATH: ./publish_output
-  LOCAL_APP_DATA_PATH: ./DirectDeploy/App_Data
+  LOCAL_APP_DATA_PATH: ./Remote_App_Data
   LOCAL_APP_OFFLINE_PATH: ./App_offline
   REMOTE_DIRECTORY: /httpdocs
   FTP_HOST: '66.165.248.146'
