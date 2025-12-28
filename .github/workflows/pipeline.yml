@@ -93,7 +93,7 @@ jobs:
           lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
           set ftp:ssl-allow no
           set ftp:passive-mode on
-          put ${{ env.LOCAL_APP_OFFLINE_PATH }}/app_offline.htm -o ${{ env.REMOTE_DIRECTORY }}
+          put ${{ env.LOCAL_APP_OFFLINE_PATH }}/app_offline.htm -o ${{ env.REMOTE_DIRECTORY }}/app_offline.htm
           bye
           EOF
 
