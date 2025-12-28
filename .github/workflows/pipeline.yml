@@ -5,7 +5,7 @@ env:
   PUBLISHED_PATH: ./publish_output
   LOCAL_APP_OFFLINE_PATH: ./App_offline/app_offline.htm
   REMOTE_DIRECTORY: /httpdocs
-  REMOTE_APP_OFFLINE_FILE: ${{ env.REMOTE_DIRECTORY }}/app_offline.htm
+  REMOTE_APP_OFFLINE_FILE: ${{ REMOTE_DIRECTORY }}/app_offline.htm
   FTP_HOST: '66.165.248.146'
   FTP_USERNAME: 'samimaap'
   FTP_PASSWORD: 'QhnCr~kmSe8^z07p'
