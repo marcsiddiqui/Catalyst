@@ -16,6 +16,7 @@ using Nop.Core.Infrastructure;
 using Nop.Data;
 using Nop.Services.Common;
 using Nop.Services.Localization;
+using Nop.Services.Logging;
 
 namespace Nop.Services.Customers;
 
@@ -29,6 +30,7 @@ public partial class CustomerService : ICustomerService
     protected readonly CustomerSettings _customerSettings;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IGenericAttributeService _genericAttributeService;
+    protected readonly ILogger _logger;
     protected readonly INopDataProvider _dataProvider;
     protected readonly IRepository<Address> _customerAddressRepository;
     protected readonly IRepository<BlogComment> _blogCommentRepository;
@@ -60,6 +62,7 @@ public partial class CustomerService : ICustomerService
     public CustomerService(CustomerSettings customerSettings,
         IEventPublisher eventPublisher,
         IGenericAttributeService genericAttributeService,
+        ILogger logger,
         INopDataProvider dataProvider,
         IRepository<Address> customerAddressRepository,
         IRepository<BlogComment> blogCommentRepository,
@@ -87,6 +90,7 @@ public partial class CustomerService : ICustomerService
         _customerSettings = customerSettings;
         _eventPublisher = eventPublisher;
         _genericAttributeService = genericAttributeService;
+        _logger = logger;
         _dataProvider = dataProvider;
         _customerAddressRepository = customerAddressRepository;
         _blogCommentRepository = blogCommentRepository;
@@ -1679,130 +1683,92 @@ public partial class CustomerService : ICustomerService
 
     #endregion
 
-    #region 
+    #region Customer Session
 
-    public virtual async Task<IPagedList<CustomerSession>> GetAllCustomerSessionsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int customerId = 0, IEnumerable<int> customerIds = null,
-        int loginTypeId = 0, IEnumerable<int> loginTypeIds = null,
-        BooleanFilter isActive = BooleanFilter.True,
-        string deviceToken = null, IEnumerable<string> deviceTokens = null,
-        string timeZone = null, IEnumerable<string> timeZones = null,
-        string deviceVersion = null, IEnumerable<string> deviceVersions = null,
+    public virtual async Task InsertCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true)
+    {
+        await _customerSessionRepository.InsertAsync(customerSession);
 
+        if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+    }
+
+    public virtual async Task UpdateCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true)
+    {
+        await _customerSessionRepository.UpdateAsync(customerSession, clearCache);
+
+        if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+    }
+
+    public virtual async Task ExpireCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions, bool clearCache = true)
+    {
+        try
+        {
+            if (customerSessions != null && customerSessions.Any())
+            {
+                foreach (var customerSession in customerSessions)
+                {
+                    if (customerSession != null || !customerSession.IsActive || (customerSession.ExpiresOnUtc.HasValue && customerSession.ExpiresOnUtc.Value < DateTime.UtcNow))
+                    {
+                        customerSession.ExpiresOnUtc = DateTime.UtcNow;
+                        customerSession.IsActive = false;
+                        await UpdateCustomerSessionAsync(customerSession);
+                    }
+                }
+            }
+
+            if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+        }
+        catch (Exception ex)
+        {
+            await _logger.ErrorAsync("Error occurred while Expiring Customer Session");
+        }
+    }
+
+    public virtual async Task<IPagedList<CustomerSession>> GetAllCustomerSessionAsync(
+        Guid sessionId = default,
+        int customerId = 0,
+        bool? isActive = true,
         int pageIndex = 0, int pageSize = int.MaxValue)
     {
-        var productReviews = await _customerSessionRepository.GetAllPagedAsync(async query =>
+        var key = _staticCacheManager.PrepareKeyForDefaultCache(NopCustomerServicesDefaults.CustomerSessionCacheKey,
+            sessionId,
+            customerId,
+            isActive
+            );
+
+        var allCustomerSessionAsync = await _staticCacheManager.GetAsync(key, async () => await _customerSessionRepository.GetAllAsync(query =>
+            {
+                if (sessionId != default)
+                    query = query.Where(x => x.SessionId.Equals(sessionId));
+
+                if (customerId > 0)
+                    query = query.Where(x => x.CustomerId == customerId);
+
+                if (isActive.HasValue)
+                    query = query.Where(x => x.IsActive == isActive.Value);
+
+                return query.OrderBy(c => c.Id);
+            }));
+
+        return new PagedList<CustomerSession>(allCustomerSessionAsync, pageIndex, pageSize);
+
+    }
+
+    public virtual async Task UpdateCustomerSession()
+    {
+        try
         {
-            if (id > 0)
-                query = query.Where(x => x.Id == id);
+            string sqlQuery = @"EXEC [UpdateCustomerSession]";
 
-            if (ids != null && ids.Any())
-                query = query.Where(x => ids.Contains(x.Id));
+            await _dataProvider.ExecuteNonQueryAsync(sqlQuery);
 
-            if (customerId > 0)
-                query = query.Where(x => customerId == x.CustomerId);
-
-            if (customerIds != null && customerIds.Any())
-                query = query.Where(x => customerIds.Contains(x.CustomerId));
-
-            if (loginTypeId > 0)
-                query = query.Where(x => loginTypeId == x.LoginTypeId);
-
-            if (loginTypeIds != null && loginTypeIds.Any())
-                query = query.Where(x => loginTypeIds.Contains(x.LoginTypeId));
-
-            query = query.WhereBoolean(x => x.IsActive, isActive);
-
-            if (!string.IsNullOrWhiteSpace(deviceToken))
-                query = query.Where(x => deviceToken == x.DeviceToken);
-
-            if (deviceTokens != null && deviceTokens.Any())
-                query = query.Where(x => deviceTokens.Contains(x.DeviceToken));
-
-            if (!string.IsNullOrWhiteSpace(timeZone))
-                query = query.Where(x => timeZone == x.TimeZone);
-
-            if (timeZones != null && timeZones.Any())
-                query = query.Where(x => timeZones.Contains(x.TimeZone));
-
-            if (!string.IsNullOrWhiteSpace(deviceVersion))
-                query = query.Where(x => deviceVersion == x.DeviceVersion);
-
-            if (deviceVersions != null && deviceVersions.Any())
-                query = query.Where(x => deviceVersions.Contains(x.DeviceVersion));
-
-            return query;
-
-        }, pageIndex, pageSize);
-
-        return productReviews;
+            await _staticCacheManager.ClearAsync();
+        }
+        catch (Exception ex)
+        {
+            await _logger.ErrorAsync("Error On [UpdateCustomerSession]", ex);
+        }
     }
-
-    public virtual async Task<CustomerSession> GetCustomerSessionByIdAsync(int id)
-    {
-        if (id <= 0)
-            return null;
-
-        return await _customerSessionRepository.GetByIdAsync(id);
-    }
-
-    public virtual async Task<IList<CustomerSession>> GetCustomerSessionsByIdsAsync(IEnumerable<int> ids)
-    {
-        if (ids == null || !ids.Any())
-            return null;
-
-        return await _customerSessionRepository.GetByIdsAsync(ids.ToList());
-    }
-
-    public virtual async Task InsertCustomerSessionAsync(CustomerSession customerSession)
-    {
-        if (customerSession == null)
-            return;
-
-        await _customerSessionRepository.InsertAsync(customerSession);
-    }
-    
-    public virtual async Task InsertCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions)
-    {
-        if (customerSessions == null || !customerSessions.Any())
-            return;
-
-        await _customerSessionRepository.InsertAsync(customerSessions.ToList());
-    }
-
-    public virtual async Task UpdateCustomerSessionAsync(CustomerSession customerSession)
-    {
-        if (customerSession == null)
-            return;
-
-        await _customerSessionRepository.UpdateAsync(customerSession);
-    }
-
-    public virtual async Task UpdateCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions)
-    {
-        if (customerSessions == null || !customerSessions.Any())
-            return;
-
-        await _customerSessionRepository.UpdateAsync(customerSessions.ToList());
-    }
-
-    public virtual async Task DeleteCustomerSessionAsync(CustomerSession customerSession)
-    {
-        if (customerSession == null)
-            return;
-
-        await _customerSessionRepository.DeleteAsync(customerSession);
-    }
-
-    public virtual async Task DeleteCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions)
-    {
-        if (customerSessions == null || !customerSessions.Any())
-            return;
-
-        await _customerSessionRepository.DeleteAsync(customerSessions.ToList());
-    }
-
 
     #endregion
 

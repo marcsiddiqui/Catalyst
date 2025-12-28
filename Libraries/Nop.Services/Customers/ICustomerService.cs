@@ -649,34 +649,21 @@ public partial interface ICustomerService
 
     #endregion
 
-    #region 
+    #region CustomerSession
 
-    Task<IPagedList<CustomerSession>> GetAllCustomerSessionsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int customerId = 0, IEnumerable<int> customerIds = null,
-        int loginTypeId = 0, IEnumerable<int> loginTypeIds = null,
-        BooleanFilter isActive = BooleanFilter.True,
-        string deviceToken = null, IEnumerable<string> deviceTokens = null,
-        string timeZone = null, IEnumerable<string> timeZones = null,
-        string deviceVersion = null, IEnumerable<string> deviceVersions = null,
+    Task InsertCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true);
 
+    Task UpdateCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true);
+
+    Task ExpireCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions, bool clearCache = true);
+
+    Task<IPagedList<CustomerSession>> GetAllCustomerSessionAsync(
+        Guid sessionId = default,
+        int customerId = 0,
+        bool? isActive = true,
         int pageIndex = 0, int pageSize = int.MaxValue);
 
-    Task<CustomerSession> GetCustomerSessionByIdAsync(int id);
-
-    Task<IList<CustomerSession>> GetCustomerSessionsByIdsAsync(IEnumerable<int> ids);
-
-    Task InsertCustomerSessionAsync(CustomerSession customerSession);
-    
-    Task InsertCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions);
-
-    Task UpdateCustomerSessionAsync(CustomerSession customerSession);
-
-    Task UpdateCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions);
-
-    Task DeleteCustomerSessionAsync(CustomerSession customerSession);
-
-    Task DeleteCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions);
+    Task UpdateCustomerSession();
 
     #endregion
 }
