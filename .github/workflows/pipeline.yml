@@ -3,16 +3,17 @@ name: Build and deploy ASP.Net Core app on a FTP
 env:
   DOTNET_VERSION: '9.0.x'                 # set this to the .NET Core version to use
   PUBLISHED_PATH: ./publish_output
-  LOCAL_APP_DATA_PATH: ./DirectDeploy/App_Data
-  LOCAL_APP_OFFLINE_PATH: ./DirectDeploy/App_offline
+  LOCAL_APP_OFFLINE_PATH: ./App_offline/app_offline.htm
   REMOTE_DIRECTORY: /httpdocs
   FTP_HOST: '66.165.248.146'
   FTP_USERNAME: 'samimaap'
   FTP_PASSWORD: 'QhnCr~kmSe8^z07p'
+  LFTP_SSL_ALLOW: "no"
+  LFTP_PASSIVE_MODE: "on"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -80,63 +81,75 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
+      # ----------------------------------------------------
+      # Install lftp (FTP CLI tool used for precise control)
+      # ----------------------------------------------------
+      - name: Install lftp
+        run: sudo apt-get update && sudo apt-get install -y lftp
+    
+      # ----------------------------------------------------
+      # Upload app_offline.htm ONLY if it does not already exist
+      # Prevents overwriting an existing maintenance mode file
+      # ----------------------------------------------------
+      - name: Upload app_offline.htm only if missing
+        run: |
+          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          # Disable SSL (plain FTP)
+          set ftp:ssl-allow ${{ env.LFTP_SSL_ALLOW }}
+    
+          # Enable passive mode (firewall friendly)
+          set ftp:passive-mode ${{ env.LFTP_PASSIVE_MODE }}
+    
+          # Check if file exists remotely; upload only if missing
+          cls ${{ env.REMOTE_APP_OFFLINE_FILE }} || \
+          put ${{ env.LOCAL_APP_OFFLINE_PATH }} \
+              -o ${{ env.REMOTE_APP_OFFLINE_FILE }}
+    
+          bye
+          EOF
+    
+      # ----------------------------------------------------
+      # Download build artifacts from previous job
+      # ----------------------------------------------------
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
           path: ${{ env.PUBLISHED_PATH }}
-
-      - name: Install lftp
-        run: sudo apt-get update && sudo apt-get install -y lftp
-  
-      # ✅ STEP 1: DOWNLOAD FROM FTP
-      - name: Download existing App_Data from FTP
-        run: |
-          mkdir -p ${{ env.LOCAL_APP_DATA_PATH }}
-          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
-          set ftp:passive-mode on
-          mirror /thesamscents.com/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
-          bye
-          EOF
-      
+    
+      # ----------------------------------------------------
+      # Verify publish output exists (debug / safety check)
+      # ----------------------------------------------------
       - name: Check publish output exists
         run: ls -la ${{ env.PUBLISHED_PATH }}
-        
-      - name: Fast FTP
-        # You may pin to the exact commit or the version.
-        # uses: anvil-solutions/Fast-FTP-Action@de62eeaf1c409a96c7304f3bba8bf8194d0fa98f
-        uses: anvil-solutions/Fast-FTP-Action@2.1.3
-        with:
-          # FTP server name (you may need to specify a port)
-          server: ${{ env.FTP_HOST }}
-          # FTP account username
-          username: ${{ env.FTP_USERNAME }}
-          # FTP account password
-          password: ${{ env.FTP_PASSWORD }}
-          # Protocol used to deploy (ftp or sftp)
-          method: ftp
-          # The local folder to copy, defaults to root project folder
-          local_dir: ${{ env.PUBLISHED_PATH }}
-          remote_dir: ${{ env.REMOTE_DIRECTORY }}
-
-      - uses: actions/checkout@v4
-
-      - name: Check direct deploy exists
-        run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
-        
-      - name: Fast FTP for Direct Deploy
-        # You may pin to the exact commit or the version.
-        # uses: anvil-solutions/Fast-FTP-Action@de62eeaf1c409a96c7304f3bba8bf8194d0fa98f
-        uses: anvil-solutions/Fast-FTP-Action@2.1.3
-        with:
-          # FTP server name (you may need to specify a port)
-          server: ${{ env.FTP_HOST }}
-          # FTP account username
-          username: ${{ env.FTP_USERNAME }}
-          # FTP account password
-          password: ${{ env.FTP_PASSWORD }}
-          # Protocol used to deploy (ftp or sftp)
-          method: ftp
-          # The local folder to copy, defaults to root project folder
-          local_dir: ${{ env.LOCAL_APP_DATA_PATH }}
-          remote_dir: ${{ env.REMOTE_DIRECTORY }}/App_Data
+    
+      # ----------------------------------------------------
+      # Upload published application using lftp mirror
+      # -R  = reverse mirror (local → remote)
+      # NO --delete flag (safe for production)
+      # ----------------------------------------------------
+      - name: Upload publish folder using lftp
+        run: |
+          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          set ftp:ssl-allow ${{ env.LFTP_SSL_ALLOW }}
+          set ftp:passive-mode ${{ env.LFTP_PASSIVE_MODE }}
+    
+          mirror -R ${{ env.PUBLISHED_PATH }} ${{ env.REMOTE_DIRECTORY }}
+    
+          bye
+          EOF
+    
+      # ----------------------------------------------------
+      # Remove app_offline.htm to bring site back online
+      # "|| true" ensures pipeline does not fail if file is missing
+      # ----------------------------------------------------
+      - name: Remove app_offline.htm (safe)
+        run: |
+          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          set ftp:ssl-allow ${{ env.LFTP_SSL_ALLOW }}
+          set ftp:passive-mode ${{ env.LFTP_PASSIVE_MODE }}
+    
+          rm ${{ env.REMOTE_APP_OFFLINE_FILE }} || true
+    
+          bye
+          EOF
