@@ -19,29 +19,29 @@ permissions:
   contents: read
 
 jobs:
-  upload-app-offline:
-      permissions:
-        contents: none
-      runs-on: ubuntu-latest
+  # upload-app-offline:
+  #     permissions:
+  #       contents: none
+  #     runs-on: ubuntu-latest
   
-      steps:
-        - uses: actions/checkout@v4
+  #     steps:
+  #       - uses: actions/checkout@v4
       
-        - name: Check temp app offline exists
-          run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
+  #       - name: Check temp app offline exists
+  #         run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
           
-        - name: Upload app_offline.htm to FTP
-          uses: anvil-solutions/Fast-FTP-Action@2.1.3
-          with:
-            server: ${{ env.FTP_HOST }}
-            username: ${{ env.FTP_USERNAME }}
-            password: ${{ env.FTP_PASSWORD }}
-            method: ftp
-            local_dir: ${{ env.LOCAL_APP_OFFLINE_PATH }}
-            remote_dir: ${{ env.REMOTE_DIRECTORY }}
+  #       - name: Upload app_offline.htm to FTP
+  #         uses: anvil-solutions/Fast-FTP-Action@2.1.3
+  #         with:
+  #           server: ${{ env.FTP_HOST }}
+  #           username: ${{ env.FTP_USERNAME }}
+  #           password: ${{ env.FTP_PASSWORD }}
+  #           method: ftp
+  #           local_dir: ${{ env.LOCAL_APP_OFFLINE_PATH }}
+  #           remote_dir: ${{ env.REMOTE_DIRECTORY }}
   build:
     runs-on: ubuntu-latest
-    needs: upload-app-offline
+    # needs: upload-app-offline
     steps:
       - uses: actions/checkout@v4
       
