@@ -65,6 +65,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\MiscellaneousFile\" />
+    <Folder Include="wwwroot\react\" />
   </ItemGroup>
 
   <!-- This target execute after "Build" target.
