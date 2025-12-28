@@ -96,7 +96,7 @@ jobs:
           lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
           set ftp:ssl-allow no
           set ftp:passive-mode on
-          mirror /thesamscents.com/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
+          mirror ${{ env.REMOTE_DIRECTORY }}/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
           bye
           EOF
 
