@@ -87,12 +87,6 @@ jobs:
       # ----------------------------------------------------
       - name: Install lftp
         run: sudo apt-get update && sudo apt-get install -y lftp
-    
-      # ----------------------------------------------------
-      # Verify publish output exists (debug / safety check)
-      # ----------------------------------------------------
-      - name: Check publish output exists
-        run: ls -la ${{ env.PUBLISHED_PATH }}
 
       # ----------------------------------------------------
       # Upload app_offline.htm ONLY if it does not already exist
@@ -123,6 +117,12 @@ jobs:
         with:
           name: .net-app
           path: ${{ env.PUBLISHED_PATH }}
+
+      # ----------------------------------------------------
+      # Verify publish output exists (debug / safety check)
+      # ----------------------------------------------------
+      - name: Check publish output exists
+        run: ls -la ${{ env.PUBLISHED_PATH }}
           
       # ----------------------------------------------------
       # Upload published application using lftp mirror
