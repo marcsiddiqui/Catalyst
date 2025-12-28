@@ -117,7 +117,7 @@ jobs:
           set ftp:passive-mode ${{ env.LFTP_PASSIVE_MODE }}
     
           # Check if file exists remotely; upload only if missing
-          cls ${{ env.REMOTE_APP_OFFLINE_FILE }} || \
+          # cls ${{ env.REMOTE_APP_OFFLINE_FILE }} || \
           put ${{ env.LOCAL_APP_OFFLINE_PATH }} \
               -o ${{ env.REMOTE_APP_OFFLINE_FILE }}
     
