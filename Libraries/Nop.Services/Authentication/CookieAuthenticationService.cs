@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Nop.Core;
 using Nop.Core.Domain.Customers;
+using Nop.Core.Infrastructure;
 using Nop.Services.Customers;
 
 namespace Nop.Services.Authentication;
@@ -42,7 +44,7 @@ public partial class CookieAuthenticationService : IAuthenticationService
     /// <param name="customer">Customer</param>
     /// <param name="isPersistent">Whether the authentication session is persisted across multiple requests</param>
     /// <returns>A task that represents the asynchronous operation</returns>
-    public virtual async Task SignInAsync(Customer customer, bool isPersistent)
+    public virtual async Task SignInAsync(Customer customer, Guid sessionGuid, bool isPersistent)
     {
         ArgumentNullException.ThrowIfNull(customer);
 
@@ -54,6 +56,8 @@ public partial class CookieAuthenticationService : IAuthenticationService
 
         if (!string.IsNullOrEmpty(customer.Email))
             claims.Add(new Claim(ClaimTypes.Email, customer.Email, ClaimValueTypes.Email, NopAuthenticationDefaults.ClaimsIssuer));
+
+        claims.Add(new Claim(ClaimTypes.PrimarySid, sessionGuid.ToString(), ClaimValueTypes.String, NopAuthenticationDefaults.ClaimsIssuer));
 
         //create principal for the current authentication scheme
         var userIdentity = new ClaimsIdentity(claims, NopAuthenticationDefaults.AuthenticationScheme);
@@ -79,6 +83,14 @@ public partial class CookieAuthenticationService : IAuthenticationService
     /// <returns>A task that represents the asynchronous operation</returns>
     public virtual async Task SignOutAsync()
     {
+        //reset cached customer
+        var sessionId = EngineContext.Current.Resolve<IWorkContext>().GetCurrentCustomerSession();
+
+        var customerSession = sessionId.HasValue && _cachedCustomer != null ? await _customerService.GetAllCustomerSessionAsync(sessionId.Value, _cachedCustomer.Id) : null;
+
+        if (customerSession != null)
+            await _customerService.ExpireCustomerSessionAsync(customerSession, true);
+
         //reset cached customer
         _cachedCustomer = null;
 
@@ -135,8 +147,31 @@ public partial class CookieAuthenticationService : IAuthenticationService
         if (_customerSettings.RequiredReLoginAfterPasswordChange && isPasswordChange)
             return null;
 
+        var sessionIdClaim = authenticateResult.Principal.FindFirst(claim => claim.Type == ClaimTypes.PrimarySid
+            && claim.Issuer.Equals(NopAuthenticationDefaults.ClaimsIssuer, StringComparison.InvariantCultureIgnoreCase));
+
+        bool SessionIdParsedSuccessfully = Guid.TryParse(sessionIdClaim.Value, out var sessionId);
+
+        var customerSession = SessionIdParsedSuccessfully ? await _customerService.GetAllCustomerSessionAsync(customerId: customer.Id) : null;
+
+        if (!(
+            SessionIdParsedSuccessfully &&
+            customerSession != null &&
+            customerSession.Any(x => x.SessionId.Equals(sessionId) && x.IsActive && (!x.ExpiresOnUtc.HasValue || (x.ExpiresOnUtc.HasValue && DateTime.UtcNow < x.ExpiresOnUtc.Value)))
+            ))
+            return null;
+
         //cache authenticated customer
         _cachedCustomer = customer;
+
+        var activeSession = customerSession != null ? customerSession.FirstOrDefault(x => x.SessionId.Equals(sessionId)) : null;
+
+        if (activeSession != null)
+        {
+            activeSession.LastActivityOnUtc = DateTime.UtcNow;
+
+            await _customerService.UpdateCustomerSessionAsync(activeSession);
+        }
 
         return _cachedCustomer;
     }

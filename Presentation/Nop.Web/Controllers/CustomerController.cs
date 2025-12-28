@@ -462,7 +462,7 @@ public partial class CustomerController : BasePublicController
                         ? await _customerService.GetCustomerByUsernameAsync(customerUserName)
                         : await _customerService.GetCustomerByEmailAsync(customerEmail);
 
-                    return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, model.RememberMe);
+                    return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, Guid.NewGuid(), model.RememberMe);
                 }
                 case CustomerLoginResults.MultiFactorAuthenticationRequired:
                 {
@@ -757,7 +757,7 @@ public partial class CustomerController : BasePublicController
             _localizationService.GetResourceAsync("ActivityLog.PublicStore.PasswordChanged"));
 
         //authenticate customer after changing password
-        await _customerRegistrationService.SignInCustomerAsync(customer, null, true);
+        await _customerRegistrationService.SignInCustomerAsync(customer, null, Guid.NewGuid(), true);
 
         model.DisablePasswordChanging = true;
         model.Result = await _localizationService.GetResourceAsync("Account.PasswordRecovery.PasswordHasBeenChanged");
@@ -1071,7 +1071,7 @@ public partial class CustomerController : BasePublicController
                         await _eventPublisher.PublishAsync(new CustomerActivatedEvent(customer));
 
                         returnUrl = Url.RouteUrl(NopRouteNames.Standard.REGISTER_RESULT, new { resultId = (int)UserRegistrationType.Standard, returnUrl });
-                        return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, true);
+                        return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, Guid.NewGuid(), true);
 
                     default:
                         return RedirectToRoute(NopRouteNames.General.HOMEPAGE);
@@ -1169,7 +1169,7 @@ public partial class CustomerController : BasePublicController
         await _eventPublisher.PublishAsync(new CustomerActivatedEvent(customer));
 
         //authenticate customer after activation
-        await _customerRegistrationService.SignInCustomerAsync(customer, null, true);
+        await _customerRegistrationService.SignInCustomerAsync(customer, null, Guid.NewGuid(), true);
 
         //activating newsletter subscriptions
         var store = await _storeContext.GetCurrentStoreAsync();
@@ -1250,7 +1250,7 @@ public partial class CustomerController : BasePublicController
                         //re-authenticate
                         //do not authenticate users in impersonation mode
                         if (_workContext.OriginalCustomerIfImpersonated == null)
-                            await _authenticationService.SignInAsync(customer, true);
+                            await _authenticationService.SignInAsync(customer, Guid.NewGuid(), true);
                     }
                 }
                 //email
@@ -1266,7 +1266,7 @@ public partial class CustomerController : BasePublicController
                     {
                         //re-authenticate (if usernames are disabled)
                         if (!_customerSettings.UsernamesEnabled && !requireValidation)
-                            await _authenticationService.SignInAsync(customer, true);
+                            await _authenticationService.SignInAsync(customer, Guid.NewGuid(), true);
                     }
                 }
 
@@ -1469,7 +1469,7 @@ public partial class CustomerController : BasePublicController
         await _genericAttributeService.SaveAttributeAsync(customer, NopCustomerDefaults.EmailRevalidationTokenAttribute, "");
 
         //authenticate customer after changing email
-        await _customerRegistrationService.SignInCustomerAsync(customer, null, true);
+        await _customerRegistrationService.SignInCustomerAsync(customer, null, Guid.NewGuid(), true);
 
         model.Result = await _localizationService.GetResourceAsync("Account.EmailRevalidation.Changed");
         return View(model);
@@ -1710,7 +1710,7 @@ public partial class CustomerController : BasePublicController
                     _localizationService.GetResourceAsync("ActivityLog.PublicStore.PasswordChanged"));
 
                 //authenticate customer after changing password
-                await _customerRegistrationService.SignInCustomerAsync(customer, null, true);
+                await _customerRegistrationService.SignInCustomerAsync(customer, null, Guid.NewGuid(), true);
 
                 if (string.IsNullOrEmpty(returnUrl))
                     return View(model);

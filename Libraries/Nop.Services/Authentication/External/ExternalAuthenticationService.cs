@@ -97,7 +97,7 @@ public partial class ExternalAuthenticationService : IExternalAuthenticationServ
     {
         //log in guest user
         if (currentLoggedInUser == null)
-            return await _customerRegistrationService.SignInCustomerAsync(associatedUser, returnUrl);
+            return await _customerRegistrationService.SignInCustomerAsync(associatedUser, returnUrl, Guid.NewGuid());
 
         //account is already assigned to another user
         if (currentLoggedInUser.Id != associatedUser.Id)
@@ -198,7 +198,7 @@ public partial class ExternalAuthenticationService : IExternalAuthenticationServ
             //raise event       
             await _eventPublisher.PublishAsync(new CustomerActivatedEvent(customer));
 
-            return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, true);
+            return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, Guid.NewGuid(), true);
         }
 
         //registration is succeeded but isn't activated

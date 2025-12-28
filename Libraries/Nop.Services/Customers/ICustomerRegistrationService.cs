@@ -49,7 +49,7 @@ public partial interface ICustomerRegistrationService
     /// A task that represents the asynchronous operation
     /// The task result contains the result of an authentication
     /// </returns>
-    Task<IActionResult> SignInCustomerAsync(Customer customer, string returnUrl, bool isPersist = false);
+    Task<IActionResult> SignInCustomerAsync(Customer customer, string returnUrl, Guid sessionGuid, bool isPersist = false);
 
     /// <summary>
     /// Sets a user email

@@ -24,5 +24,12 @@ public partial class CustomerSession : BaseEntity
 
     public DateTime? LastActivityOnUtc { get; set; }
 
-
+    /// <summary>
+    /// Gets or Sets the Type of Login
+    /// </summary>
+    public LoginType LoginType
+    {
+        get => (LoginType)LoginTypeId;
+        set => LoginTypeId = (int)value;
+    }
 }
