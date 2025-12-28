@@ -94,10 +94,12 @@ jobs:
         run: |
           mkdir -p ${{ env.LOCAL_APP_DATA_PATH }}
           lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          set ftp:ssl-allow no
           set ftp:passive-mode on
           mirror /thesamscents.com/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
           bye
           EOF
+
       
       - name: Check publish output exists
         run: ls -la ${{ env.PUBLISHED_PATH }}
