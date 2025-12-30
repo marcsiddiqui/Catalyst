@@ -648,4 +648,22 @@ public partial interface ICustomerService
     Task InsertCustomerAddressAsync(Customer customer, Address address);
 
     #endregion
+
+    #region CustomerSession
+
+    Task InsertCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true);
+
+    Task UpdateCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true);
+
+    Task ExpireCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions, bool clearCache = true);
+
+    Task<IPagedList<CustomerSession>> GetAllCustomerSessionAsync(
+        Guid sessionId = default,
+        int customerId = 0,
+        bool? isActive = true,
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task UpdateCustomerSession();
+
+    #endregion
 }

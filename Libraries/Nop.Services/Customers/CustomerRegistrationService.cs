@@ -423,7 +423,7 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
     /// A task that represents the asynchronous operation
     /// The task result contains the result of an authentication
     /// </returns>
-    public virtual async Task<IActionResult> SignInCustomerAsync(Customer customer, string returnUrl, bool isPersist = false)
+    public virtual async Task<IActionResult> SignInCustomerAsync(Customer customer, string returnUrl, Guid sessionGuid, bool isPersist = false)
     {
         var currentCustomer = await _workContext.GetCurrentCustomerAsync();
         if (currentCustomer?.Id != customer.Id)
@@ -440,7 +440,27 @@ public partial class CustomerRegistrationService : ICustomerRegistrationService
         }
 
         //sign in new customer
-        await _authenticationService.SignInAsync(customer, isPersist);
+        await _authenticationService.SignInAsync(customer, sessionGuid, isPersist);
+
+        string deviceVersion = null;
+
+        var headers = _actionContextAccessor.ActionContext?.HttpContext?.Request?.Headers;
+
+        if (headers != null && headers.ContainsKey("User-Agent"))
+            deviceVersion = headers["User-Agent"].ToString();
+
+        var expiresOnUtc = !isPersist ? DateTime.UtcNow.AddDays(1) : DateTime.UtcNow.AddMonths(1);
+
+        await _customerService.InsertCustomerSessionAsync(new CustomerSession
+        {
+            CustomerId = customer.Id,
+            CreatedOnUtc = DateTime.UtcNow,
+            ExpiresOnUtc = expiresOnUtc,
+            IsActive = true,
+            SessionId = sessionGuid,
+            DeviceVersion = deviceVersion ?? "",
+            LoginType = LoginType.Website
+        });
 
         //raise event
         var guestCustomer = await _customerService.IsGuestAsync(currentCustomer) && currentCustomer?.Id != customer.Id ? currentCustomer : null;

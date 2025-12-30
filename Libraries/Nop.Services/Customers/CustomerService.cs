@@ -16,6 +16,7 @@ using Nop.Core.Infrastructure;
 using Nop.Data;
 using Nop.Services.Common;
 using Nop.Services.Localization;
+using Nop.Services.Logging;
 
 namespace Nop.Services.Customers;
 
@@ -29,6 +30,7 @@ public partial class CustomerService : ICustomerService
     protected readonly CustomerSettings _customerSettings;
     protected readonly IEventPublisher _eventPublisher;
     protected readonly IGenericAttributeService _genericAttributeService;
+    protected readonly ILogger _logger;
     protected readonly INopDataProvider _dataProvider;
     protected readonly IRepository<Address> _customerAddressRepository;
     protected readonly IRepository<BlogComment> _blogCommentRepository;
@@ -37,6 +39,7 @@ public partial class CustomerService : ICustomerService
     protected readonly IRepository<CustomerCustomerRoleMapping> _customerCustomerRoleMappingRepository;
     protected readonly IRepository<CustomerPassword> _customerPasswordRepository;
     protected readonly IRepository<CustomerRole> _customerRoleRepository;
+    protected readonly IRepository<CustomerSession> _customerSessionRepository;
     protected readonly IRepository<ForumPost> _forumPostRepository;
     protected readonly IRepository<ForumTopic> _forumTopicRepository;
     protected readonly IRepository<GenericAttribute> _gaRepository;
@@ -59,6 +62,7 @@ public partial class CustomerService : ICustomerService
     public CustomerService(CustomerSettings customerSettings,
         IEventPublisher eventPublisher,
         IGenericAttributeService genericAttributeService,
+        ILogger logger,
         INopDataProvider dataProvider,
         IRepository<Address> customerAddressRepository,
         IRepository<BlogComment> blogCommentRepository,
@@ -67,6 +71,7 @@ public partial class CustomerService : ICustomerService
         IRepository<CustomerCustomerRoleMapping> customerCustomerRoleMappingRepository,
         IRepository<CustomerPassword> customerPasswordRepository,
         IRepository<CustomerRole> customerRoleRepository,
+        IRepository<CustomerSession> customerSessionRepository,
         IRepository<ForumPost> forumPostRepository,
         IRepository<ForumTopic> forumTopicRepository,
         IRepository<GenericAttribute> gaRepository,
@@ -85,6 +90,7 @@ public partial class CustomerService : ICustomerService
         _customerSettings = customerSettings;
         _eventPublisher = eventPublisher;
         _genericAttributeService = genericAttributeService;
+        _logger = logger;
         _dataProvider = dataProvider;
         _customerAddressRepository = customerAddressRepository;
         _blogCommentRepository = blogCommentRepository;
@@ -93,6 +99,7 @@ public partial class CustomerService : ICustomerService
         _customerCustomerRoleMappingRepository = customerCustomerRoleMappingRepository;
         _customerPasswordRepository = customerPasswordRepository;
         _customerRoleRepository = customerRoleRepository;
+        _customerSessionRepository = customerSessionRepository;
         _forumPostRepository = forumPostRepository;
         _forumTopicRepository = forumTopicRepository;
         _gaRepository = gaRepository;
@@ -1672,6 +1679,95 @@ public partial class CustomerService : ICustomerService
         ArgumentNullException.ThrowIfNull(customer);
 
         return await GetCustomerAddressAsync(customer.Id, customer.ShippingAddressId ?? 0);
+    }
+
+    #endregion
+
+    #region Customer Session
+
+    public virtual async Task InsertCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true)
+    {
+        await _customerSessionRepository.InsertAsync(customerSession);
+
+        if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+    }
+
+    public virtual async Task UpdateCustomerSessionAsync(CustomerSession customerSession, bool clearCache = true)
+    {
+        await _customerSessionRepository.UpdateAsync(customerSession, clearCache);
+
+        if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+    }
+
+    public virtual async Task ExpireCustomerSessionAsync(IEnumerable<CustomerSession> customerSessions, bool clearCache = true)
+    {
+        try
+        {
+            if (customerSessions != null && customerSessions.Any())
+            {
+                foreach (var customerSession in customerSessions)
+                {
+                    if (customerSession != null || !customerSession.IsActive || (customerSession.ExpiresOnUtc.HasValue && customerSession.ExpiresOnUtc.Value < DateTime.UtcNow))
+                    {
+                        customerSession.ExpiresOnUtc = DateTime.UtcNow;
+                        customerSession.IsActive = false;
+                        await UpdateCustomerSessionAsync(customerSession);
+                    }
+                }
+            }
+
+            if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
+        }
+        catch (Exception ex)
+        {
+            await _logger.ErrorAsync("Error occurred while Expiring Customer Session");
+        }
+    }
+
+    public virtual async Task<IPagedList<CustomerSession>> GetAllCustomerSessionAsync(
+        Guid sessionId = default,
+        int customerId = 0,
+        bool? isActive = true,
+        int pageIndex = 0, int pageSize = int.MaxValue)
+    {
+        var key = _staticCacheManager.PrepareKeyForDefaultCache(NopCustomerServicesDefaults.CustomerSessionCacheKey,
+            sessionId,
+            customerId,
+            isActive
+            );
+
+        var allCustomerSessionAsync = await _staticCacheManager.GetAsync(key, async () => await _customerSessionRepository.GetAllAsync(query =>
+            {
+                if (sessionId != default)
+                    query = query.Where(x => x.SessionId.Equals(sessionId));
+
+                if (customerId > 0)
+                    query = query.Where(x => x.CustomerId == customerId);
+
+                if (isActive.HasValue)
+                    query = query.Where(x => x.IsActive == isActive.Value);
+
+                return query.OrderBy(c => c.Id);
+            }));
+
+        return new PagedList<CustomerSession>(allCustomerSessionAsync, pageIndex, pageSize);
+
+    }
+
+    public virtual async Task UpdateCustomerSession()
+    {
+        try
+        {
+            string sqlQuery = @"EXEC [UpdateCustomerSession]";
+
+            await _dataProvider.ExecuteNonQueryAsync(sqlQuery);
+
+            await _staticCacheManager.ClearAsync();
+        }
+        catch (Exception ex)
+        {
+            await _logger.ErrorAsync("Error On [UpdateCustomerSession]", ex);
+        }
     }
 
     #endregion

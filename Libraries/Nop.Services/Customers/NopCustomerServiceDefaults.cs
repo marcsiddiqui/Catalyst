@@ -54,6 +54,22 @@ public static partial class NopCustomerServicesDefaults
 
     #endregion
 
+    #region CustomerSession
+
+    public static string CustomerSessionCacheKeyPrefix => "Nop.customer.sessions.";
+
+    /// <summary>
+    /// Gets a key for caching
+    /// </summary>
+    /// <remarks>
+    /// {0} : Session Id (Guid)
+    /// {1} : Customer Id
+    /// {2} : IsActive
+    /// </remarks>
+    public static CacheKey CustomerSessionCacheKey => new($"{CustomerSessionCacheKeyPrefix}.all.{0}-{1}-{2}");
+
+    #endregion 
+
     #region Customer roles
     
     /// <summary>

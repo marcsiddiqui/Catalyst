@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,7 +60,8 @@ using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
-//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
+//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+
 
 namespace Nop.Web.Framework.Infrastructure;
 
@@ -249,7 +250,8 @@ public partial class NopStartup : INopStartup
 
         #region Custom New Services
 
-//{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+//{AddNewServicesScopeHereWithNopCCodeGenerator}
+
 
         #endregion
 
