@@ -669,6 +669,11 @@ public partial class BaseNopTest
         {
             return await _serviceProvider.GetService<ICustomerService>().GetCustomerByEmailAsync(NopTestsDefaults.AdminEmail);
         }
+
+        public Task SignInAsync(Customer customer, Guid sessionGuid, bool isPersistent)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     protected class TestPictureService : PictureService
