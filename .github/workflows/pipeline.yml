@@ -6,9 +6,9 @@ env:
   LOCAL_APP_DATA_PATH: ./Remote_App_Data
   LOCAL_APP_OFFLINE_PATH: ./App_offline
   REMOTE_DIRECTORY: /httpdocs
-  FTP_HOST: '66.165.248.146'
-  FTP_USERNAME: 'samimaap'
-  FTP_PASSWORD: 'QhnCr~kmSe8^z07p'
+  FTP_HOST: FTP_HOST
+  FTP_USERNAME: FTP_PASSWORD
+  FTP_PASSWORD: FTP_USERNAME
 
 on:
   push:
