@@ -6,9 +6,6 @@ env:
   LOCAL_APP_DATA_PATH: ./Remote_App_Data
   LOCAL_APP_OFFLINE_PATH: ./App_offline
   REMOTE_DIRECTORY: /httpdocs
-  FTP_HOST: FTP_HOST
-  FTP_USERNAME: FTP_PASSWORD
-  FTP_PASSWORD: FTP_USERNAME
 
 on:
   push:
@@ -68,7 +65,7 @@ jobs:
         
         - name: Upload app_offline.htm
           run: |
-            lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+            lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ${{ secrets.FTP_HOST }} <<EOF
             set ftp:ssl-allow no
             set ftp:passive-mode on
             put ${{ env.LOCAL_APP_OFFLINE_PATH }}/app_offline.htm -o ${{ env.REMOTE_DIRECTORY }}/app_offline.htm
@@ -100,7 +97,7 @@ jobs:
       - name: Download existing App_Data from FTP
         run: |
           mkdir -p ${{ env.LOCAL_APP_DATA_PATH }}
-          lftp -u "${{ env.FTP_USERNAME }},${{ env.FTP_PASSWORD }}" ${{ env.FTP_HOST }} <<EOF
+          lftp -u "${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }}" ${{ secrets.FTP_HOST }} <<EOF
           set ftp:ssl-allow no
           set ftp:passive-mode on
           mirror ${{ env.REMOTE_DIRECTORY }}/App_Data ${{ env.LOCAL_APP_DATA_PATH }}
@@ -116,11 +113,11 @@ jobs:
         uses: anvil-solutions/Fast-FTP-Action@2.1.3
         with:
           # FTP server name (you may need to specify a port)
-          server: ${{ env.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}
           # FTP account username
-          username: ${{ env.FTP_USERNAME }}
+          username: ${{ secrets.FTP_USERNAME }}
           # FTP account password
-          password: ${{ env.FTP_PASSWORD }}
+          password: ${{ secrets.FTP_PASSWORD }}
           # Protocol used to deploy (ftp or sftp)
           method: ftp
           # The local folder to copy, defaults to root project folder
@@ -138,11 +135,11 @@ jobs:
         uses: anvil-solutions/Fast-FTP-Action@2.1.3
         with:
           # FTP server name (you may need to specify a port)
-          server: ${{ env.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}
           # FTP account username
-          username: ${{ env.FTP_USERNAME }}
+          username: ${{ secrets.FTP_USERNAME }}
           # FTP account password
-          password: ${{ env.FTP_PASSWORD }}
+          password: ${{ secrets.FTP_PASSWORD }}
           # Protocol used to deploy (ftp or sftp)
           method: ftp
           # The local folder to copy, defaults to root project folder
