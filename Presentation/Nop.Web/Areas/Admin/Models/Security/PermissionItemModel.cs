@@ -30,5 +30,27 @@ public partial record PermissionItemModel : BaseNopEntityModel
 
     public IList<SelectListItem> AvailableCustomerRoles { get; set; }
 
+    public bool IsEnabledOnInstall { get; set; }
+
+    #endregion
+}
+
+public partial record PermissionItemGroupModel : BaseNopEntityModel
+{
+    #region Ctor
+
+    public PermissionItemGroupModel()
+    {
+        PermissionItems = new List<PermissionItemModel>();
+    }
+
+    #endregion
+
+    #region Properties
+
+    public string CategoryName { get; set; }
+
+    public IList<PermissionItemModel> PermissionItems { get; set; }
+
     #endregion
 }

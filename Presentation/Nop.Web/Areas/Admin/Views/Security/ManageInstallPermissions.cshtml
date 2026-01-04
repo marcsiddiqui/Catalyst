@@ -1,0 +1,296 @@
+﻿@model PermissionConfigurationModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Configuration.ACL").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Access control list");
+}
+
+<style type="text/css">
+    table.dataTable.table-hover>tbody>tr:hover>*{box-shadow:inset 0 0 0 9999px rgba(255, 255, 255, 1)}
+
+    table.dataTable.table-striped>tbody>tr.odd>*{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.05)}
+
+    .permission-table {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .permission-table .col-permission {
+        width: 50%;
+        word-wrap: break-word;
+    }
+
+    .permission-table .col-roles {
+        width: 35%;
+        word-wrap: break-word;
+    }
+
+    .permission-table .col-allow {
+        width: 15%;
+    }
+
+    .accordion-button {
+        background-color: #fff !important;
+        color: inherit;
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<script type="text/javascript">     
+    $(function () {
+        $('#permissions-grid').on( 'init.dt', function () {
+            $('tr').css('bg-color', 'white');
+        } );
+    });
+</script>
+
+<div class="content-header clearfix">
+    <div class="float-right">
+        @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.PermissionListButtons, additionalData = Model })
+    </div>
+</div>
+
+<button style="float: right; margin-right: 25px;" type="button" id="savePermissions" name="save-continue" class="btn btn-primary">
+    <i class="far fa-floppy-disk"></i>
+    @T("Admin.Common.Save")
+</button>
+<br />
+<br />
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default">
+                    <div class="card-body">
+                        @if (!Model.IsPermissionsAvailable)
+                        {
+                            <text>@T("Admin.Configuration.ACL.NoPermissionsDefined")</text>
+                        }
+                        else if (!Model.AreCustomerRolesAvailable)
+                        {
+                            <text>@T("Admin.Configuration.ACL.NoCustomerRolesAvailable")</text>
+                        }
+                        else
+                        {
+                            <div class="">
+                                @await Html.PartialAsync("Table", new DataTablesModel
+                                {
+                                    Name = "permissions-grid",
+                                    RefreshButton = false,
+                                    UrlRead = new DataUrl("ManagePermissions", "Security", null),
+                                    Length = Model.PermissionCategorySearchModel.PageSize,
+                                    LengthMenu = Model.PermissionCategorySearchModel.AvailablePageSizes,
+                                    ColumnCollection = new List<ColumnProperty>
+                                    {
+                                        new(nameof(PermissionItemGroupModel.CategoryName))
+                                        {
+                                            Title = T("Admin.Configuration.ACL.Permission.CategoryName").Text,
+                                            Render = new RenderCustom("renderPermissionCategory")
+                                        }
+                                    }
+                                })
+                                <script>
+                                    function renderPermissionEdit(data, type, row, meta) {
+                                        return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Security/PermissionEditPopup/")' + data + '\', 800, 300, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+                                    }
+                                    function renderPermissionText(data, type, row, meta) {                                            
+                                        return '<span id="permission-applied-for-' + row.Id + '">' + data + '</span>';
+                                    }
+                                    function renderPermissionCategory(data, type, row, meta) {
+
+                                        const accordionId = `permission-category-${meta.row}`;
+
+                                        let rowsHtml = row.PermissionItems.map(p => `
+                                            <tr>
+                                                <td class="col-permission">${p.PermissionName}</td>
+                                                <td class="col-roles">${p.PermissionAppliedFor}</td>
+                                                <td class="col-allow text-center">
+                                                <input type="checkbox" class="checkbox-child" data-category-id="${accordionId}" data-permission-id="${p.Id}" ${p.IsEnabledOnInstall ? "checked" : ""} />
+                                                </td>
+                                                <td class="col-roles"><button type="button" class="btn btn-danger"><i class="fas fa-trash"></i>@T("Admin.Remove.From.All.Roles").Text</button></td>
+                                            </tr>
+                                        `).join("");
+
+                                        return `
+                                        <div class="accordion" id="accordion-${accordionId}">
+                                            <div class="accordion-item">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed"
+                                                            type="button"
+                                                            data-bs-toggle="collapse"
+                                                            data-bs-target="#collapse-${accordionId}">
+                                                        ${row.CategoryName}
+                                                    </button>
+                                                </h2>
+
+                                                <div id="collapse-${accordionId}" class="accordion-collapse collapse">
+                                                    <div class="accordion-body">
+
+                                                        <table class="table table-bordered table-striped table-hover permission-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="col-permission">Permission</th>
+                                                                    <th class="col-roles">Applied For</th>
+                                                                    <th class="col-allow text-center">
+                                                                        <input type="checkbox" class="checkbox-master" data-category-id="${accordionId}" />
+                                                                    </th>
+                                                                    <th class="col-roles">Action</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                ${rowsHtml}
+                                                            </tbody>
+                                                        </table>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                                    }
+
+                                    // Master checkbox toggles all children
+                                    $(document).on('change', '.checkbox-master', function () {
+                                        const categoryId = $(this).data('category-id');
+                                        const isChecked = $(this).is(':checked');
+
+                                        $(`.checkbox-child[data-category-id="${categoryId}"]`)
+                                            .prop('checked', isChecked)
+                                            .trigger('change');
+                                    });
+
+                                    function syncMasterCheckboxes() {
+                                        $('.checkbox-master').each(function () {
+                                            const categoryId = $(this).data('category-id');
+
+                                            const $children = $(`.checkbox-child[data-category-id="${categoryId}"]`);
+                                            if (!$children.length) return;
+
+                                            const checkedCount = $children.filter(':checked').length;
+                                            const $master = $(this);
+
+                                            if (checkedCount === 0) {
+                                                $master.prop({ checked: false, indeterminate: false });
+                                            } else if (checkedCount === $children.length) {
+                                                $master.prop({ checked: true, indeterminate: false });
+                                            } else {
+                                                $master.prop({ checked: false, indeterminate: true });
+                                            }
+                                        });
+                                    }
+
+                                    // child change
+                                    $(document).on('change', '.checkbox-child', syncMasterCheckboxes);
+
+                                    // IMPORTANT: wait until accordion / DataTables content exists
+                                    $(window).on('load', function () {
+                                        setTimeout(syncMasterCheckboxes, 0);
+                                    });
+
+                                    // if DataTables redraws rows
+                                    $('#permissions-grid').on('draw.dt', function () {
+                                        syncMasterCheckboxes();
+                                    });
+
+                                    // track initial states
+                                    const initialPermissionState = {};
+                                    const assignPermissions = [];
+                                    const unassignPermissions = [];
+
+                                    // capture initial checked state (call after page load / datatable draw)
+                                    function captureInitialPermissionState() {
+                                        $('.checkbox-child').each(function () {
+                                            const id = $(this).data('permission-id');
+                                            initialPermissionState[id] = $(this).is(':checked');
+                                        });
+                                    }
+
+                                    // handle changes
+                                    $(document).on('change', '.checkbox-child', function () {
+                                        const id = $(this).data('permission-id');
+                                        const isCheckedNow = $(this).is(':checked');
+                                        const wasCheckedInitially = initialPermissionState[id];
+
+                                        // initially checked → unchecked → unassign
+                                        if (wasCheckedInitially && !isCheckedNow) {
+                                            if (!unassignPermissions.includes(id))
+                                                unassignPermissions.push(id);
+                                        }
+
+                                        // reverted back to initial checked → remove from unassign
+                                        if (wasCheckedInitially && isCheckedNow) {
+                                            const idx = unassignPermissions.indexOf(id);
+                                            if (idx > -1) unassignPermissions.splice(idx, 1);
+                                        }
+
+                                        // initially unchecked → checked → assign
+                                        if (!wasCheckedInitially && isCheckedNow) {
+                                            if (!assignPermissions.includes(id))
+                                                assignPermissions.push(id);
+                                        }
+
+                                        // reverted back to initial unchecked → remove from assign
+                                        if (!wasCheckedInitially && !isCheckedNow) {
+                                            const idx = assignPermissions.indexOf(id);
+                                            if (idx > -1) assignPermissions.splice(idx, 1);
+                                        }
+                                    });
+
+                                    // call after content is rendered
+                                    $(window).on('load', function () {
+                                        setTimeout(captureInitialPermissionState, 0);
+                                    });
+
+                                    // if DataTables redraws
+                                    $('#permissions-grid').on('draw.dt', function () {
+                                        captureInitialPermissionState();
+                                    });
+
+                                    $('#savePermissions').on('click', function () {
+                                        console.log("assignPermissions", assignPermissions);
+                                        console.log("unassignPermissions", unassignPermissions);
+
+                                        savePermissions();
+                                    });
+
+                                    function savePermissions() {
+                                        $.ajax({
+                                            url: '@Url.Action("AssignUnAssignPermission", "Security")',
+                                            type: 'POST',
+                                            data: {
+                                                assignPermissionIds: assignPermissions,
+                                                unAssignPermissionIds: unassignPermissions,
+                                                __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                                            },
+                                            traditional: true,
+                                            success: function (data) {
+                                                console.log(data);
+                                                if (data == "Success"){
+                                                    location.reload();
+                                                } else {
+                                                    console.error('Error saving permissions', data);
+                                                }
+                                            },
+                                            error: function (xhr) {
+                                                console.error('Error saving permissions', xhr);
+                                            }
+                                        });
+                                    }
+
+                                </script>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

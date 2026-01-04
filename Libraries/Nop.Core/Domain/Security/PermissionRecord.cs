@@ -19,4 +19,6 @@ public partial class PermissionRecord : BaseEntity
     /// Gets or sets the permission category
     /// </summary>
     public string Category { get; set; }
+
+    public bool IsEnabledOnInstall { get; set; }
 }

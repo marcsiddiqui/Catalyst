@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Customers;
+﻿using Nop.Core;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Security;
 
 namespace Nop.Services.Security;
@@ -15,7 +16,7 @@ public partial interface IPermissionService
     /// A task that represents the asynchronous operation
     /// The task result contains the permissions
     /// </returns>
-    Task<IList<PermissionRecord>> GetAllPermissionRecordsAsync();
+    Task<IList<PermissionRecord>> GetAllPermissionRecordsAsync(BooleanFilter isEnabledOnInstall = BooleanFilter.True);
 
     /// <summary>
     /// Inserts a permission
@@ -40,6 +41,13 @@ public partial interface IPermissionService
     /// <param name="permission">Permission</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task UpdatePermissionRecordAsync(PermissionRecord permission);
+
+    /// <summary>
+    /// Updates the permissions
+    /// </summary>
+    /// <param name="permissions">Permissions</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    Task UpdatePermissionRecordAsync(List<PermissionRecord> permissions);
 
     /// <summary>
     /// Deletes the permission
