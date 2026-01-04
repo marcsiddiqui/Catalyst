@@ -197,7 +197,7 @@ public partial class SecurityController : BaseAdminController
         var toBeUpdatePermisisons = new List<PermissionRecord>();
 
         // sending both here because for this page we have to load all the permissions
-        var permissions = await _permissionService.GetAllPermissionRecordsAsync();
+        var permissions = await _permissionService.GetAllPermissionRecordsAsync(isEnabledOnInstall: BooleanFilter.Both);
         if (permissions != null && permissions.Any())
         {
             if (assignPermissionIds != null && assignPermissionIds.Any())
