@@ -67,7 +67,7 @@ public partial class PermissionService : IPermissionService
         var query = from pr in _permissionRecordRepository.Table
                     join prcrm in _permissionRecordCustomerRoleMappingRepository.Table on pr.Id equals prcrm
                         .PermissionRecordId
-                    where prcrm.CustomerRoleId == customerRoleId
+                    where prcrm.CustomerRoleId == customerRoleId && pr.IsEnabledOnInstall == true
                     orderby pr.Id
                     select pr;
 
@@ -88,7 +88,7 @@ public partial class PermissionService : IPermissionService
             return null;
 
         var query = from pr in _permissionRecordRepository.Table
-                    where pr.SystemName == systemName
+                    where pr.SystemName == systemName && pr.IsEnabledOnInstall == true
                     orderby pr.Id
                     select pr;
 
@@ -134,7 +134,8 @@ public partial class PermissionService : IPermissionService
             {
                 Name = config.Name,
                 SystemName = config.SystemName,
-                Category = config.Category
+                Category = config.Category,
+                IsEnabledOnInstall = false
             };
 
             //save new permission
@@ -176,11 +177,16 @@ public partial class PermissionService : IPermissionService
     /// A task that represents the asynchronous operation
     /// The task result contains the permissions
     /// </returns>
-    public virtual async Task<IList<PermissionRecord>> GetAllPermissionRecordsAsync()
+    public virtual async Task<IList<PermissionRecord>> GetAllPermissionRecordsAsync(BooleanFilter isEnabledOnInstall = BooleanFilter.True)
     {
-        var permissions = await _permissionRecordRepository.GetAllAsync(query => from pr in query
-                                                                                 orderby pr.Name
-                                                                                 select pr);
+        var permissions = await _permissionRecordRepository.GetAllAsync(query =>
+        {
+            query = from pr in query orderby pr.Name select pr;
+
+            query = query.WhereBoolean(x => x.IsEnabledOnInstall, isEnabledOnInstall);
+
+            return query;
+        });
 
         return permissions;
     }
@@ -216,6 +222,16 @@ public partial class PermissionService : IPermissionService
     public virtual async Task UpdatePermissionRecordAsync(PermissionRecord permission)
     {
         await _permissionRecordRepository.UpdateAsync(permission);
+    }
+
+    /// <summary>
+    /// Updates the permissions
+    /// </summary>
+    /// <param name="permissions">Permissions</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public virtual async Task UpdatePermissionRecordAsync(List<PermissionRecord> permissions)
+    {
+        await _permissionRecordRepository.UpdateAsync(permissions);
     }
 
     /// <summary>

@@ -49,4 +49,6 @@ public partial interface ISecurityModelFactory
     /// The task result contains the permission item list model
     /// </returns>
     Task<PermissionItemListModel> PreparePermissionItemListModelAsync(PermissionItemSearchModel searchModel);
+
+    Task<PermissionItemGroupedListModel> PreparePermissionItemGroupListModelAsync(PermissionItemSearchModel searchModel);
 }

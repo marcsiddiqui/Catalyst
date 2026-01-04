@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Security;
+using Nop.Data.Mapping.Builders.Discounts;
 using Nop.Services.Customers;
 using Nop.Services.Security;
 using Nop.Web.Areas.Admin.Factories;
@@ -159,6 +160,15 @@ public partial class SecurityController : BaseAdminController
         return Json(model);
     }
 
+    [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    public virtual async Task<IActionResult> ManagePermissions(PermissionItemSearchModel searchModel)
+    {
+        var model = await _securityModelFactory.PreparePermissionItemGroupListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
     [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
     public virtual async Task<IActionResult> Permissions()
     {
@@ -166,6 +176,58 @@ public partial class SecurityController : BaseAdminController
         var model = await _securityModelFactory.PreparePermissionConfigurationModelAsync(new PermissionConfigurationModel());
 
         return View(model);
+    }
+    
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    public virtual async Task<IActionResult> ManageInstallPermissions()
+    {
+        if (!await _customerService.IsAdminAsync(await _workContext.GetCurrentCustomerAsync()))
+            return RedirectToAction("AccessDenied");
+
+        //prepare model
+        var model = await _securityModelFactory.PreparePermissionConfigurationModelAsync(new PermissionConfigurationModel());
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Configuration.MANAGE_ACL)]
+    public virtual async Task<IActionResult> AssignUnAssignPermission(IList<int> assignPermissionIds, IList<int> unAssignPermissionIds)
+    {
+        var toBeUpdatePermisisons = new List<PermissionRecord>();
+
+        // sending both here because for this page we have to load all the permissions
+        var permissions = await _permissionService.GetAllPermissionRecordsAsync();
+        if (permissions != null && permissions.Any())
+        {
+            if (assignPermissionIds != null && assignPermissionIds.Any())
+            {
+                var enablePermissions = permissions.Where(x => assignPermissionIds.Contains(x.Id)).ToList();
+                if (enablePermissions != null && enablePermissions.Any())
+                {
+                    enablePermissions.ForEach(x => x.IsEnabledOnInstall = true);
+                    toBeUpdatePermisisons.AddRange(enablePermissions);
+                }
+            }
+
+            if (unAssignPermissionIds != null && unAssignPermissionIds.Any())
+            {
+                var disablePermissions = permissions.Where(x => unAssignPermissionIds.Contains(x.Id)).ToList();
+                if (disablePermissions != null && disablePermissions.Any())
+                {
+                    disablePermissions.ForEach(x => x.IsEnabledOnInstall = false);
+                    toBeUpdatePermisisons.AddRange(disablePermissions);
+                }
+            }
+
+            if (toBeUpdatePermisisons != null && toBeUpdatePermisisons.Any())
+            {
+                await _permissionService.UpdatePermissionRecordAsync(toBeUpdatePermisisons);
+                return Json("Success");
+            }
+        }
+
+        return Json("Error");
     }
 
     #endregion

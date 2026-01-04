@@ -88,6 +88,7 @@ public partial class SecurityModelFactory : ISecurityModelFactory
         {
             Id = permissionRecord.Id,
             PermissionName = await _localizationService.GetLocalizedPermissionNameAsync(permissionRecord),
+            IsEnabledOnInstall = permissionRecord.IsEnabledOnInstall,
             PermissionAppliedFor = appliedFor,
             SelectedCustomerRoleIds = ids.ToList(),
             AvailableCustomerRoles = availableRoles.Select(role => new SelectListItem
@@ -159,6 +160,35 @@ public partial class SecurityModelFactory : ISecurityModelFactory
             //fill in model values from the entity
             return permissionItems.SelectAwait(async item => await PreparePermissionItemModelAsync(item, availableRoles));
         });
+
+        return model;
+    }
+
+    public virtual async Task<PermissionItemGroupedListModel> PreparePermissionItemGroupListModelAsync(PermissionItemSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        // sending both here because for this page we have to load all the permissions
+        var permissions = await _permissionService.GetAllPermissionRecordsAsync(isEnabledOnInstall: BooleanFilter.Both);
+
+        var types = permissions
+            .GroupBy(p => p.Category, p => p)
+            .Select(p => p.Key).ToList();
+
+        var pagedTypes = types.ToPagedList(searchModel);
+
+        //prepare list model
+        var model = new PermissionItemGroupedListModel().PrepareToGridAsync(searchModel, pagedTypes, () =>
+        {
+            var a = pagedTypes.SelectAwait(async t => new PermissionItemGroupModel
+            {
+                CategoryName = t,
+                PermissionItems = permissions.Where(x => x.Category == t).SelectAwait(async item => await PreparePermissionItemModelAsync(item)).ToListAsync().Result
+            });
+
+            //fill in model values from the entity
+            return a;
+        }).Result;
 
         return model;
     }
