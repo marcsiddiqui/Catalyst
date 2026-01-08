@@ -24,6 +24,25 @@
     @{ await Html.RenderPartialAsync("_AdminScripts");  }
 </head>
 <body class="hold-transition skin-blue sidebar-collapse layout-fixed">
+
+    <div class="localizedMsgs" style="display:none;">
+        <div class="multiSelectSearchMsg">@T("Admin.Multiselect.Search")</div>
+        <div class="multiSelectAllMsg">@T("Select.All")</div>
+        <div class="multiOptionsSelectedMsg">@T("Options.Selected")</div>
+        <div class="multiAllOptionsSelectedMsg">@T("All.Options.Selected")</div>
+        <div class="multiNonSelectedMsg">@T("Select.None")</div>
+        <div class="multiDeliveryNonSelectedMsg">@T("Select.Delivery.None")</div>
+        <div class="multiInvoiceNonSelectedMsg">@T("Select.Invoice.None")</div>
+        <div class="textEditorPlaceHolderMsg">@T("Admin.Common.TypeSomething")</div>
+        <div class="fu-UploadFailMsg">@T("Admin.Common.UploadFailed")</div>
+        <div class="fu-ProcessingMsg">@T("Admin.Common.Processing")</div>
+        <div class="fu-PauseMsg">@T("Admin.Common.Pause")</div>
+        <div class="pn-success">@T("Admin.Common.Success")</div>
+        <div class="pn-error">@T("Admin.Common.Error")</div>
+        <div class="pn-warning">@T("Admin.Common.Warning")</div>
+        <div class="pn-info">@T("Admin.Common.InProgress")</div>
+    </div>
+
     <div class="wrapper">
         <div class="content-wrapper">
             @await Html.PartialAsync("~/Areas/Admin/Views/Shared/Notifications.cshtml")
