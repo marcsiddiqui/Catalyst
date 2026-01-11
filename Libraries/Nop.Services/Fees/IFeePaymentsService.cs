@@ -6,7 +6,7 @@ namespace Nop.Services.Fees;
 
 public partial interface IFeePaymentsService
 {
-    Task<IPagedList<FeePayments>> GetAllFeePaymentsesAsync(
+    Task<IPagedList<FeePayment>> GetAllFeePaymentsesAsync(
         int id = 0, IEnumerable<int> ids = null,
         int feeId = 0, IEnumerable<int> feeIds = null,
         int statusId = 0, IEnumerable<int> statusIds = null,
@@ -15,19 +15,19 @@ public partial interface IFeePaymentsService
 
         int pageIndex = 0, int pageSize = int.MaxValue);
 
-    Task<FeePayments> GetFeePaymentsByIdAsync(int id);
+    Task<FeePayment> GetFeePaymentsByIdAsync(int id);
 
-    Task<IList<FeePayments>> GetFeePaymentsesByIdsAsync(IEnumerable<int> ids);
+    Task<IList<FeePayment>> GetFeePaymentsesByIdsAsync(IEnumerable<int> ids);
 
-    Task InsertFeePaymentsAsync(FeePayments feePayments);
+    Task InsertFeePaymentsAsync(FeePayment feePayments);
     
-    Task InsertFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses);
+    Task InsertFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses);
 
-    Task UpdateFeePaymentsAsync(FeePayments feePayments);
+    Task UpdateFeePaymentsAsync(FeePayment feePayments);
 
-    Task UpdateFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses);
+    Task UpdateFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses);
 
-    Task DeleteFeePaymentsAsync(FeePayments feePayments);
+    Task DeleteFeePaymentsAsync(FeePayment feePayments);
 
-    Task DeleteFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses);
+    Task DeleteFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses);
 }

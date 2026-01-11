@@ -64,7 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\MiscellaneousFile\" />
     <Folder Include="wwwroot\react\" />
   </ItemGroup>
 

@@ -2,7 +2,7 @@ using Nop.Core;
 
 namespace Nop.Core.Domain.Fees;
 
-public partial class FeePayments : BaseEntity
+public partial class FeePayment : BaseEntity
 {
     public int FeeId { get; set; }
 

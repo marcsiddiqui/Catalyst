@@ -1883,8 +1883,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
         CreateMap<Fee, FeeModel>();
         CreateMap<FeeModel, Fee>();
-        CreateMap<FeePayments, FeePaymentsModel>();
-        CreateMap<FeePaymentsModel, FeePayments>();
+        CreateMap<FeePayment, FeePaymentModel>();
+        CreateMap<FeePaymentModel, FeePayment>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
 
 

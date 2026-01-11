@@ -3,7 +3,7 @@ using Nop.Core.Domain.Fees;
 
 namespace Nop.Data.Mapping.Builders.Fees;
 
-public partial class FeePaymentsBuilder : NopEntityBuilder<FeePayments>
+public partial class FeePaymentsBuilder : NopEntityBuilder<FeePayment>
 {
     #region Methods
 

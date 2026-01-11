@@ -8,14 +8,14 @@ public partial class FeePaymentsService : IFeePaymentsService
 {
     #region Fields
 
-    protected readonly IRepository<FeePayments> _feePaymentsRepository;
+    protected readonly IRepository<FeePayment> _feePaymentsRepository;
 
     #endregion
 
     #region Ctor
 
     public FeePaymentsService(
-        IRepository<FeePayments> feePaymentsRepository
+        IRepository<FeePayment> feePaymentsRepository
         )
     {
         _feePaymentsRepository = feePaymentsRepository;
@@ -25,7 +25,7 @@ public partial class FeePaymentsService : IFeePaymentsService
 
     #region Methods
 
-    public virtual async Task<IPagedList<FeePayments>> GetAllFeePaymentsesAsync(
+    public virtual async Task<IPagedList<FeePayment>> GetAllFeePaymentsesAsync(
         int id = 0, IEnumerable<int> ids = null,
         int feeId = 0, IEnumerable<int> feeIds = null,
         int statusId = 0, IEnumerable<int> statusIds = null,
@@ -65,7 +65,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         return productReviews;
     }
 
-    public virtual async Task<FeePayments> GetFeePaymentsByIdAsync(int id)
+    public virtual async Task<FeePayment> GetFeePaymentsByIdAsync(int id)
     {
         if (id <= 0)
             return null;
@@ -73,7 +73,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         return await _feePaymentsRepository.GetByIdAsync(id);
     }
 
-    public virtual async Task<IList<FeePayments>> GetFeePaymentsesByIdsAsync(IEnumerable<int> ids)
+    public virtual async Task<IList<FeePayment>> GetFeePaymentsesByIdsAsync(IEnumerable<int> ids)
     {
         if (ids == null || !ids.Any())
             return null;
@@ -81,7 +81,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         return await _feePaymentsRepository.GetByIdsAsync(ids.ToList());
     }
 
-    public virtual async Task InsertFeePaymentsAsync(FeePayments feePayments)
+    public virtual async Task InsertFeePaymentsAsync(FeePayment feePayments)
     {
         if (feePayments == null)
             return;
@@ -89,7 +89,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         await _feePaymentsRepository.InsertAsync(feePayments);
     }
     
-    public virtual async Task InsertFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses)
+    public virtual async Task InsertFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses)
     {
         if (feePaymentses == null || !feePaymentses.Any())
             return;
@@ -97,7 +97,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         await _feePaymentsRepository.InsertAsync(feePaymentses.ToList());
     }
 
-    public virtual async Task UpdateFeePaymentsAsync(FeePayments feePayments)
+    public virtual async Task UpdateFeePaymentsAsync(FeePayment feePayments)
     {
         if (feePayments == null)
             return;
@@ -105,7 +105,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         await _feePaymentsRepository.UpdateAsync(feePayments);
     }
 
-    public virtual async Task UpdateFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses)
+    public virtual async Task UpdateFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses)
     {
         if (feePaymentses == null || !feePaymentses.Any())
             return;
@@ -113,7 +113,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         await _feePaymentsRepository.UpdateAsync(feePaymentses.ToList());
     }
 
-    public virtual async Task DeleteFeePaymentsAsync(FeePayments feePayments)
+    public virtual async Task DeleteFeePaymentsAsync(FeePayment feePayments)
     {
         if (feePayments == null)
             return;
@@ -121,7 +121,7 @@ public partial class FeePaymentsService : IFeePaymentsService
         await _feePaymentsRepository.DeleteAsync(feePayments);
     }
 
-    public virtual async Task DeleteFeePaymentsAsync(IEnumerable<FeePayments> feePaymentses)
+    public virtual async Task DeleteFeePaymentsAsync(IEnumerable<FeePayment> feePaymentses)
     {
         if (feePaymentses == null || !feePaymentses.Any())
             return;

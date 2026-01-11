@@ -4,11 +4,11 @@ using Nop.Web.Framework.Mvc.ModelBinding;
 
 namespace Nop.Web.Areas.Admin.Models.Fees;
 
-public partial record FeePaymentsModel : BaseNopEntityModel
+public partial record FeePaymentModel : BaseNopEntityModel
 {
     #region Ctor
 
-    public FeePaymentsModel()
+    public FeePaymentModel()
     {
 
     }
