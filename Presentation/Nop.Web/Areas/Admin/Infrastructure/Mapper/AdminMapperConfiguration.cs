@@ -72,7 +72,7 @@ using Nop.Web.Framework.Models.Translation;
 using Nop.Web.Framework.WebOptimizer;
 using Nop.Web.Areas.Admin.Models.HolidaysNEvents;
 using Nop.Core.Domain.HolidaysNEvents;
-//{AddNewModelNamespacesHereWithNopCCodeGenerator}
+//{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
 
 
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
@@ -1861,7 +1861,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
     {
         CreateMap<Event, EventModel>();
         CreateMap<EventModel, Event>();
-//{AddNewModelMappingsHereWithNopCCodeGenerator}
+
+        CreateMap<Holiday, HolidayModel>();
+        CreateMap<HolidayModel, Holiday>();
+        //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
 
     }
 

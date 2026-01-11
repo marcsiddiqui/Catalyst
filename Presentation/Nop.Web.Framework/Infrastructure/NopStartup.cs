@@ -60,7 +60,8 @@ using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
-//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+using Nop.Services.HolidaysNEvents;
+//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
 
 
 namespace Nop.Web.Framework.Infrastructure;
@@ -250,7 +251,9 @@ public partial class NopStartup : INopStartup
 
         #region Custom New Services
 
-//{AddNewServicesScopeHereWithNopCCodeGenerator}
+        services.AddScoped<IEventService, EventService>();
+        services.AddScoped<IHolidayService, HolidayService>();
+//{{AddNewServicesScopeHereWithNopCCodeGenerator}}
 
 
         #endregion

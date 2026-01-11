@@ -119,7 +119,8 @@ public partial class NopStartup : INopStartup
         #region Customer Model Factories
 
         services.AddScoped<Areas.Admin.Factories.IEventModelFactory, Areas.Admin.Factories.EventModelFactory>();
-//{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}
+        services.AddScoped<Areas.Admin.Factories.IHolidayModelFactory, Areas.Admin.Factories.HolidayModelFactory>();
+//{{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}}
 
 
         #endregion
