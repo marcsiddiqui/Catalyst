@@ -80,7 +80,10 @@ using Nop.Web.Areas.Admin.Models.Fees;
 using Nop.Core.Domain.Fees;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Core.Domain.GradeManagement;
+using Nop.Web.Areas.Admin.Models.Subjects;
+using Nop.Core.Domain.Subjects;
 //{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+
 
 
 
@@ -1883,20 +1886,20 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
         CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
+
         CreateMap<Fee, FeeModel>();
         CreateMap<FeeModel, Fee>();
+
         CreateMap<FeePayment, FeePaymentModel>();
         CreateMap<FeePaymentModel, FeePayment>();
+
         CreateMap<Grade, GradeModel>();
         CreateMap<GradeModel, Grade>();
+
+        CreateMap<Subject, SubjectModel>();
+        CreateMap<SubjectModel, Subject>();
+
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
-
-
-
-
-
-
-
     }
 
     #endregion
