@@ -6,6 +6,8 @@ namespace Nop.Services.HolidaysNEvents;
 
 public partial interface IEventService
 {
+    #region Event
+
     Task<IPagedList<Event>> GetAllEventsAsync(
         int id = 0, IEnumerable<int> ids = null,
         int academicYearId = 0, IEnumerable<int> academicYearIds = null,
@@ -33,4 +35,33 @@ public partial interface IEventService
     Task DeleteEventAsync(Event @event);
 
     Task DeleteEventAsync(IEnumerable<Event> events);
+
+    #endregion
+
+    #region AcademicYearGradeSectionEventMapping
+
+    Task<IPagedList<AcademicYearGradeSectionEventMapping>> GetAllAcademicYearGradeSectionEventMappingsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int eventId = 0, IEnumerable<int> eventIds = null,
+        int academicYearGradeSectionMappingId = 0, IEnumerable<int> academicYearGradeSectionMappingIds = null,
+
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task<AcademicYearGradeSectionEventMapping> GetAcademicYearGradeSectionEventMappingByIdAsync(int id);
+
+    Task<IList<AcademicYearGradeSectionEventMapping>> GetAcademicYearGradeSectionEventMappingsByIdsAsync(IEnumerable<int> ids);
+
+    Task InsertAcademicYearGradeSectionEventMappingAsync(AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping);
+
+    Task InsertAcademicYearGradeSectionEventMappingAsync(IEnumerable<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappings);
+
+    Task UpdateAcademicYearGradeSectionEventMappingAsync(AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping);
+
+    Task UpdateAcademicYearGradeSectionEventMappingAsync(IEnumerable<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappings);
+
+    Task DeleteAcademicYearGradeSectionEventMappingAsync(AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping);
+
+    Task DeleteAcademicYearGradeSectionEventMappingAsync(IEnumerable<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappings);
+
+    #endregion
 }
