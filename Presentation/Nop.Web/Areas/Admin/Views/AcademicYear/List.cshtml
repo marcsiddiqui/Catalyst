@@ -1,0 +1,182 @@
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcademicYearSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.AcademicYears.AcademicYears").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("AcademicYears");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.AcademicYears.AcademicYears")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "academicYears-grid",
+                        UrlRead = new DataUrl("AcademicYearList", "AcademicYear", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(AcademicYearModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_academicYears"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(AcademicYearModel.Name))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.Description))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.Description").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.StartDate))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.StartDate").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.EndDate))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.EndDate").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.CreatedBy))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.UpdatedBy))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcademicYearModel.Deleted))
+                            {
+                                Title = T("Admin.AcademicYears.AcademicYears.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(AcademicYearModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/AcademicYear/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "AcademicYear"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#academicYears-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "AcademicYear"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#academicYears-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

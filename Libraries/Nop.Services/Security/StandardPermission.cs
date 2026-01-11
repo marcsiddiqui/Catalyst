@@ -163,6 +163,12 @@ public partial class StandardPermission
         public const string MANAGE_HOLIDAYS = $"{nameof(HolidaysNEvents)}.ManageHolidays";
     }
 
+    public partial class AcademicYears
+    {
+        public const string MANAGE_ACADEMICYEARS = $"{nameof(AcademicYears)}.ManageAcademicYears";
+    }
+
 //{{NewPermissionsToken}}
+
 
 }

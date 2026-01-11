@@ -72,7 +72,10 @@ using Nop.Web.Framework.Models.Translation;
 using Nop.Web.Framework.WebOptimizer;
 using Nop.Web.Areas.Admin.Models.HolidaysNEvents;
 using Nop.Core.Domain.HolidaysNEvents;
-//{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+using Nop.Web.Areas.Admin.Models.AcademicYears;
+using Nop.Core.Domain.AcademicYears;
+//{AddNewModelNamespacesHereWithNopCCodeGenerator}
+
 
 
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
@@ -1864,7 +1867,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<Holiday, HolidayModel>();
         CreateMap<HolidayModel, Holiday>();
-        //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+                CreateMap<AcademicYear, AcademicYearModel>();
+        CreateMap<AcademicYearModel, AcademicYear>();
+//{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
     }
 

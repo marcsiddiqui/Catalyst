@@ -1055,7 +1055,16 @@ public partial class AdminMenu : IAdminMenu
                     Url = GetMenuItemUrl("Holiday", "List"),
                     IconClass = "far fa-dot-circle"
                 },
+                new()
+                {
+                    SystemName = "AcademicYears",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYears"),
+                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS },
+                    Url = GetMenuItemUrl("AcademicYear", "List"),
+                    IconClass = "far fa-dot-circle"
+                }
 //{{NextMenuItemFromCodeGen}},
+,
 
             }
         };

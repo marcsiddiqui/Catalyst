@@ -61,7 +61,9 @@ using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
 using Nop.Services.HolidaysNEvents;
-//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
+using Nop.Services.AcademicYears;
+//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+
 
 
 namespace Nop.Web.Framework.Infrastructure;
@@ -253,7 +255,9 @@ public partial class NopStartup : INopStartup
 
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<IHolidayService, HolidayService>();
+        services.AddScoped<IAcademicYearService, AcademicYearService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
         #endregion
