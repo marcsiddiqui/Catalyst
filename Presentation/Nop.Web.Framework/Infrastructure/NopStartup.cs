@@ -261,7 +261,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IAcademicYearService, AcademicYearService>();
         services.AddScoped<IGenericDropDownOptionService, GenericDropDownOptionService>();
         services.AddScoped<IFeeService, FeeService>();
+        services.AddScoped<IFeePaymentsService, FeePaymentsService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 

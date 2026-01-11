@@ -1087,7 +1087,7 @@ public partial class AdminMenu : IAdminMenu
                     Url = GetMenuItemUrl("Fee", "List"),
                     IconClass = "far fa-dot-circle"
                 },
-//{{NextMenuItemFromCodeGen}},
+//{{NextMenuItemFromCodeGen}}
             }
         };
     }
