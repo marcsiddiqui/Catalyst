@@ -1,0 +1,201 @@
+@using Nop.Web.Areas.Admin.Models.HolidaysNEvents
+@model HolidaySearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.HolidaysNEvents.Holidays").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Holidays");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.HolidaysNEvents.Holidays")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "holidays-grid",
+                        UrlRead = new DataUrl("HolidayList", "Holiday", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(HolidayModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_holidays"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(HolidayModel.AcademicYearId))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.AcademicYearId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Name))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Description))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Description").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.DateFromUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateFromUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.DateToUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateToUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.StoreId))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.StoreId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.CreatedBy))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.UpdatedBy))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Deleted))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.LimitedToStores))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.LimitedToStores").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(HolidayModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Holiday/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "Holiday"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#holidays-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "Holiday"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#holidays-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

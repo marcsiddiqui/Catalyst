@@ -157,9 +157,10 @@ public partial class StandardPermission
         public const string ACCESS_CLOSED_STORE = $"{nameof(PublicStore)}.AccessClosedStore";
     }
 
-        public partial class HolidaysNEvents
+    public partial class HolidaysNEvents
     {
         public const string MANAGE_EVENTS = $"{nameof(HolidaysNEvents)}.ManageEvents";
+        public const string MANAGE_HOLIDAYS = $"{nameof(HolidaysNEvents)}.ManageHolidays";
     }
 
 //{NewPermissionsToken}
