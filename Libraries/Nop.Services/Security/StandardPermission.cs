@@ -163,6 +163,6 @@ public partial class StandardPermission
         public const string MANAGE_HOLIDAYS = $"{nameof(HolidaysNEvents)}.ManageHolidays";
     }
 
-//{NewPermissionsToken}
+//{{NewPermissionsToken}}
 
 }
