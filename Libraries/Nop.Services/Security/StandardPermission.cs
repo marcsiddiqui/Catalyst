@@ -1,4 +1,4 @@
-﻿namespace Nop.Services.Security;
+namespace Nop.Services.Security;
 
 /// <summary>
 /// Standard permission
@@ -157,5 +157,11 @@ public partial class StandardPermission
         public const string ACCESS_CLOSED_STORE = $"{nameof(PublicStore)}.AccessClosedStore";
     }
 
-    //{{NewPermissionsToken}}
+        public partial class HolidaysNEvents
+    {
+        public const string MANAGE_EVENTS = $"{nameof(HolidaysNEvents)}.ManageEvents";
+    }
+
+//{NewPermissionsToken}
+
 }

@@ -1,4 +1,4 @@
-﻿using Nop.Core.Infrastructure;
+using Nop.Core.Infrastructure;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Helpers;
 using Nop.Web.Framework.Factories;
@@ -118,7 +118,9 @@ public partial class NopStartup : INopStartup
 
         #region Customer Model Factories
 
-//{{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}}
+        services.AddScoped<Areas.Admin.Factories.IEventModelFactory, Areas.Admin.Factories.EventModelFactory>();
+//{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}
+
 
         #endregion
     }

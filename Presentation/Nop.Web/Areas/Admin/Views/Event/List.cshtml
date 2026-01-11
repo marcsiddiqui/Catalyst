@@ -1,0 +1,201 @@
+@using Nop.Web.Areas.Admin.Models.HolidaysNEvents
+@model EventSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.HolidaysNEvents.Events").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Events");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.HolidaysNEvents.Events")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "events-grid",
+                        UrlRead = new DataUrl("EventList", "Event", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(EventModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_events"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(EventModel.AcademicYearId))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.AcademicYearId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.Name))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.Description))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.Description").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.StartDateUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.StartDateUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.EndDateUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.EndDateUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.StoreId))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.StoreId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.CreatedBy))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.UpdatedBy))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(EventModel.Deleted))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(EventModel.LimitedToStores))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Events.Fields.LimitedToStores").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(EventModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Event/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "Event"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#events-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "Event"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#events-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

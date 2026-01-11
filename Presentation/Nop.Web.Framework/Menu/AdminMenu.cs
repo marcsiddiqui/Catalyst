@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
@@ -1039,7 +1039,16 @@ public partial class AdminMenu : IAdminMenu
                     Title = await _localizationService.GetResourceAsync("Admin.Plugins"),
                     IconClass = "fas fa-bars"
                 },
-//{{NextMenuItemFromCodeGen}}
+                new()
+                {
+                    SystemName = "Events",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Events"),
+                    PermissionNames = new List<string> { StandardPermission.HolidaysNEvents.MANAGE_EVENTS },
+                    Url = GetMenuItemUrl("Event", "List"),
+                    IconClass = "far fa-dot-circle"
+                },
+//{NextMenuItemFromCodeGen},
+
             }
         };
     }
