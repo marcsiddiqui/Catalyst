@@ -1,0 +1,21 @@
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@model GradeModel
+
+@{
+    const string hideInfoBlockAttributeName = "GradePage.HideInfoBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+}
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <nop-cards id="grade-cards">
+                <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Info", Model)</nop-card>
+            </nop-cards>
+        </div>
+    </div>
+</section>

@@ -1087,7 +1087,16 @@ public partial class AdminMenu : IAdminMenu
                     Url = GetMenuItemUrl("Fee", "List"),
                     IconClass = "far fa-dot-circle"
                 },
+                new()
+                {
+                    SystemName = "Grades",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Grades"),
+                    PermissionNames = new List<string> { StandardPermission.GradeManagement.MANAGE_GRADES },
+                    Url = GetMenuItemUrl("Grade", "List"),
+                    IconClass = "far fa-dot-circle"
+                },
 //{{NextMenuItemFromCodeGen}}
+
             }
         };
     }

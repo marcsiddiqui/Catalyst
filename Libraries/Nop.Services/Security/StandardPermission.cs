@@ -179,7 +179,13 @@ public partial class StandardPermission
         public const string MANAGE_FEES = $"{nameof(Fees)}.ManageFees";
     }
 
+    public partial class GradeManagement
+    {
+        public const string MANAGE_GRADES = $"{nameof(GradeManagement)}.ManageGrades";
+    }
+
 //{{NewPermissionsToken}}
+
 
 
 

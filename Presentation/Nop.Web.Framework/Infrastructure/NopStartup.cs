@@ -64,7 +64,8 @@ using Nop.Services.HolidaysNEvents;
 using Nop.Services.AcademicYears;
 using Nop.Services.GenericDropDowns;
 using Nop.Services.Fees;
-//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+using Nop.Services.GradeManagement;
+//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
 
 
 
@@ -262,7 +263,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IGenericDropDownOptionService, GenericDropDownOptionService>();
         services.AddScoped<IFeeService, FeeService>();
         services.AddScoped<IFeePaymentsService, FeePaymentsService>();
+        services.AddScoped<IGradeService, GradeService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 
