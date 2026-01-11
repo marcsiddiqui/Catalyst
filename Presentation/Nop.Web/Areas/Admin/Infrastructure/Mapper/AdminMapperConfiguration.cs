@@ -74,7 +74,9 @@ using Nop.Web.Areas.Admin.Models.HolidaysNEvents;
 using Nop.Core.Domain.HolidaysNEvents;
 using Nop.Web.Areas.Admin.Models.AcademicYears;
 using Nop.Core.Domain.AcademicYears;
-//{AddNewModelNamespacesHereWithNopCCodeGenerator}
+using Nop.Core.Domain.GenericDropDowns;
+using Nop.Web.Areas.Admin.Models.GenericDropDowns;
+//{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
 
 
 
@@ -1867,11 +1869,17 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<Holiday, HolidayModel>();
         CreateMap<HolidayModel, Holiday>();
-                CreateMap<AcademicYear, AcademicYearModel>();
+
+        CreateMap<AcademicYear, AcademicYearModel>();
         CreateMap<AcademicYearModel, AcademicYear>();
+
         CreateMap<AcadamicYearTerm, AcadamicYearTermModel>();
         CreateMap<AcadamicYearTermModel, AcadamicYearTerm>();
+
+        CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
+        CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
 
 

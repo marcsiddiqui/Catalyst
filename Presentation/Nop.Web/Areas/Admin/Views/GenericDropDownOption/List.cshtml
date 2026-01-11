@@ -1,0 +1,170 @@
+@using Nop.Web.Areas.Admin.Models.GenericDropDowns
+@model GenericDropDownOptionSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.GenericDropDowns.GenericDropDownOptions").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("GenericDropDownOptions");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.GenericDropDowns.GenericDropDownOptions")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "genericDropDownOptions-grid",
+                        UrlRead = new DataUrl("GenericDropDownOptionList", "GenericDropDownOption", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_genericDropDownOptions"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.EntityId))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.EntityId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.Text))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.Text").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.Value))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.Value").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.OrderBy))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.OrderBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.Color))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.Color").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.IsSystemOption))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.IsSystemOption").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.GenericDropDowns.GenericDropDownOptions.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+
+                            new ColumnProperty(nameof(GenericDropDownOptionModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/GenericDropDownOption/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "GenericDropDownOption"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#genericDropDownOptions-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "GenericDropDownOption"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#genericDropDownOptions-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

@@ -122,7 +122,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<Areas.Admin.Factories.IHolidayModelFactory, Areas.Admin.Factories.HolidayModelFactory>();
         services.AddScoped<Areas.Admin.Factories.IAcademicYearModelFactory, Areas.Admin.Factories.AcademicYearModelFactory>();
         services.AddScoped<Areas.Admin.Factories.IAcadamicYearTermModelFactory, Areas.Admin.Factories.AcadamicYearTermModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IGenericDropDownOptionModelFactory, Areas.Admin.Factories.GenericDropDownOptionModelFactory>();
 //{{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}}
+
 
 
 

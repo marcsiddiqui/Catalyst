@@ -169,7 +169,13 @@ public partial class StandardPermission
         public const string MANAGE_ACADAMICYEARTERMS = $"{nameof(AcademicYears)}.ManageAcadamicYearTerms";
     }
 
+    public partial class GenericDropDowns
+    {
+        public const string MANAGE_GENERICDROPDOWNOPTIONS = $"{nameof(GenericDropDowns)}.ManageGenericDropDownOptions";
+    }
+
 //{{NewPermissionsToken}}
+
 
 
 

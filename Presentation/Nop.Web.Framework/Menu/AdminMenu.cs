@@ -1070,8 +1070,17 @@ public partial class AdminMenu : IAdminMenu
                     PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS },
                     Url = GetMenuItemUrl("AcadamicYearTerm", "List"),
                     IconClass = "far fa-dot-circle"
-                }
-//{{NextMenuItemFromCodeGen}}
+                },
+                new()
+                {
+                    SystemName = "GenericDropDownOptions",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.GenericDropDownOptions"),
+                    PermissionNames = new List<string> { StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS },
+                    Url = GetMenuItemUrl("GenericDropDownOption", "List"),
+                    IconClass = "far fa-dot-circle"
+                },
+//{{NextMenuItemFromCodeGen}},
+
 
             }
         };
