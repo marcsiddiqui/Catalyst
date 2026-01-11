@@ -1079,9 +1079,15 @@ public partial class AdminMenu : IAdminMenu
                     Url = GetMenuItemUrl("GenericDropDownOption", "List"),
                     IconClass = "far fa-dot-circle"
                 },
+                new()
+                {
+                    SystemName = "Fees",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Fees"),
+                    PermissionNames = new List<string> { StandardPermission.Fees.MANAGE_FEES },
+                    Url = GetMenuItemUrl("Fee", "List"),
+                    IconClass = "far fa-dot-circle"
+                },
 //{{NextMenuItemFromCodeGen}},
-
-
             }
         };
     }

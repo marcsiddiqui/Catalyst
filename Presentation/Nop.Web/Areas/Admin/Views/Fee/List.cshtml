@@ -1,0 +1,194 @@
+@using Nop.Web.Areas.Admin.Models.Fees
+@model FeeSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Fees.Fees").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Fees");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Fees.Fees")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "fees-grid",
+                        UrlRead = new DataUrl("FeeList", "Fee", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(FeeModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_fees"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(FeeModel.AcademicYearGradeSectionMappingId))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.AcademicYearGradeSectionMappingId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.CustomerId))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.CustomerId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.Amount))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.Amount").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.Discount))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.Discount").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.FeeTypeId))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.FeeTypeId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.FeeDate))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.FeeDate").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.Deleted))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.CreatedBy))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.UpdatedBy))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(FeeModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.Fees.Fees.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+
+                            new ColumnProperty(nameof(FeeModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Fee/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "Fee"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#fees-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "Fee"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#fees-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

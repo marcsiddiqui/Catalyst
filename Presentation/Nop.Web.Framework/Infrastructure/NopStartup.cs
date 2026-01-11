@@ -63,7 +63,9 @@ using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
 using Nop.Services.HolidaysNEvents;
 using Nop.Services.AcademicYears;
 using Nop.Services.GenericDropDowns;
-//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
+using Nop.Services.Fees;
+//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+
 
 
 
@@ -258,7 +260,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IHolidayService, HolidayService>();
         services.AddScoped<IAcademicYearService, AcademicYearService>();
         services.AddScoped<IGenericDropDownOptionService, GenericDropDownOptionService>();
+        services.AddScoped<IFeeService, FeeService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 

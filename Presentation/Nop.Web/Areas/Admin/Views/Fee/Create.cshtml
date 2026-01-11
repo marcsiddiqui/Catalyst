@@ -1,0 +1,32 @@
+@using Nop.Web.Areas.Admin.Models.Fees
+@model FeeModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Fees.Fees.AddNew").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Fees");
+}
+
+<form asp-controller="Fee" asp-action="Create" method="post" id="fee-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Fees.Fees.AddNew") 
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Admin.Fees.Fees.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>

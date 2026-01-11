@@ -174,7 +174,13 @@ public partial class StandardPermission
         public const string MANAGE_GENERICDROPDOWNOPTIONS = $"{nameof(GenericDropDowns)}.ManageGenericDropDownOptions";
     }
 
+    public partial class Fees
+    {
+        public const string MANAGE_FEES = $"{nameof(Fees)}.ManageFees";
+    }
+
 //{{NewPermissionsToken}}
+
 
 
 

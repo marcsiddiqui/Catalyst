@@ -76,7 +76,10 @@ using Nop.Web.Areas.Admin.Models.AcademicYears;
 using Nop.Core.Domain.AcademicYears;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Web.Areas.Admin.Models.GenericDropDowns;
-//{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+using Nop.Web.Areas.Admin.Models.Fees;
+using Nop.Core.Domain.Fees;
+//{AddNewModelNamespacesHereWithNopCCodeGenerator}
+
 
 
 
@@ -1878,7 +1881,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
         CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
+        CreateMap<Fee, FeeModel>();
+        CreateMap<FeeModel, Fee>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
 
 
