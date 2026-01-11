@@ -1,6 +1,7 @@
 using Nop.Core;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.HolidaysNEvents;
+using Nop.Core.Domain.StudentEventMappings;
 
 namespace Nop.Services.HolidaysNEvents;
 
@@ -62,6 +63,35 @@ public partial interface IEventService
     Task DeleteAcademicYearGradeSectionEventMappingAsync(AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping);
 
     Task DeleteAcademicYearGradeSectionEventMappingAsync(IEnumerable<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappings);
+
+    #endregion
+
+    #region StudentEventMapping
+
+    Task<IPagedList<StudentEventMapping>> GetAllStudentEventMappingsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int eventId = 0, IEnumerable<int> eventIds = null,
+        int customerId = 0, IEnumerable<int> customerIds = null,
+
+
+
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task<StudentEventMapping> GetStudentEventMappingByIdAsync(int id);
+
+    Task<IList<StudentEventMapping>> GetStudentEventMappingsByIdsAsync(IEnumerable<int> ids);
+
+    Task InsertStudentEventMappingAsync(StudentEventMapping studentEventMapping);
+
+    Task InsertStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings);
+
+    Task UpdateStudentEventMappingAsync(StudentEventMapping studentEventMapping);
+
+    Task UpdateStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings);
+
+    Task DeleteStudentEventMappingAsync(StudentEventMapping studentEventMapping);
+
+    Task DeleteStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings);
 
     #endregion
 }

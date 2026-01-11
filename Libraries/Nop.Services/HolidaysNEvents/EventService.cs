@@ -1,5 +1,6 @@
 using Nop.Core;
 using Nop.Core.Domain.HolidaysNEvents;
+using Nop.Core.Domain.StudentEventMappings;
 using Nop.Data;
 
 namespace Nop.Services.HolidaysNEvents;
@@ -10,6 +11,7 @@ public partial class EventService : IEventService
 
     protected readonly IRepository<Event> _eventRepository;
     protected readonly IRepository<AcademicYearGradeSectionEventMapping> _academicYearGradeSectionEventMappingRepository;
+    protected readonly IRepository<StudentEventMapping> _studentEventMappingRepository;
 
     #endregion
 
@@ -17,16 +19,20 @@ public partial class EventService : IEventService
 
     public EventService(
         IRepository<Event> eventRepository,
-        IRepository<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappingRepository
+        IRepository<AcademicYearGradeSectionEventMapping> academicYearGradeSectionEventMappingRepository,
+        IRepository<StudentEventMapping> studentEventMappingRepository
         )
     {
         _eventRepository = eventRepository;
         _academicYearGradeSectionEventMappingRepository = academicYearGradeSectionEventMappingRepository;
+        _studentEventMappingRepository = studentEventMappingRepository;
     }
 
     #endregion
 
     #region Methods
+
+    #region Event
 
     public virtual async Task<IPagedList<Event>> GetAllEventsAsync(
         int id = 0, IEnumerable<int> ids = null,
@@ -248,6 +254,116 @@ public partial class EventService : IEventService
 
         await _academicYearGradeSectionEventMappingRepository.DeleteAsync(academicYearGradeSectionEventMappings.ToList());
     }
+
+    #endregion
+
+    #region StudentEventMapping
+
+    public virtual async Task<IPagedList<StudentEventMapping>> GetAllStudentEventMappingsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int eventId = 0, IEnumerable<int> eventIds = null,
+        int customerId = 0, IEnumerable<int> customerIds = null,
+
+
+
+        int pageIndex = 0, int pageSize = int.MaxValue)
+    {
+        var productReviews = await _studentEventMappingRepository.GetAllPagedAsync(async query =>
+        {
+            if (id > 0)
+                query = query.Where(x => x.Id == id);
+
+            if (ids != null && ids.Any())
+                query = query.Where(x => ids.Contains(x.Id));
+
+            if (eventId > 0)
+                query = query.Where(x => eventId == x.EventId);
+
+            if (eventIds != null && eventIds.Any())
+                query = query.Where(x => eventIds.Contains(x.EventId));
+
+            if (customerId > 0)
+                query = query.Where(x => customerId == x.CustomerId);
+
+            if (customerIds != null && customerIds.Any())
+                query = query.Where(x => customerIds.Contains(x.CustomerId));
+
+
+
+
+
+            return query;
+
+        }, pageIndex, pageSize);
+
+        return productReviews;
+    }
+
+    public virtual async Task<StudentEventMapping> GetStudentEventMappingByIdAsync(int id)
+    {
+        if (id <= 0)
+            return null;
+
+        return await _studentEventMappingRepository.GetByIdAsync(id);
+    }
+
+    public virtual async Task<IList<StudentEventMapping>> GetStudentEventMappingsByIdsAsync(IEnumerable<int> ids)
+    {
+        if (ids == null || !ids.Any())
+            return null;
+
+        return await _studentEventMappingRepository.GetByIdsAsync(ids.ToList());
+    }
+
+    public virtual async Task InsertStudentEventMappingAsync(StudentEventMapping studentEventMapping)
+    {
+        if (studentEventMapping == null)
+            return;
+
+        await _studentEventMappingRepository.InsertAsync(studentEventMapping);
+    }
+
+    public virtual async Task InsertStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings)
+    {
+        if (studentEventMappings == null || !studentEventMappings.Any())
+            return;
+
+        await _studentEventMappingRepository.InsertAsync(studentEventMappings.ToList());
+    }
+
+    public virtual async Task UpdateStudentEventMappingAsync(StudentEventMapping studentEventMapping)
+    {
+        if (studentEventMapping == null)
+            return;
+
+        await _studentEventMappingRepository.UpdateAsync(studentEventMapping);
+    }
+
+    public virtual async Task UpdateStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings)
+    {
+        if (studentEventMappings == null || !studentEventMappings.Any())
+            return;
+
+        await _studentEventMappingRepository.UpdateAsync(studentEventMappings.ToList());
+    }
+
+    public virtual async Task DeleteStudentEventMappingAsync(StudentEventMapping studentEventMapping)
+    {
+        if (studentEventMapping == null)
+            return;
+
+        await _studentEventMappingRepository.DeleteAsync(studentEventMapping);
+    }
+
+    public virtual async Task DeleteStudentEventMappingAsync(IEnumerable<StudentEventMapping> studentEventMappings)
+    {
+        if (studentEventMappings == null || !studentEventMappings.Any())
+            return;
+
+        await _studentEventMappingRepository.DeleteAsync(studentEventMappings.ToList());
+    }
+
+    #endregion
 
     #endregion
 }
