@@ -1,0 +1,128 @@
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcadamicYearTermModel
+
+<div class="card-body">
+    @(await Html.LocalizedEditorAsync<AcadamicYearTermModel, AcadamicYearTermLocalizedModel>("acadamicYearTerm-info-localized",
+        @<div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="@Model.Locales[item].Name"/>
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="@Model.Locales[item].Name"/>
+                    <span asp-validation-for="@Model.Locales[item].Name"></span>
+                </div>
+            </div>
+
+
+            <div>
+                <input type="hidden" asp-for="@Model.Locales[item].LanguageId" />
+            </div>
+        </div>
+    ,
+        @<div>
+            <div class="form-group row">
+                <div class="col-md-3">
+                    <nop-label asp-for="Name"/>
+                </div>
+                <div class="col-md-9">
+                    <nop-editor asp-for="Name" asp-required="true"/>
+                    <span asp-validation-for="Name"></span>
+                </div>
+            </div>
+
+
+        </div>
+    ))
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="AcademicYearGradeSectionMappingId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="AcademicYearGradeSectionMappingId"/>
+            <span asp-validation-for="AcademicYearGradeSectionMappingId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="ConductanceOrder"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="ConductanceOrder"/>
+            <span asp-validation-for="ConductanceOrder"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Name"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Name"/>
+            <span asp-validation-for="Name"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Weitage"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Weitage"/>
+            <span asp-validation-for="Weitage"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CreatedBy"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CreatedBy"/>
+            <span asp-validation-for="CreatedBy"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CreatedOnUtc"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CreatedOnUtc"/>
+            <span asp-validation-for="CreatedOnUtc"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="UpdatedBy"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="UpdatedBy"/>
+            <span asp-validation-for="UpdatedBy"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="UpdatedOnUtc"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="UpdatedOnUtc"/>
+            <span asp-validation-for="UpdatedOnUtc"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Deleted"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Deleted"/>
+            <span asp-validation-for="Deleted"></span>
+        </div>
+    </div>
+
+
+</div>

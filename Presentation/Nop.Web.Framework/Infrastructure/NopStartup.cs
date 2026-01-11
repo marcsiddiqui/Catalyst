@@ -260,6 +260,7 @@ public partial class NopStartup : INopStartup
 
 
 
+
         #endregion
 
         //attribute services

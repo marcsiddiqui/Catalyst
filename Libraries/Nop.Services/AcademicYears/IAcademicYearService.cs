@@ -1,6 +1,6 @@
 using Nop.Core;
-using Nop.Core.Domain.Common;
 using Nop.Core.Domain.AcademicYears;
+using Nop.Core.Domain.Common;
 
 namespace Nop.Services.AcademicYears;
 
@@ -61,6 +61,37 @@ public partial interface IAcademicYearService
     Task DeleteAcademicYearGradeSectionMappingAsync(AcademicYearGradeSectionMapping academicYearGradeSectionMapping);
 
     Task DeleteAcademicYearGradeSectionMappingAsync(IEnumerable<AcademicYearGradeSectionMapping> academicYearGradeSectionMappings);
+
+    #endregion
+
+    #region AcadamicYearTerm
+
+    Task<IPagedList<AcadamicYearTerm>> GetAllAcadamicYearTermsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int academicYearGradeSectionMappingId = 0, IEnumerable<int> academicYearGradeSectionMappingIds = null,
+
+        string name = null, IEnumerable<string> names = null,
+
+
+        BooleanFilter deleted = BooleanFilter.False,
+
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task<AcadamicYearTerm> GetAcadamicYearTermByIdAsync(int id);
+
+    Task<IList<AcadamicYearTerm>> GetAcadamicYearTermsByIdsAsync(IEnumerable<int> ids);
+
+    Task InsertAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+
+    Task InsertAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
+
+    Task UpdateAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+
+    Task UpdateAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
+
+    Task DeleteAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+
+    Task DeleteAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
 
     #endregion
 }

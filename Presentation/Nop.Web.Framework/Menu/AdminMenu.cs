@@ -1062,9 +1062,16 @@ public partial class AdminMenu : IAdminMenu
                     PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS },
                     Url = GetMenuItemUrl("AcademicYear", "List"),
                     IconClass = "far fa-dot-circle"
+                },
+                new()
+                {
+                    SystemName = "AcadamicYearTerms",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcadamicYearTerms"),
+                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS },
+                    Url = GetMenuItemUrl("AcadamicYearTerm", "List"),
+                    IconClass = "far fa-dot-circle"
                 }
-//{{NextMenuItemFromCodeGen}},
-,
+//{{NextMenuItemFromCodeGen}}
 
             }
         };

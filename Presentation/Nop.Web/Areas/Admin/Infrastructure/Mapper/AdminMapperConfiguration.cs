@@ -1869,7 +1869,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<HolidayModel, Holiday>();
                 CreateMap<AcademicYear, AcademicYearModel>();
         CreateMap<AcademicYearModel, AcademicYear>();
+        CreateMap<AcadamicYearTerm, AcadamicYearTermModel>();
+        CreateMap<AcadamicYearTermModel, AcadamicYearTerm>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
 
     }

@@ -1,0 +1,182 @@
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcadamicYearTermSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Acadamics.AcadamicYearTerms").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("AcadamicYearTerms");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Acadamics.AcadamicYearTerms")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "acadamicYearTerms-grid",
+                        UrlRead = new DataUrl("AcadamicYearTermGridList", "AcadamicYearTerm", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(AcadamicYearTermModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_acadamicYearTerms"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(AcadamicYearTermModel.AcademicYearGradeSectionMappingId))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.AcademicYearGradeSectionMappingId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.ConductanceOrder))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.ConductanceOrder").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.Name))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.Weitage))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Weitage").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.CreatedBy))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.UpdatedBy))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.Deleted))
+                            {
+                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(AcadamicYearTermModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/AcadamicYearTerm/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "AcadamicYearTerm"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#acadamicYearTerms-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "AcadamicYearTerm"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#acadamicYearTerms-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

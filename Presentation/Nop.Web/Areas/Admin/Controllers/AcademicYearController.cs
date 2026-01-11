@@ -24,6 +24,7 @@ public partial class AcademicYearController : BaseAdminController
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly INotificationService _notificationService;
     protected readonly IStoreMappingService _storeMappingService;
+    protected readonly IAcadamicYearTermModelFactory _acadamicYearTermModelFactory;
 
     #endregion
 
@@ -36,7 +37,9 @@ public partial class AcademicYearController : BaseAdminController
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         INotificationService notificationService,
-        IStoreMappingService storeMappingService)
+        IStoreMappingService storeMappingService,
+        IAcadamicYearTermModelFactory acadamicYearTermModelFactory
+        )
     {
         _academicYearModelFactory = academicYearModelFactory;
         _academicYearService = academicYearService;
@@ -45,6 +48,7 @@ public partial class AcademicYearController : BaseAdminController
         _localizedEntityService = localizedEntityService;
         _notificationService = notificationService;
         _storeMappingService = storeMappingService;
+        _acadamicYearTermModelFactory = acadamicYearTermModelFactory;
     }
 
     #endregion
@@ -56,6 +60,19 @@ public partial class AcademicYearController : BaseAdminController
         foreach (var localized in model.Locales)
         {
             await _localizedEntityService.SaveLocalizedValueAsync(academicYear,
+                x => x.Name,
+                localized.Name,
+                localized.LanguageId);
+
+
+        }
+    }
+
+    protected virtual async Task AcadamicYearTermUpdateLocalesAsync(AcadamicYearTerm acadamicYearTerm, AcadamicYearTermModel model)
+    {
+        foreach (var localized in model.Locales)
+        {
+            await _localizedEntityService.SaveLocalizedValueAsync(acadamicYearTerm,
                 x => x.Name,
                 localized.Name,
                 localized.LanguageId);
@@ -216,7 +233,154 @@ public partial class AcademicYearController : BaseAdminController
         }
     }
 
-    
+
+
+    #endregion
+
+    #region AcadamicYearTerms
+
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermList()
+    {
+        //prepare model
+        var model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermSearchModelAsync(new AcadamicYearTermSearchModel());
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermGridList(AcadamicYearTermSearchModel searchModel)
+    {
+        //prepare model
+        var model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermCreate()
+    {
+        //prepare model
+        var model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermModelAsync(new AcadamicYearTermModel(), null);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermCreate(AcadamicYearTermModel model, bool continueEditing)
+    {
+        if (ModelState.IsValid)
+        {
+            var acadamicYearTerm = model.ToEntity<AcadamicYearTerm>();
+            await _academicYearService.InsertAcadamicYearTermAsync(acadamicYearTerm);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("AddNewAcadamicYearTerm",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewAcadamicYearTerm"), acadamicYearTerm.Id), acadamicYearTerm);
+
+            //locales
+            await AcadamicYearTermUpdateLocalesAsync(acadamicYearTerm, model);
+
+
+            //{{StoreMappingSaveMethodCallHere}}
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Acadamics.AcadamicYearTerms.Added"));
+
+            if (!continueEditing)
+                return RedirectToAction("List");
+
+            return RedirectToAction("Edit", new { id = acadamicYearTerm.Id });
+        }
+
+        //prepare model
+        model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermModelAsync(model, null, true);
+
+        //if we got this far, something failed, redisplay form
+        return View(model);
+    }
+
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermEdit(int id)
+    {
+        //try to get a acadamicYearTerm with the specified id
+        var acadamicYearTerm = await _academicYearService.GetAcadamicYearTermByIdAsync(id);
+        if (acadamicYearTerm == null)
+            return RedirectToAction("List");
+
+        //prepare model
+        var model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermModelAsync(null, acadamicYearTerm);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermEdit(AcadamicYearTermModel model, bool continueEditing)
+    {
+        //try to get a acadamicYearTerm with the specified id
+        var acadamicYearTerm = await _academicYearService.GetAcadamicYearTermByIdAsync(model.Id);
+        if (acadamicYearTerm == null)
+            return RedirectToAction("List");
+
+        if (ModelState.IsValid)
+        {
+            acadamicYearTerm = model.ToEntity(acadamicYearTerm);
+            await _academicYearService.UpdateAcadamicYearTermAsync(acadamicYearTerm);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("EditAcadamicYearTerm",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.EditAcadamicYearTerm"), acadamicYearTerm.Id), acadamicYearTerm);
+
+            //locales
+            await AcadamicYearTermUpdateLocalesAsync(acadamicYearTerm, model);
+
+
+            //{{StoreMappingSaveMethodCallHere}}
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Acadamics.AcadamicYearTerms.Updated"));
+
+            if (!continueEditing)
+                return RedirectToAction("List");
+
+            return RedirectToAction("Edit", new { id = acadamicYearTerm.Id });
+        }
+
+        //prepare model
+        model = await _acadamicYearTermModelFactory.PrepareAcadamicYearTermModelAsync(model, acadamicYearTerm, true);
+
+        //if we got this far, something failed, redisplay form
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS)]
+    public virtual async Task<IActionResult> AcadamicYearTermDelete(int id)
+    {
+        //try to get a acadamicYearTerm with the specified id
+        var acadamicYearTerm = await _academicYearService.GetAcadamicYearTermByIdAsync(id);
+        if (acadamicYearTerm == null)
+            return RedirectToAction("List");
+
+        try
+        {
+            await _academicYearService.DeleteAcadamicYearTermAsync(acadamicYearTerm);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("DeleteAcadamicYearTerm",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.DeleteAcadamicYearTerm"), acadamicYearTerm.Id), acadamicYearTerm);
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Acadamics.AcadamicYearTerms.Deleted"));
+
+            return RedirectToAction("List");
+        }
+        catch (Exception exc)
+        {
+            await _notificationService.ErrorNotificationAsync(exc);
+            return RedirectToAction("Edit", new { id = acadamicYearTerm.Id });
+        }
+    }
 
     #endregion
 }
