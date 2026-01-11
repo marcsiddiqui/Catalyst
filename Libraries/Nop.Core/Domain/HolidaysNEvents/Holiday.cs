@@ -1,11 +1,12 @@
 using Nop.Core;
-using Nop.Core.Domain.Localization;
-using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Localization;
+using Nop.Core.Domain.LogInfo;
+using Nop.Core.Domain.Stores;
 
 namespace Nop.Core.Domain.HolidaysNEvents;
 
-public partial class Holiday : BaseEntity, ILocalizedEntity, IStoreMappingSupported, ISoftDeletedEntity
+public partial class Holiday : LogInfoSupportedBaseEntity, ILocalizedEntity, IStoreMappingSupported, ISoftDeletedEntity
 {
     public int AcademicYearId { get; set; }
 
@@ -18,14 +19,6 @@ public partial class Holiday : BaseEntity, ILocalizedEntity, IStoreMappingSuppor
     public DateTime DateToUtc { get; set; }
 
     public int StoreId { get; set; }
-
-    public int CreatedBy { get; set; }
-
-    public DateTime CreatedOnUtc { get; set; }
-
-    public int UpdatedBy { get; set; }
-
-    public DateTime? UpdatedOnUtc { get; set; }
 
     public bool Deleted { get; set; }
 

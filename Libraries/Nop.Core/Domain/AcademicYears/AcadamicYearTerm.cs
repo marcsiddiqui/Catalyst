@@ -1,9 +1,10 @@
-using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Localization;
+using Nop.Core.Domain.LogInfo;
 
 namespace Nop.Core.Domain.AcademicYears;
 
-public partial class AcadamicYearTerm : BaseEntity, ILocalizedEntity, ISoftDeletedEntity
+public partial class AcadamicYearTerm : LogInfoSupportedBaseEntity, ILocalizedEntity, ISoftDeletedEntity
 {
     public int AcademicYearGradeSectionMappingId { get; set; }
 
@@ -12,14 +13,6 @@ public partial class AcadamicYearTerm : BaseEntity, ILocalizedEntity, ISoftDelet
     public string Name { get; set; }
 
     public decimal Weitage { get; set; }
-
-    public int CreatedBy { get; set; }
-
-    public DateTime CreatedOnUtc { get; set; }
-
-    public int UpdatedBy { get; set; }
-
-    public DateTime? UpdatedOnUtc { get; set; }
 
     public bool Deleted { get; set; }
 

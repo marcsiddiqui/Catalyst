@@ -1,9 +1,10 @@
 using Nop.Core;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.LogInfo;
 
 namespace Nop.Core.Domain.Fees;
 
-public partial class Fee : BaseEntity, ISoftDeletedEntity
+public partial class Fee : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 {
     public int AcademicYearGradeSectionMappingId { get; set; }
 
@@ -18,14 +19,4 @@ public partial class Fee : BaseEntity, ISoftDeletedEntity
     public DateTime FeeDate { get; set; }
 
     public bool Deleted { get; set; }
-
-    public int CreatedBy { get; set; }
-
-    public DateTime CreatedOnUtc { get; set; }
-
-    public int UpdatedBy { get; set; }
-
-    public DateTime? UpdatedOnUtc { get; set; }
-
-
 }

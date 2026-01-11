@@ -1,11 +1,12 @@
 using Nop.Core;
-using Nop.Core.Domain.Localization;
-using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.Localization;
+using Nop.Core.Domain.LogInfo;
+using Nop.Core.Domain.Stores;
 
 namespace Nop.Core.Domain.GradeManagement;
 
-public partial class Grade : BaseEntity, ILocalizedEntity, IStoreMappingSupported, ISoftDeletedEntity
+public partial class Grade : LogInfoSupportedBaseEntity, ILocalizedEntity, IStoreMappingSupported, ISoftDeletedEntity
 {
     public string Name { get; set; }
 
@@ -16,14 +17,6 @@ public partial class Grade : BaseEntity, ILocalizedEntity, IStoreMappingSupporte
     public decimal BaseFeeAmount { get; set; }
 
     public int StoreId { get; set; }
-
-    public int CreatedBy { get; set; }
-
-    public DateTime CreatedOnUtc { get; set; }
-
-    public int UpdatedBy { get; set; }
-
-    public DateTime? UpdatedOnUtc { get; set; }
 
     public bool LimitedToStores { get; set; }
 
