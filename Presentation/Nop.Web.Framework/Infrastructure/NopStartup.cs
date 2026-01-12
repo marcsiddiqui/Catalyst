@@ -73,6 +73,7 @@ using Nop.Services.Subjects;
 
 
 
+
 namespace Nop.Web.Framework.Infrastructure;
 
 /// <summary>
@@ -269,7 +270,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IGradeService, GradeService>();
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<ISectionService, SectionService>();
+        services.AddScoped<ISubjectGradeMappingService, SubjectGradeMappingService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 
