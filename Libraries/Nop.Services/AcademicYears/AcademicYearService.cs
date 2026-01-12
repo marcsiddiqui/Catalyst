@@ -10,7 +10,7 @@ public partial class AcademicYearService : IAcademicYearService
 
     protected readonly IRepository<AcademicYear> _academicYearRepository;
     protected readonly IRepository<AcademicYearGradeSectionMapping> _academicYearGradeSectionMappingRepository;
-    protected readonly IRepository<AcadamicYearTerm> _acadamicYearTermRepository;
+    protected readonly IRepository<AcademicYearTerm> _academicYearTermRepository;
 
     #endregion
 
@@ -19,12 +19,12 @@ public partial class AcademicYearService : IAcademicYearService
     public AcademicYearService(
         IRepository<AcademicYear> academicYearRepository,
         IRepository<AcademicYearGradeSectionMapping> academicYearGradeSectionMappingRepository,
-        IRepository<AcadamicYearTerm> acadamicYearTermRepository
+        IRepository<AcademicYearTerm> academicYearTermRepository
         )
     {
         _academicYearRepository = academicYearRepository;
         _academicYearGradeSectionMappingRepository = academicYearGradeSectionMappingRepository;
-        _acadamicYearTermRepository = acadamicYearTermRepository;
+        _academicYearTermRepository = academicYearTermRepository;
     }
 
     #endregion
@@ -248,9 +248,9 @@ public partial class AcademicYearService : IAcademicYearService
 
     #endregion
 
-    #region AcadamicYearTerm
+    #region AcademicYearTerm
 
-    public virtual async Task<IPagedList<AcadamicYearTerm>> GetAllAcadamicYearTermsAsync(
+    public virtual async Task<IPagedList<AcademicYearTerm>> GetAllAcademicYearTermsAsync(
         int id = 0, IEnumerable<int> ids = null,
         int academicYearGradeSectionMappingId = 0, IEnumerable<int> academicYearGradeSectionMappingIds = null,
 
@@ -261,7 +261,7 @@ public partial class AcademicYearService : IAcademicYearService
 
         int pageIndex = 0, int pageSize = int.MaxValue)
     {
-        var productReviews = await _acadamicYearTermRepository.GetAllPagedAsync(async query =>
+        var productReviews = await _academicYearTermRepository.GetAllPagedAsync(async query =>
         {
             if (id > 0)
                 query = query.Where(x => x.Id == id);
@@ -295,68 +295,68 @@ public partial class AcademicYearService : IAcademicYearService
         return productReviews;
     }
 
-    public virtual async Task<AcadamicYearTerm> GetAcadamicYearTermByIdAsync(int id)
+    public virtual async Task<AcademicYearTerm> GetAcademicYearTermByIdAsync(int id)
     {
         if (id <= 0)
             return null;
 
-        return await _acadamicYearTermRepository.GetByIdAsync(id);
+        return await _academicYearTermRepository.GetByIdAsync(id);
     }
 
-    public virtual async Task<IList<AcadamicYearTerm>> GetAcadamicYearTermsByIdsAsync(IEnumerable<int> ids)
+    public virtual async Task<IList<AcademicYearTerm>> GetAcademicYearTermsByIdsAsync(IEnumerable<int> ids)
     {
         if (ids == null || !ids.Any())
             return null;
 
-        return await _acadamicYearTermRepository.GetByIdsAsync(ids.ToList());
+        return await _academicYearTermRepository.GetByIdsAsync(ids.ToList());
     }
 
-    public virtual async Task InsertAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm)
+    public virtual async Task InsertAcademicYearTermAsync(AcademicYearTerm academicYearTerm)
     {
-        if (acadamicYearTerm == null)
+        if (academicYearTerm == null)
             return;
 
-        await _acadamicYearTermRepository.InsertAsync(acadamicYearTerm);
+        await _academicYearTermRepository.InsertAsync(academicYearTerm);
     }
 
-    public virtual async Task InsertAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms)
+    public virtual async Task InsertAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms)
     {
-        if (acadamicYearTerms == null || !acadamicYearTerms.Any())
+        if (academicYearTerms == null || !academicYearTerms.Any())
             return;
 
-        await _acadamicYearTermRepository.InsertAsync(acadamicYearTerms.ToList());
+        await _academicYearTermRepository.InsertAsync(academicYearTerms.ToList());
     }
 
-    public virtual async Task UpdateAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm)
+    public virtual async Task UpdateAcademicYearTermAsync(AcademicYearTerm academicYearTerm)
     {
-        if (acadamicYearTerm == null)
+        if (academicYearTerm == null)
             return;
 
-        await _acadamicYearTermRepository.UpdateAsync(acadamicYearTerm);
+        await _academicYearTermRepository.UpdateAsync(academicYearTerm);
     }
 
-    public virtual async Task UpdateAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms)
+    public virtual async Task UpdateAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms)
     {
-        if (acadamicYearTerms == null || !acadamicYearTerms.Any())
+        if (academicYearTerms == null || !academicYearTerms.Any())
             return;
 
-        await _acadamicYearTermRepository.UpdateAsync(acadamicYearTerms.ToList());
+        await _academicYearTermRepository.UpdateAsync(academicYearTerms.ToList());
     }
 
-    public virtual async Task DeleteAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm)
+    public virtual async Task DeleteAcademicYearTermAsync(AcademicYearTerm academicYearTerm)
     {
-        if (acadamicYearTerm == null)
+        if (academicYearTerm == null)
             return;
 
-        await _acadamicYearTermRepository.DeleteAsync(acadamicYearTerm);
+        await _academicYearTermRepository.DeleteAsync(academicYearTerm);
     }
 
-    public virtual async Task DeleteAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms)
+    public virtual async Task DeleteAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms)
     {
-        if (acadamicYearTerms == null || !acadamicYearTerms.Any())
+        if (academicYearTerms == null || !academicYearTerms.Any())
             return;
 
-        await _acadamicYearTermRepository.DeleteAsync(acadamicYearTerms.ToList());
+        await _academicYearTermRepository.DeleteAsync(academicYearTerms.ToList());
     }
 
 

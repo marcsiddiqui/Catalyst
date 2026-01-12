@@ -3,7 +3,7 @@ using Nop.Core.Domain.AcademicYears;
 
 namespace Nop.Data.Mapping.Builders.AcademicYears;
 
-public partial class AcadamicYearTermBuilder : NopEntityBuilder<AcadamicYearTerm>
+public partial class AcademicYearTermBuilder : NopEntityBuilder<AcademicYearTerm>
 {
     #region Methods
 

@@ -2,4 +2,4 @@ using Nop.Web.Framework.Models;
 
 namespace Nop.Web.Areas.Admin.Models.AcademicYears;
 
-public partial record AcadamicYearTermSearchModel : BaseSearchModel;
+public partial record AcademicYearTermSearchModel : BaseSearchModel;

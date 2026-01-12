@@ -1,17 +1,17 @@
 @using Nop.Web.Areas.Admin.Models.AcademicYears
-@model AcadamicYearTermSearchModel
+@model AcademicYearTermSearchModel
 
 @{
     //page title
-    ViewBag.PageTitle = T("Admin.Acadamics.AcadamicYearTerms").Text;
+    ViewBag.PageTitle = T("Admin.Academics.AcademicYearTerms").Text;
     //active menu item (system name)
-    NopHtml.SetActiveMenuItemSystemName("AcadamicYearTerms");
+    NopHtml.SetActiveMenuItemSystemName("AcademicYearTerms");
 }
 
 
 <div class="content-header clearfix">
     <h1 class="float-left">
-        @T("Admin.Acadamics.AcadamicYearTerms")
+        @T("Admin.Academics.AcademicYearTerms")
     </h1>
     <div class="float-right">
         <a asp-action="Create" class="btn btn-primary">
@@ -30,82 +30,82 @@
                 <div class="card-body">
                     @await Html.PartialAsync("Table", new DataTablesModel
                     {
-                        Name = "acadamicYearTerms-grid",
-                        UrlRead = new DataUrl("AcadamicYearTermGridList", "AcadamicYearTerm", null),
+                        Name = "academicYearTerms-grid",
+                        UrlRead = new DataUrl("AcademicYearTermGridList", "AcademicYearTerm", null),
                         SearchButtonId = "search-categories",
                         Length = Model.PageSize,
                         LengthMenu = Model.AvailablePageSizes,
                         ColumnCollection = new List<ColumnProperty>
                         {
-                            new ColumnProperty(nameof(AcadamicYearTermModel.Id))
+                            new ColumnProperty(nameof(AcademicYearTermModel.Id))
                             {
                                 IsMasterCheckBox = true,
-                                Render = new RenderCheckBox("checkbox_acadamicYearTerms"),
+                                Render = new RenderCheckBox("checkbox_academicYearTerms"),
                                 ClassName =  NopColumnClassDefaults.CenterAll,
                                 Width = "50"
                             },
-                            new ColumnProperty(nameof(AcadamicYearTermModel.AcademicYearGradeSectionMappingId))
+                            new ColumnProperty(nameof(AcademicYearTermModel.AcademicYearGradeSectionMappingId))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.AcademicYearGradeSectionMappingId").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.AcademicYearGradeSectionMappingId").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.ConductanceOrder))
+                            new ColumnProperty(nameof(AcademicYearTermModel.ConductanceOrder))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.ConductanceOrder").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.ConductanceOrder").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.Name))
+                            new ColumnProperty(nameof(AcademicYearTermModel.Name))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Name").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.Name").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.Weitage))
+                            new ColumnProperty(nameof(AcademicYearTermModel.Weitage))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Weitage").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.Weitage").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.CreatedBy))
+                            new ColumnProperty(nameof(AcademicYearTermModel.CreatedBy))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.CreatedBy").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.CreatedBy").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.CreatedOnUtc))
+                            new ColumnProperty(nameof(AcademicYearTermModel.CreatedOnUtc))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.CreatedOnUtc").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.CreatedOnUtc").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.UpdatedBy))
+                            new ColumnProperty(nameof(AcademicYearTermModel.UpdatedBy))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.UpdatedBy").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.UpdatedBy").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.UpdatedOnUtc))
+                            new ColumnProperty(nameof(AcademicYearTermModel.UpdatedOnUtc))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.UpdatedOnUtc").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.UpdatedOnUtc").Text,
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.Deleted))
+                            new ColumnProperty(nameof(AcademicYearTermModel.Deleted))
                             {
-                                Title = T("Admin.Acadamics.AcadamicYearTerms.Fields.Deleted").Text,
+                                Title = T("Admin.Academics.AcademicYearTerms.Fields.Deleted").Text,
                                 Width = "100",
                                 ClassName =  NopColumnClassDefaults.CenterAll,
                             },
 
 
-                            new ColumnProperty(nameof(AcadamicYearTermModel.Id))
+                            new ColumnProperty(nameof(AcademicYearTermModel.Id))
                             {
                                 Title = T("Admin.Common.Edit").Text,
                                 Width = "50",
                                 ClassName =  NopColumnClassDefaults.Button,
-                                Render = new RenderButtonEdit(new DataUrl("~/Admin/AcadamicYearTerm/Edit"))
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/AcademicYearTerm/Edit"))
                             }
                         }
                     })
@@ -124,7 +124,7 @@
                                 $.ajax({
                                     cache: false,
                                     type: "POST",
-                                    url: "@(Url.Action("{{TrueActionName}}", "AcadamicYearTerm"))",
+                                    url: "@(Url.Action("{{TrueActionName}}", "AcademicYearTerm"))",
                                     data: postData,
                                     traditional: true,
                                     complete: function (jqXHR, textStatus) {
@@ -133,7 +133,7 @@
                                             showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
                                             return;
                                         }
-                                        updateTable('#acadamicYearTerms-grid');
+                                        updateTable('#academicYearTerms-grid');
                                     },
                                     error: function (jqXHR, textStatus, errorThrown) {
                                         showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
@@ -154,7 +154,7 @@
                                 $.ajax({
                                     cache: false,
                                     type: "POST",
-                                    url: "@(Url.Action("{{FalseActionName}}", "AcadamicYearTerm"))",
+                                    url: "@(Url.Action("{{FalseActionName}}", "AcademicYearTerm"))",
                                     data: postData,
                                     traditional: true,
                                     error: function (jqXHR, textStatus, errorThrown) {
@@ -166,7 +166,7 @@
                                             showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
                                             return;
                                         }
-                                        updateTable('#acadamicYearTerms-grid');
+                                        updateTable('#academicYearTerms-grid');
                                     }
                                 });
                                 return false;

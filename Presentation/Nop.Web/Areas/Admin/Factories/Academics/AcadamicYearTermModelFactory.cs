@@ -8,20 +8,20 @@ using Nop.Web.Framework.Models.Extensions;
 
 namespace Nop.Web.Areas.Admin.Factories;
 
-public partial class AcadamicYearTermModelFactory : IAcadamicYearTermModelFactory
+public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactory
 {
     #region Fields
 
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
-    protected readonly IAcademicYearService _acadamicYearService;
+    protected readonly IAcademicYearService _academicYearService;
 
     #endregion
 
     #region Ctor
 
-    public AcadamicYearTermModelFactory(
+    public AcademicYearTermModelFactory(
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
@@ -32,7 +32,7 @@ public partial class AcadamicYearTermModelFactory : IAcadamicYearTermModelFactor
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
-        _acadamicYearService = academicYearService;
+        _academicYearService = academicYearService;
     }
 
     #endregion
@@ -45,7 +45,7 @@ public partial class AcadamicYearTermModelFactory : IAcadamicYearTermModelFactor
 
     #region Methods
 
-    public virtual Task<AcadamicYearTermSearchModel> PrepareAcadamicYearTermSearchModelAsync(AcadamicYearTermSearchModel searchModel)
+    public virtual Task<AcademicYearTermSearchModel> PrepareAcademicYearTermSearchModelAsync(AcademicYearTermSearchModel searchModel)
     {
         ArgumentNullException.ThrowIfNull(searchModel);
 
@@ -55,51 +55,51 @@ public partial class AcadamicYearTermModelFactory : IAcadamicYearTermModelFactor
         return Task.FromResult(searchModel);
     }
 
-    public virtual async Task<AcadamicYearTermListModel> PrepareAcadamicYearTermListModelAsync(AcadamicYearTermSearchModel searchModel)
+    public virtual async Task<AcademicYearTermListModel> PrepareAcademicYearTermListModelAsync(AcademicYearTermSearchModel searchModel)
     {
         ArgumentNullException.ThrowIfNull(searchModel);
 
-        //get acadamicYearTerms
-        var acadamicYearTerms = (await _acadamicYearService.GetAllAcadamicYearTermsAsync()).ToPagedList(searchModel);
+        //get academicYearTerms
+        var academicYearTerms = (await _academicYearService.GetAllAcademicYearTermsAsync()).ToPagedList(searchModel);
 
         //prepare list model
-        var model = await new AcadamicYearTermListModel().PrepareToGridAsync(searchModel, acadamicYearTerms, () =>
+        var model = await new AcademicYearTermListModel().PrepareToGridAsync(searchModel, academicYearTerms, () =>
         {
             //fill in model values from the entity
-            return acadamicYearTerms.SelectAwait(async acadamicYearTerm =>
+            return academicYearTerms.SelectAwait(async academicYearTerm =>
             {
-                var acadamicYearTermModel = acadamicYearTerm.ToModel<AcadamicYearTermModel>();
+                var academicYearTermModel = academicYearTerm.ToModel<AcademicYearTermModel>();
 
-                return acadamicYearTermModel;
+                return academicYearTermModel;
             });
         });
 
         return model;
     }
 
-    public virtual async Task<AcadamicYearTermModel> PrepareAcadamicYearTermModelAsync(AcadamicYearTermModel model, AcadamicYearTerm acadamicYearTerm, bool excludeProperties = false)
+    public virtual async Task<AcademicYearTermModel> PrepareAcademicYearTermModelAsync(AcademicYearTermModel model, AcademicYearTerm academicYearTerm, bool excludeProperties = false)
     {
-        Func<AcadamicYearTermLocalizedModel, int, Task> localizedModelConfiguration = null;
+        Func<AcademicYearTermLocalizedModel, int, Task> localizedModelConfiguration = null;
 
-        if (acadamicYearTerm != null)
+        if (academicYearTerm != null)
         {
             //fill in model values from the entity
             if (model == null)
             {
-                model = acadamicYearTerm.ToModel<AcadamicYearTermModel>();
+                model = academicYearTerm.ToModel<AcademicYearTermModel>();
             }
 
             //define localized model configuration action
             localizedModelConfiguration = async (locale, languageId) =>
             {
-                locale.Name = await _localizationService.GetLocalizedAsync(acadamicYearTerm, entity => entity.Name, languageId, false, false);
+                locale.Name = await _localizationService.GetLocalizedAsync(academicYearTerm, entity => entity.Name, languageId, false, false);
 
 
             };
         }
 
         //set default values for the new model
-        if (acadamicYearTerm == null)
+        if (academicYearTerm == null)
         {
             
         }

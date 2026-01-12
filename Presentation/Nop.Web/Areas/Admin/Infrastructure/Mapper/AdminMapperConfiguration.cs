@@ -1882,8 +1882,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<AcademicYear, AcademicYearModel>();
         CreateMap<AcademicYearModel, AcademicYear>();
 
-        CreateMap<AcadamicYearTerm, AcadamicYearTermModel>();
-        CreateMap<AcadamicYearTermModel, AcadamicYearTerm>();
+        CreateMap<AcademicYearTerm, AcademicYearTermModel>();
+        CreateMap<AcademicYearTermModel, AcademicYearTerm>();
 
         CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
         CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();

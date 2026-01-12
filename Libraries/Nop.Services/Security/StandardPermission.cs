@@ -166,7 +166,7 @@ public partial class StandardPermission
     public partial class AcademicYears
     {
         public const string MANAGE_ACADEMICYEARS = $"{nameof(AcademicYears)}.ManageAcademicYears";
-        public const string MANAGE_ACADAMICYEARTERMS = $"{nameof(AcademicYears)}.ManageAcadamicYearTerms";
+        public const string MANAGE_ACADEMICYEARTERMS = $"{nameof(AcademicYears)}.ManageAcademicYearTerms";
     }
 
     public partial class GenericDropDowns

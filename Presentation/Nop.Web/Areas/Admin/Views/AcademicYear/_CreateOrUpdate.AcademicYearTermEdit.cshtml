@@ -1,0 +1,21 @@
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcademicYearTermModel
+
+@{
+    const string hideInfoBlockAttributeName = "AcademicYearTermPage.HideInfoBlock";
+    var customer = await workContext.GetCurrentCustomerAsync();
+    var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+}
+
+<div asp-validation-summary="All"></div>
+<input asp-for="Id" type="hidden" />
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <nop-cards id="academicYearTerm-cards">
+                <nop-card asp-name="academicYearTerm-info" asp-icon="fas fa-info" asp-title="@T("Admin.Academics.AcademicYearTerms.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.AcademicYearTermEdit.Info", Model)</nop-card>
+            </nop-cards>
+        </div>
+    </div>
+</section>

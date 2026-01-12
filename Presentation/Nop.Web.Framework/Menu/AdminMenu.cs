@@ -1065,10 +1065,10 @@ public partial class AdminMenu : IAdminMenu
                 },
                 new()
                 {
-                    SystemName = "AcadamicYearTerms",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcadamicYearTerms"),
-                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADAMICYEARTERMS },
-                    Url = GetMenuItemUrl("AcadamicYearTerm", "List"),
+                    SystemName = "AcademicYearTerms",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYearTerms"),
+                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARTERMS },
+                    Url = GetMenuItemUrl("AcademicYearTerm", "List"),
                     IconClass = "far fa-dot-circle"
                 },
                 new()

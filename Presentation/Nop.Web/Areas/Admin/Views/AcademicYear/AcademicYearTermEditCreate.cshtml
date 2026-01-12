@@ -1,20 +1,20 @@
 @using Nop.Web.Areas.Admin.Models.AcademicYears
-@model AcadamicYearTermModel
+@model AcademicYearTermModel
 
 @{
     //page title
-    ViewBag.PageTitle = T("Admin.Acadamics.AcadamicYearTerms.AddNew").Text;
+    ViewBag.PageTitle = T("Admin.Academics.AcademicYearTerms.AddNew").Text;
     //active menu item (system name)
-    NopHtml.SetActiveMenuItemSystemName("AcadamicYearTerms");
+    NopHtml.SetActiveMenuItemSystemName("AcademicYearTerms");
 }
 
-<form asp-controller="AcadamicYearTerm" asp-action="Create" method="post" id="acadamicYearTerm-form">
+<form asp-controller="AcademicYearTerm" asp-action="Create" method="post" id="academicYearTerm-form">
     <div class="content-header clearfix">
         <h1 class="float-left">
-            @T("Admin.Acadamics.AcadamicYearTerms.AddNew") 
+            @T("Admin.Academics.AcademicYearTerms.AddNew") 
             <small>
                 <i class="fas fa-arrow-circle-left"></i>
-                <a asp-action="List">@T("Admin.Acadamics.AcadamicYearTerms.BackToList")</a>
+                <a asp-action="List">@T("Admin.Academics.AcademicYearTerms.BackToList")</a>
             </small>
         </h1>
         <div class="float-right">
@@ -28,5 +28,5 @@
             </button>
         </div>
     </div>
-    @await Html.PartialAsync("_CreateOrUpdate.AcadamicYearTermEdit", Model)
+    @await Html.PartialAsync("_CreateOrUpdate.AcademicYearTermEdit", Model)
 </form>

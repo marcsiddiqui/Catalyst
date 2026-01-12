@@ -4,7 +4,7 @@ using Nop.Core.Domain.LogInfo;
 
 namespace Nop.Core.Domain.AcademicYears;
 
-public partial class AcadamicYearTerm : LogInfoSupportedBaseEntity, ILocalizedEntity, ISoftDeletedEntity
+public partial class AcademicYearTerm : LogInfoSupportedBaseEntity, ILocalizedEntity, ISoftDeletedEntity
 {
     public int AcademicYearGradeSectionMappingId { get; set; }
 

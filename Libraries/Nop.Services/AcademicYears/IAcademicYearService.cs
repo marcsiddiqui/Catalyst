@@ -64,9 +64,9 @@ public partial interface IAcademicYearService
 
     #endregion
 
-    #region AcadamicYearTerm
+    #region AcademicYearTerm
 
-    Task<IPagedList<AcadamicYearTerm>> GetAllAcadamicYearTermsAsync(
+    Task<IPagedList<AcademicYearTerm>> GetAllAcademicYearTermsAsync(
         int id = 0, IEnumerable<int> ids = null,
         int academicYearGradeSectionMappingId = 0, IEnumerable<int> academicYearGradeSectionMappingIds = null,
 
@@ -77,21 +77,21 @@ public partial interface IAcademicYearService
 
         int pageIndex = 0, int pageSize = int.MaxValue);
 
-    Task<AcadamicYearTerm> GetAcadamicYearTermByIdAsync(int id);
+    Task<AcademicYearTerm> GetAcademicYearTermByIdAsync(int id);
 
-    Task<IList<AcadamicYearTerm>> GetAcadamicYearTermsByIdsAsync(IEnumerable<int> ids);
+    Task<IList<AcademicYearTerm>> GetAcademicYearTermsByIdsAsync(IEnumerable<int> ids);
 
-    Task InsertAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+    Task InsertAcademicYearTermAsync(AcademicYearTerm academicYearTerm);
 
-    Task InsertAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
+    Task InsertAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms);
 
-    Task UpdateAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+    Task UpdateAcademicYearTermAsync(AcademicYearTerm academicYearTerm);
 
-    Task UpdateAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
+    Task UpdateAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms);
 
-    Task DeleteAcadamicYearTermAsync(AcadamicYearTerm acadamicYearTerm);
+    Task DeleteAcademicYearTermAsync(AcademicYearTerm academicYearTerm);
 
-    Task DeleteAcadamicYearTermAsync(IEnumerable<AcadamicYearTerm> acadamicYearTerms);
+    Task DeleteAcademicYearTermAsync(IEnumerable<AcademicYearTerm> academicYearTerms);
 
     #endregion
 }
