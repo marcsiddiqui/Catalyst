@@ -1,7 +1,7 @@
 using FluentMigrator.Builders.Create.Table;
-using Nop.Core.Domain.StudentEventMappings;
+using Nop.Core.Domain.HolidaysNEvents;
 
-namespace Nop.Data.Mapping.Builders.StudentEventMappings;
+namespace Nop.Data.Mapping.Builders.HolidaysNEvents;
 
 public partial class StudentEventMappingBuilder : NopEntityBuilder<StudentEventMapping>
 {

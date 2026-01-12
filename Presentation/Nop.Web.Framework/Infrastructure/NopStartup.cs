@@ -66,7 +66,9 @@ using Nop.Services.GenericDropDowns;
 using Nop.Services.Fees;
 using Nop.Services.GradeManagement;
 using Nop.Services.Subjects;
+using Nop.Services.Students;
 //{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
+
 
 
 
@@ -271,7 +273,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<ISubjectService, SubjectService>();
         services.AddScoped<ISectionService, SectionService>();
         services.AddScoped<ISubjectGradeMappingService, SubjectGradeMappingService>();
+        services.AddScoped<IAcademicYearGradeSectionStudentMappingService, AcademicYearGradeSectionStudentMappingService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 

@@ -1,6 +1,4 @@
-using Nop.Core;
-
-namespace Nop.Core.Domain.StudentEventMappings;
+namespace Nop.Core.Domain.HolidaysNEvents;
 
 public partial class StudentEventMapping : BaseEntity
 {

@@ -1,7 +1,6 @@
 using Nop.Core;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.HolidaysNEvents;
-using Nop.Core.Domain.StudentEventMappings;
 
 namespace Nop.Services.HolidaysNEvents;
 
