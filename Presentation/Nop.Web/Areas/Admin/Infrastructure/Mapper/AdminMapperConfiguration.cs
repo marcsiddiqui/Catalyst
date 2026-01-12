@@ -88,6 +88,7 @@ using Nop.Core.Domain.Subjects;
 
 
 
+
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
 
 /// <summary>
@@ -1899,7 +1900,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<Subject, SubjectModel>();
         CreateMap<SubjectModel, Subject>();
 
+        CreateMap<Section, SectionModel>();
+        CreateMap<SectionModel, Section>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
     }
 
     #endregion

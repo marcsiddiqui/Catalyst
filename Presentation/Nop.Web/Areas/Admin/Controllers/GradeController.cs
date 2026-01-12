@@ -24,6 +24,8 @@ public partial class GradeController : BaseAdminController
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly INotificationService _notificationService;
     protected readonly IStoreMappingService _storeMappingService;
+    protected readonly ISectionModelFactory _sectionModelFactory;
+    protected readonly ISectionService _sectionService;
 
     #endregion
 
@@ -36,7 +38,10 @@ public partial class GradeController : BaseAdminController
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         INotificationService notificationService,
-        IStoreMappingService storeMappingService)
+        IStoreMappingService storeMappingService,
+        ISectionModelFactory sectionModelFactory,
+        ISectionService sectionService
+        )
     {
         _gradeModelFactory = gradeModelFactory;
         _gradeService = gradeService;
@@ -45,6 +50,8 @@ public partial class GradeController : BaseAdminController
         _localizedEntityService = localizedEntityService;
         _notificationService = notificationService;
         _storeMappingService = storeMappingService;
+        _sectionModelFactory = sectionModelFactory;
+        _sectionService = sectionService;
     }
 
     #endregion
@@ -56,6 +63,19 @@ public partial class GradeController : BaseAdminController
         foreach (var localized in model.Locales)
         {
             await _localizedEntityService.SaveLocalizedValueAsync(grade,
+                x => x.Name,
+                localized.Name,
+                localized.LanguageId);
+
+
+        }
+    }
+
+    protected virtual async Task UpdateSectionLocalesAsync(Section section, SectionModel model)
+    {
+        foreach (var localized in model.Locales)
+        {
+            await _localizedEntityService.SaveLocalizedValueAsync(section,
                 x => x.Name,
                 localized.Name,
                 localized.LanguageId);
@@ -248,6 +268,153 @@ public partial class GradeController : BaseAdminController
         }
 
         return Json(new { Result = true });
+    }
+
+    #endregion
+
+    #region Sections
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionList()
+    {
+        //prepare model
+        var model = await _sectionModelFactory.PrepareSectionSearchModelAsync(new SectionSearchModel());
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionGridList(SectionSearchModel searchModel)
+    {
+        //prepare model
+        var model = await _sectionModelFactory.PrepareSectionListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionCreate()
+    {
+        //prepare model
+        var model = await _sectionModelFactory.PrepareSectionModelAsync(new SectionModel(), null);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionCreate(SectionModel model, bool continueEditing)
+    {
+        if (ModelState.IsValid)
+        {
+            var section = model.ToEntity<Section>();
+            await _sectionService.InsertSectionAsync(section);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("AddNewSection",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewSection"), section.Id), section);
+
+            //locales
+            await UpdateSectionLocalesAsync(section, model);
+
+
+            //{{StoreMappingSaveMethodCallHere}}
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Added"));
+
+            if (!continueEditing)
+                return RedirectToAction("List");
+
+            return RedirectToAction("Edit", new { id = section.Id });
+        }
+
+        //prepare model
+        model = await _sectionModelFactory.PrepareSectionModelAsync(model, null, true);
+
+        //if we got this far, something failed, redisplay form
+        return View(model);
+    }
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionEdit(int id)
+    {
+        //try to get a section with the specified id
+        var section = await _sectionService.GetSectionByIdAsync(id);
+        if (section == null)
+            return RedirectToAction("List");
+
+        //prepare model
+        var model = await _sectionModelFactory.PrepareSectionModelAsync(null, section);
+
+        return View(model);
+    }
+
+    [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionEdit(SectionModel model, bool continueEditing)
+    {
+        //try to get a section with the specified id
+        var section = await _sectionService.GetSectionByIdAsync(model.Id);
+        if (section == null)
+            return RedirectToAction("List");
+
+        if (ModelState.IsValid)
+        {
+            section = model.ToEntity(section);
+            await _sectionService.UpdateSectionAsync(section);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("EditSection",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.EditSection"), section.Id), section);
+
+            //locales
+            await UpdateSectionLocalesAsync(section, model);
+
+
+            //{{StoreMappingSaveMethodCallHere}}
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Updated"));
+
+            if (!continueEditing)
+                return RedirectToAction("List");
+
+            return RedirectToAction("Edit", new { id = section.Id });
+        }
+
+        //prepare model
+        model = await _sectionModelFactory.PrepareSectionModelAsync(model, section, true);
+
+        //if we got this far, something failed, redisplay form
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
+    public virtual async Task<IActionResult> SectionDelete(int id)
+    {
+        //try to get a section with the specified id
+        var section = await _sectionService.GetSectionByIdAsync(id);
+        if (section == null)
+            return RedirectToAction("List");
+
+        try
+        {
+            await _sectionService.DeleteSectionAsync(section);
+
+            //activity log
+            await _customerActivityService.InsertActivityAsync("DeleteSection",
+                string.Format(await _localizationService.GetResourceAsync("ActivityLog.DeleteSection"), section.Id), section);
+
+            _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Deleted"));
+
+            return RedirectToAction("List");
+        }
+        catch (Exception exc)
+        {
+            await _notificationService.ErrorNotificationAsync(exc);
+            return RedirectToAction("Edit", new { id = section.Id });
+        }
     }
 
     #endregion

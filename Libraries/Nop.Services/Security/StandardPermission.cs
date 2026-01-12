@@ -182,6 +182,7 @@ public partial class StandardPermission
     public partial class GradeManagement
     {
         public const string MANAGE_GRADES = $"{nameof(GradeManagement)}.ManageGrades";
+        public const string MANAGE_SECTIONS = $"{nameof(GradeManagement)}.ManageSections";
     }
 
     public partial class Subjects
@@ -190,6 +191,7 @@ public partial class StandardPermission
     }
 
 //{{NewPermissionsToken}}
+
 
 
 
