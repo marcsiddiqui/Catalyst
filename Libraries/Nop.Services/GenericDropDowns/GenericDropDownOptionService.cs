@@ -27,7 +27,7 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
     public virtual async Task<IPagedList<GenericDropDownOption>> GetAllGenericDropDownOptionsAsync(
         int id = 0, IEnumerable<int> ids = null,
-        int entityId = 0, IEnumerable<int> entityIds = null,
+        GenericDropdownEntity? entity = null, IEnumerable<GenericDropdownEntity> entities = null,
         string text = null, IEnumerable<string> texts = null,
 
 
@@ -44,11 +44,11 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             if (ids != null && ids.Any())
                 query = query.Where(x => ids.Contains(x.Id));
 
-            if (entityId > 0)
-                query = query.Where(x => entityId == x.EntityId);
+            if (entity.HasValue)
+                query = query.Where(x => x.EntityId == (int)entity.Value);
 
-            if (entityIds != null && entityIds.Any())
-                query = query.Where(x => entityIds.Contains(x.EntityId));
+            if (entities != null && entities.Any())
+                query = query.Where(x => entities.Contains((GenericDropdownEntity)x.EntityId));
 
             if (!string.IsNullOrWhiteSpace(text))
                 query = query.Where(x => text == x.Text);
@@ -138,6 +138,8 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
         await _genericDropDownOptionRepository.DeleteAsync(genericDropDownOptions.ToList());
     }
+
+
 
     #endregion
 }
