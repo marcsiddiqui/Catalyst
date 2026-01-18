@@ -1,4 +1,5 @@
 using Nop.Core;
+using Nop.Core.Caching;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Data;
 
@@ -9,16 +10,19 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
     #region Fields
 
     protected readonly IRepository<GenericDropDownOption> _genericDropDownOptionRepository;
+    protected readonly IStaticCacheManager _staticCacheManager;
 
     #endregion
 
     #region Ctor
 
     public GenericDropDownOptionService(
-        IRepository<GenericDropDownOption> genericDropDownOptionRepository
+        IRepository<GenericDropDownOption> genericDropDownOptionRepository,
+        IStaticCacheManager staticCacheManager
         )
     {
         _genericDropDownOptionRepository = genericDropDownOptionRepository;
+        _staticCacheManager = staticCacheManager;
     }
 
     #endregion
@@ -93,14 +97,20 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
     public virtual async Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity entity)
     {
-        var productReviews = await _genericDropDownOptionRepository.GetAllAsync(async query =>
-        {
-            query = query.Where(x => x.EntityId == (int)entity);
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, entity);
 
-            return query;
+        var result = await _staticCacheManager.GetAsync(cacheKey, async () =>
+        {
+            return await _genericDropDownOptionRepository.GetAllAsync(async query =>
+             {
+                 query = query.Where(x => x.EntityId == (int)entity);
+
+                 return query;
+             });
+
         });
 
-        return productReviews;
+        return result;
     }
 
     public virtual async Task InsertGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption)
