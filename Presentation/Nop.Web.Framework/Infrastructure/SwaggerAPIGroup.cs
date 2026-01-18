@@ -4,7 +4,6 @@ namespace Nop.Web.Framework.Infrastructure
 {
     public static class SwaggerAPIGroup
     {
-        public const string Public = "public";
         public const string Application = "application";
     }
 
@@ -14,8 +13,7 @@ namespace Nop.Web.Framework.Infrastructure
         {
             get => new List<SwaggerGroup>
             {
-                new SwaggerGroup(SwaggerAPIGroup.Public, "admin", "admin1"),
-                new SwaggerGroup(SwaggerAPIGroup.Application, "admin", "admin2")
+                new SwaggerGroup(SwaggerAPIGroup.Application, "admin", "admin")
             };
         }
     }
