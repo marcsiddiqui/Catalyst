@@ -21,8 +21,10 @@ public partial interface IGenericDropDownOptionService
 
     Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByIdsAsync(IEnumerable<int> ids);
 
+    Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity entity);
+
     Task InsertGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption);
-    
+
     Task InsertGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions);
 
     Task UpdateGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption);

@@ -91,6 +91,18 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
         return await _genericDropDownOptionRepository.GetByIdsAsync(ids.ToList());
     }
 
+    public virtual async Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity entity)
+    {
+        var productReviews = await _genericDropDownOptionRepository.GetAllAsync(async query =>
+        {
+            query = query.Where(x => x.EntityId == (int)entity);
+
+            return query;
+        });
+
+        return productReviews;
+    }
+
     public virtual async Task InsertGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption)
     {
         if (genericDropDownOption == null)
@@ -98,7 +110,7 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
         await _genericDropDownOptionRepository.InsertAsync(genericDropDownOption);
     }
-    
+
     public virtual async Task InsertGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions)
     {
         if (genericDropDownOptions == null || !genericDropDownOptions.Any())
