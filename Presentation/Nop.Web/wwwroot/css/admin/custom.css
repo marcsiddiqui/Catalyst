@@ -1,0 +1,73 @@
+﻿:root {
+    /* Base */
+    --admin-bg: #f4f6f9;
+    --admin-text: #212529;
+    /* Cards & layout */
+    --admin-header-bg: #343a40;
+    --admin-content-wrapper: #ecf0f5;
+    --admin-card-bg: white;
+    --admin-border: #dee2e6;
+    /* Navbar */
+    --admin-navbar-bg: #ffffff;
+    --admin-navbar-text: rgba(255, 255, 255, .75);
+    --admin-navbar-border: #dee2e6;
+}
+
+[data-admin-theme="dark"] {
+    --admin-bg: #121212;
+    --admin-text: #e0e0e0;
+    --admin-header-bg: #1e1e1e;
+    --admin-content-wrapper: #121212;
+    --admin-border: #333;
+    --admin-navbar-bg: #1e1e1e;
+    --admin-navbar-text: #343a40;
+    --admin-navbar-border: #2c2c2c;
+}
+
+/* body {
+    background-color: var(--admin-bg);
+    color: var(--admin-text);
+}
+
+.content-wrapper {
+    background-color: var(--admin-content-wrapper);
+}
+
+.card {
+    background-color: var(--admin-card-bg);
+}
+
+.main-header,
+.main-sidebar {
+    background-color: var(--admin-header-bg);
+}
+
+.card,
+.box {
+    border-color: var(--admin-border);
+}
+
+.card-primary.card-outline {
+    border-top: 3px solid #007bff;
+}
+
+
+.main-header.navbar {
+    background-color: var(--admin-navbar-bg);
+    color: var(--admin-navbar-text);
+    border-bottom: 1px solid var(--admin-navbar-border);
+}
+
+    .main-header.navbar .nav-link,
+    .main-header.navbar .navbar-nav .nav-link {
+        color: var(--admin-navbar-text);
+    }
+
+        .main-header.navbar .nav-link:hover {
+            color: #0d6efd;
+        }
+
+[data-admin-theme="dark"]
+.main-header.navbar .nav-link:hover {
+    color: #90caf9;
+} */
