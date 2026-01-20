@@ -8,7 +8,7 @@ public partial interface IGenericDropDownOptionService
 {
     Task<IPagedList<GenericDropDownOption>> GetAllGenericDropDownOptionsAsync(
         int id = 0, IEnumerable<int> ids = null,
-        int entityId = 0, IEnumerable<int> entityIds = null,
+        GenericDropdownEntity? entity = null, IEnumerable<GenericDropdownEntity> entities = null,
         string text = null, IEnumerable<string> texts = null,
 
 
@@ -21,8 +21,10 @@ public partial interface IGenericDropDownOptionService
 
     Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByIdsAsync(IEnumerable<int> ids);
 
+    Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity entity);
+
     Task InsertGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption);
-    
+
     Task InsertGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions);
 
     Task UpdateGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption);

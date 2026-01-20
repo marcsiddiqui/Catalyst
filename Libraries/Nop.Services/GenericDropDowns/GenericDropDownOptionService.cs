@@ -1,4 +1,5 @@
 using Nop.Core;
+using Nop.Core.Caching;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Data;
 
@@ -9,16 +10,19 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
     #region Fields
 
     protected readonly IRepository<GenericDropDownOption> _genericDropDownOptionRepository;
+    protected readonly IStaticCacheManager _staticCacheManager;
 
     #endregion
 
     #region Ctor
 
     public GenericDropDownOptionService(
-        IRepository<GenericDropDownOption> genericDropDownOptionRepository
+        IRepository<GenericDropDownOption> genericDropDownOptionRepository,
+        IStaticCacheManager staticCacheManager
         )
     {
         _genericDropDownOptionRepository = genericDropDownOptionRepository;
+        _staticCacheManager = staticCacheManager;
     }
 
     #endregion
@@ -27,7 +31,7 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
     public virtual async Task<IPagedList<GenericDropDownOption>> GetAllGenericDropDownOptionsAsync(
         int id = 0, IEnumerable<int> ids = null,
-        int entityId = 0, IEnumerable<int> entityIds = null,
+        GenericDropdownEntity? entity = null, IEnumerable<GenericDropdownEntity> entities = null,
         string text = null, IEnumerable<string> texts = null,
 
 
@@ -44,11 +48,11 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             if (ids != null && ids.Any())
                 query = query.Where(x => ids.Contains(x.Id));
 
-            if (entityId > 0)
-                query = query.Where(x => entityId == x.EntityId);
+            if (entity.HasValue)
+                query = query.Where(x => x.EntityId == (int)entity.Value);
 
-            if (entityIds != null && entityIds.Any())
-                query = query.Where(x => entityIds.Contains(x.EntityId));
+            if (entities != null && entities.Any())
+                query = query.Where(x => entities.Contains((GenericDropdownEntity)x.EntityId));
 
             if (!string.IsNullOrWhiteSpace(text))
                 query = query.Where(x => text == x.Text);
@@ -91,6 +95,24 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
         return await _genericDropDownOptionRepository.GetByIdsAsync(ids.ToList());
     }
 
+    public virtual async Task<IList<GenericDropDownOption>> GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity entity)
+    {
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, entity);
+
+        var result = await _staticCacheManager.GetAsync(cacheKey, async () =>
+        {
+            return await _genericDropDownOptionRepository.GetAllAsync(async query =>
+             {
+                 query = query.Where(x => x.EntityId == (int)entity);
+
+                 return query;
+             });
+
+        });
+
+        return result;
+    }
+
     public virtual async Task InsertGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption)
     {
         if (genericDropDownOption == null)
@@ -98,7 +120,7 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
         await _genericDropDownOptionRepository.InsertAsync(genericDropDownOption);
     }
-    
+
     public virtual async Task InsertGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions)
     {
         if (genericDropDownOptions == null || !genericDropDownOptions.Any())
@@ -138,6 +160,8 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
 
         await _genericDropDownOptionRepository.DeleteAsync(genericDropDownOptions.ToList());
     }
+
+
 
     #endregion
 }

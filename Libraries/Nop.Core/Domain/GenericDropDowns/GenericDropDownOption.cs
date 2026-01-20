@@ -7,6 +7,12 @@ public partial class GenericDropDownOption : BaseEntity, ILocalizedEntity
 {
     public int EntityId { get; set; }
 
+    public GenericDropdownEntity Entity
+    {
+        get => (GenericDropdownEntity)EntityId;
+        set => EntityId = (int)value;
+    }
+
     public string Text { get; set; }
 
     public int Value { get; set; }
