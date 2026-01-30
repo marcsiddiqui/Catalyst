@@ -6,6 +6,7 @@ using Nop.Core.Configuration;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.LogInfo;
 using Nop.Core.Events;
+using Nop.Core.Infrastructure;
 
 namespace Nop.Data;
 
@@ -43,6 +44,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
             DistributedCacheType.SqlServer => true,
             _ => false
         };
+
     }
 
     #endregion
@@ -409,9 +411,12 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
     {
         ArgumentNullException.ThrowIfNull(entity);
 
-        if (entity is LogInfoSupportedBaseEntity)
+        if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
         {
-            return;
+            var _workContext = CommonHelper.Initialize<IWorkContext>();
+
+            logInfoSupportedBaseEntity.CreatedOnUtc = DateTime.UtcNow;
+            logInfoSupportedBaseEntity.CreatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
         }
 
         await _dataProvider.InsertEntityAsync(entity);
@@ -639,7 +644,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
             return;
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-        
+
         if (typeof(TEntity).GetInterface(nameof(ISoftDeletedEntity)) == null)
             await _dataProvider.BulkDeleteEntitiesAsync(entities);
         else
