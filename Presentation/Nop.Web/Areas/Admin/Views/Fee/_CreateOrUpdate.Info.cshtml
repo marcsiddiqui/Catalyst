@@ -18,7 +18,7 @@
             <nop-label asp-for="CustomerId"/>
         </div>
         <div class="col-md-9">
-            <nop-editor asp-for="CustomerId"/>
+            <nop-select asp-for="CustomerId" class="form-control" asp-items="Model.AvailableStudents" />
             <span asp-validation-for="CustomerId"></span>
         </div>
     </div>
@@ -48,7 +48,7 @@
             <nop-label asp-for="FeeTypeId"/>
         </div>
         <div class="col-md-9">
-            <nop-editor asp-for="FeeTypeId"/>
+            <nop-select asp-for="FeeTypeId" class="form-control" asp-items="Model.AvailableFeeTypes" />
             <span asp-validation-for="FeeTypeId"></span>
         </div>
     </div>
@@ -62,56 +62,5 @@
             <span asp-validation-for="FeeDate"></span>
         </div>
     </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Deleted"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Deleted"/>
-            <span asp-validation-for="Deleted"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="CreatedBy"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="CreatedBy"/>
-            <span asp-validation-for="CreatedBy"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="CreatedOnUtc"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="CreatedOnUtc"/>
-            <span asp-validation-for="CreatedOnUtc"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="UpdatedBy"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="UpdatedBy"/>
-            <span asp-validation-for="UpdatedBy"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="UpdatedOnUtc"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="UpdatedOnUtc"/>
-            <span asp-validation-for="UpdatedOnUtc"></span>
-        </div>
-    </div>
-
 
 </div>

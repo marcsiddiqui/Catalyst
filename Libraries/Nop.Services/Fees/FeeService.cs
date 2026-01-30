@@ -1,6 +1,7 @@
 using Nop.Core;
 using Nop.Core.Domain.Fees;
 using Nop.Data;
+using static Nop.Services.Security.StandardPermission;
 
 namespace Nop.Services.Fees;
 
@@ -9,16 +10,19 @@ public partial class FeeService : IFeeService
     #region Fields
 
     protected readonly IRepository<Fee> _feeRepository;
+    private readonly IWorkContext _workContext;
 
     #endregion
 
     #region Ctor
 
     public FeeService(
-        IRepository<Fee> feeRepository
+        IRepository<Fee> feeRepository,
+        IWorkContext workContext
         )
     {
         _feeRepository = feeRepository;
+        _workContext = workContext;
     }
 
     #endregion
@@ -96,6 +100,9 @@ public partial class FeeService : IFeeService
         if (fee == null)
             return;
 
+        fee.CreatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+        fee.CreatedOnUtc = DateTime.UtcNow;
+
         await _feeRepository.InsertAsync(fee);
     }
     
@@ -103,6 +110,13 @@ public partial class FeeService : IFeeService
     {
         if (fees == null || !fees.Any())
             return;
+
+        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
+        foreach (var fee in fees)
+        {
+            fee.CreatedBy = customerId;
+            fee.CreatedOnUtc = DateTime.UtcNow;
+        }
 
         await _feeRepository.InsertAsync(fees.ToList());
     }
@@ -112,6 +126,9 @@ public partial class FeeService : IFeeService
         if (fee == null)
             return;
 
+        fee.UpdatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+        fee.UpdatedOnUtc = DateTime.UtcNow;
+
         await _feeRepository.UpdateAsync(fee);
     }
 
@@ -119,6 +136,13 @@ public partial class FeeService : IFeeService
     {
         if (fees == null || !fees.Any())
             return;
+
+        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
+        foreach (var fee in fees)
+        {
+            fee.UpdatedBy = customerId;
+            fee.UpdatedOnUtc = DateTime.UtcNow;
+        }
 
         await _feeRepository.UpdateAsync(fees.ToList());
     }

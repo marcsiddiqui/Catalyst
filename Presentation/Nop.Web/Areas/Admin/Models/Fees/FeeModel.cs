@@ -10,7 +10,8 @@ public partial record FeeModel : BaseNopEntityModel
 
     public FeeModel()
     {
-
+        AvailableFeeTypes = new List<SelectListItem>();
+        AvailableStudents = new List<SelectListItem>();
     }
 
     #endregion
@@ -50,7 +51,13 @@ public partial record FeeModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.Fees.Fields.UpdatedOnUtc")]
     public DateTime? UpdatedOnUtc { get; set; }
 
+    #endregion
 
+    #region Extra Model Properties
+
+    public IList<SelectListItem> AvailableFeeTypes { get; set; }
+
+    public IList<SelectListItem> AvailableStudents { get; set; }
 
     #endregion
 }
