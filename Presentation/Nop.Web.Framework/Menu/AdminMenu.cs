@@ -89,6 +89,107 @@ public partial class AdminMenu : IAdminMenu
                     Url = GetMenuItemUrl("Home", "Index"),
                     IconClass = "fas fa-desktop"
                 },
+
+                //Academic Management
+                new()
+                {
+                    SystemName = "AcademicManagement",
+                    Title = await _localizationService.GetResourceAsync("Admin.AcademicManagement"),
+                    IconClass = "fas fa-graduation-cap",
+                    Visible = true,
+                    ChildNodes = new List<AdminMenuItem>
+                    {
+                        new()
+                        {
+                            SystemName = "AcademicYears",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYears"),
+                            PermissionNames = new[] { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS },
+                            Url = GetMenuItemUrl("AcademicYear", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "AcademicYearTerms",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYearTerms"),
+                            PermissionNames = new[] { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARTERMS },
+                            Url = GetMenuItemUrl("AcademicYearTerm", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Grades",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Grades"),
+                            PermissionNames = new[] { StandardPermission.GradeManagement.MANAGE_GRADES },
+                            Url = GetMenuItemUrl("Grade", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Sections",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Sections"),
+                            PermissionNames = new[] { StandardPermission.GradeManagement.MANAGE_SECTIONS },
+                            Url = GetMenuItemUrl("Section", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Subjects",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Subjects"),
+                            PermissionNames = new[] { StandardPermission.Subjects.MANAGE_SUBJECTS },
+                            Url = GetMenuItemUrl("Subject", "List"),
+                            IconClass = "far fa-dot-circle"
+                        }
+                    }
+                },
+
+                //Calendar and Scheduling
+                new()
+                {
+                    SystemName = "CalendarScheduling",
+                    Title = await _localizationService.GetResourceAsync("Admin.CalendarAndScheduling"),
+                    IconClass = "fas fa-calendar-alt",
+                    Visible = true,
+                    ChildNodes = new List<AdminMenuItem>
+                    {
+                        new()
+                        {
+                            SystemName = "Holidays",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Holidays"),
+                            PermissionNames = new[] { StandardPermission.HolidaysNEvents.MANAGE_HOLIDAYS },
+                            Url = GetMenuItemUrl("Holiday", "List"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
+                            SystemName = "Events",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Events"),
+                            PermissionNames = new[] { StandardPermission.HolidaysNEvents.MANAGE_EVENTS },
+                            Url = GetMenuItemUrl("Event", "List"),
+                            IconClass = "far fa-dot-circle"
+                        }
+                    }
+                },
+
+                //Finance
+                new()
+                {
+                    SystemName = "Finance",
+                    Title = await _localizationService.GetResourceAsync("Admin.Finance"),
+                    IconClass = "fas fa-money-bill-wave",
+                    Visible = true,
+                    ChildNodes = new List<AdminMenuItem>
+                    {
+                        new()
+                        {
+                            SystemName = "Fees",
+                            Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Fees"),
+                            PermissionNames = new[] { StandardPermission.Fees.MANAGE_FEES },
+                            Url = GetMenuItemUrl("Fee", "List"),
+                            IconClass = "far fa-dot-circle"
+                        }
+                    }
+                },
+                
                 //catalog
                 new()
                 {
@@ -573,6 +674,14 @@ public partial class AdminMenu : IAdminMenu
                                 },
                                 new()
                                 {
+                                    SystemName = "GenericDropDownOptions",
+                                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.GenericDropDownOptions"),
+                                    PermissionNames = new List<string> { StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS },
+                                    Url = GetMenuItemUrl("GenericDropDownOption", "List"),
+                                    IconClass = "far fa-dot-circle"
+                                },
+                                new()
+                                {
                                     SystemName = "App settings",
                                     Title = await _localizationService.GetResourceAsync("Admin.Configuration.AppSettings"),
                                     PermissionNames =
@@ -1039,78 +1148,7 @@ public partial class AdminMenu : IAdminMenu
                     Title = await _localizationService.GetResourceAsync("Admin.Plugins"),
                     IconClass = "fas fa-bars"
                 },
-                new()
-                {
-                    SystemName = "Events",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Events"),
-                    PermissionNames = new List<string> { StandardPermission.HolidaysNEvents.MANAGE_EVENTS },
-                    Url = GetMenuItemUrl("Event", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "Holidays",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Holidays"),
-                    PermissionNames = new List<string> { StandardPermission.HolidaysNEvents.MANAGE_HOLIDAYS },
-                    Url = GetMenuItemUrl("Holiday", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "AcademicYears",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYears"),
-                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS },
-                    Url = GetMenuItemUrl("AcademicYear", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "AcademicYearTerms",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYearTerms"),
-                    PermissionNames = new List<string> { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARTERMS },
-                    Url = GetMenuItemUrl("AcademicYearTerm", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "GenericDropDownOptions",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.GenericDropDownOptions"),
-                    PermissionNames = new List<string> { StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS },
-                    Url = GetMenuItemUrl("GenericDropDownOption", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "Fees",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Fees"),
-                    PermissionNames = new List<string> { StandardPermission.Fees.MANAGE_FEES },
-                    Url = GetMenuItemUrl("Fee", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "Grades",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Grades"),
-                    PermissionNames = new List<string> { StandardPermission.GradeManagement.MANAGE_GRADES },
-                    Url = GetMenuItemUrl("Grade", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "Subjects",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Subjects"),
-                    PermissionNames = new List<string> { StandardPermission.Subjects.MANAGE_SUBJECTS },
-                    Url = GetMenuItemUrl("Subject", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
-                new()
-                {
-                    SystemName = "Sections",
-                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Sections"),
-                    PermissionNames = new List<string> { StandardPermission.GradeManagement.MANAGE_SECTIONS },
-                    Url = GetMenuItemUrl("Section", "List"),
-                    IconClass = "far fa-dot-circle"
-                },
+                
 //{{NextMenuItemFromCodeGen}}
 
 
