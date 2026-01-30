@@ -134,6 +134,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateVendorsMaps();
         CreateWarehouseMaps();
         CreateMenuMaps();
+        CustomModelMaps();
 
         //add some generic mapping rules
         this.Internal().ForAllMaps((mapConfiguration, map) =>
