@@ -1,4 +1,7 @@
+using Nop.Core.Domain.AcademicYears;
 using Nop.Core.Domain.HolidaysNEvents;
+using Nop.Services;
+using Nop.Services.AcademicYears;
 using Nop.Services.HolidaysNEvents;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
@@ -16,27 +19,31 @@ public partial class HolidayModelFactory : IHolidayModelFactory
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
+    protected readonly IAcademicYearService _academicYearService;
 
     #endregion
 
     #region Ctor
 
-    public HolidayModelFactory(IHolidayService holidayService,
+    public HolidayModelFactory(
+        IHolidayService holidayService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
-        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory)
+        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
+        IAcademicYearService academicYearService)
     {
         _holidayService = holidayService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
+        _academicYearService = academicYearService;
     }
 
     #endregion
 
     #region Utilities
 
-    
+
 
     #endregion
 
@@ -57,7 +64,9 @@ public partial class HolidayModelFactory : IHolidayModelFactory
         ArgumentNullException.ThrowIfNull(searchModel);
 
         //get holidays
-        var holidays = (await _holidayService.GetAllHolidaysAsync()).ToPagedList(searchModel);
+        var holidays = await _holidayService.GetAllHolidaysAsync(
+            pageIndex: searchModel.Page - 1,
+            pageSize: searchModel.PageSize);
 
         //prepare list model
         var model = await new HolidayListModel().PrepareToGridAsync(searchModel, holidays, () =>
@@ -90,15 +99,13 @@ public partial class HolidayModelFactory : IHolidayModelFactory
             localizedModelConfiguration = async (locale, languageId) =>
             {
                 locale.Name = await _localizationService.GetLocalizedAsync(holiday, entity => entity.Name, languageId, false, false);
-
-
             };
         }
 
         //set default values for the new model
         if (holiday == null)
         {
-            
+
         }
 
         //prepare localized models
@@ -108,6 +115,10 @@ public partial class HolidayModelFactory : IHolidayModelFactory
 
         //prepare available stores
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, holiday, excludeProperties);
+
+        model.AvailableYears = await (await _academicYearService.GetAllAcademicYearsAsync())
+            .ToSelectList(x => (x as AcademicYear).Name)
+            .ToListAsync();
 
 
         return model;

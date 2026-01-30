@@ -4,6 +4,7 @@ using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Configuration;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.LogInfo;
 using Nop.Core.Events;
 
 namespace Nop.Data;
@@ -407,6 +408,11 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
     public virtual async Task InsertAsync(TEntity entity, bool publishEvent = true)
     {
         ArgumentNullException.ThrowIfNull(entity);
+
+        if (entity is LogInfoSupportedBaseEntity)
+        {
+            return;
+        }
 
         await _dataProvider.InsertEntityAsync(entity);
 

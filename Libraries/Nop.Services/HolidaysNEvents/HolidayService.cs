@@ -30,11 +30,8 @@ public partial class HolidayService : IHolidayService
         int academicYearId = 0, IEnumerable<int> academicYearIds = null,
         string name = null, IEnumerable<string> names = null,
         int storeId = 0, IEnumerable<int> storeIds = null,
-
-
         BooleanFilter deleted = BooleanFilter.False,
         BooleanFilter limitedToStores = BooleanFilter.Both,
-
         int pageIndex = 0, int pageSize = int.MaxValue)
     {
         var productReviews = await _holidayRepository.GetAllPagedAsync(async query =>
@@ -63,13 +60,9 @@ public partial class HolidayService : IHolidayService
             if (storeIds != null && storeIds.Any())
                 query = query.Where(x => storeIds.Contains(x.StoreId));
 
-
-
             query = query.WhereBoolean(x => x.Deleted, deleted);
 
             query = query.WhereBoolean(x => x.LimitedToStores, limitedToStores);
-
-
 
             return query;
 

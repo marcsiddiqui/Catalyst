@@ -15,7 +15,7 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
         SelectedStoreIds = new List<int>();
         AvailableStores = new List<SelectListItem>();
 
-
+        AvailableYears = [];
     }
 
     #endregion
@@ -24,6 +24,7 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
 
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.AcademicYearId")]
     public int AcademicYearId { get; set; }
+    public IList<SelectListItem> AvailableYears { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.Name")]
     public string Name { get; set; }
