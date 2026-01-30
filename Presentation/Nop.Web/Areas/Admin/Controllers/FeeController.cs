@@ -105,7 +105,7 @@ public partial class FeeController : BaseAdminController
 
 
 
-//{{StoreMappingSaveMethodCallHere}}
+            //{{StoreMappingSaveMethodCallHere}}
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Fees.Fees.Added"));
 
@@ -147,6 +147,9 @@ public partial class FeeController : BaseAdminController
 
         if (ModelState.IsValid)
         {
+            model.CreatedOnUtc = fee.CreatedOnUtc;
+            model.CreatedBy = fee.CreatedBy;
+
             fee = model.ToEntity(fee);
             await _feeService.UpdateFeeAsync(fee);
 
@@ -154,9 +157,7 @@ public partial class FeeController : BaseAdminController
             await _customerActivityService.InsertActivityAsync("EditFee",
                 string.Format(await _localizationService.GetResourceAsync("ActivityLog.EditFee"), fee.Id), fee);
 
-
-
-//{{StoreMappingSaveMethodCallHere}}
+            //{{StoreMappingSaveMethodCallHere}}
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Fees.Fees.Updated"));
 
@@ -201,7 +202,7 @@ public partial class FeeController : BaseAdminController
         }
     }
 
-    
+
 
     #endregion
 }

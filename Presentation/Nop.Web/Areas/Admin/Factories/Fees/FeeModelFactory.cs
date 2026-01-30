@@ -1,4 +1,5 @@
 using Nop.Core.Domain.Fees;
+using Nop.Services.Customers;
 using Nop.Services.Fees;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
@@ -16,6 +17,8 @@ public partial class FeeModelFactory : IFeeModelFactory
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
+    protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
+    protected readonly ICustomerService _customerService;
 
     #endregion
 
@@ -24,12 +27,17 @@ public partial class FeeModelFactory : IFeeModelFactory
     public FeeModelFactory(IFeeService feeService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
-        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory)
+        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
+        IBaseAdminModelFactory baseAdminModelFactory,
+        ICustomerService customerService
+        )
     {
         _feeService = feeService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
+        _baseAdminModelFactory = baseAdminModelFactory;
+        _customerService = customerService;
     }
 
     #endregion
@@ -85,15 +93,30 @@ public partial class FeeModelFactory : IFeeModelFactory
             {
                 model = fee.ToModel<FeeModel>();
             }
-
-
         }
 
         //set default values for the new model
         if (fee == null)
         {
-            
+            model.FeeDate = DateTime.UtcNow;
+
+            model.AvailableStudents.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Text = await _localizationService.GetResourceAsync("Admin.Student.Select"),
+                Value = "0"
+            });
+
+            var students = (await _customerService.GetAllCustomersAsync()).ToList();
+            if (students != null && students.Any())
+                foreach (var student in students)
+                    model.AvailableStudents.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                    {
+                        Text = await _customerService.GetCustomerFullNameAsync(student),
+                        Value = student.Id.ToString()
+                    });
         }
+
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableFeeTypes, Core.Domain.GenericDropDowns.GenericDropdownEntity.FeesType, selectedValue: model.FeeTypeId);
 
 //{{Locales}}
 

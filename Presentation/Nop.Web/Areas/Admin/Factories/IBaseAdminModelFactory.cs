@@ -325,4 +325,29 @@ public partial interface IBaseAdminModelFactory
     /// <param name="model">Translation supported model</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task PreparePreTranslationSupportModelAsync(ITranslationSupportedModel model);
+
+    /// <summary>
+    /// Prepare available dynamic static dropdown
+    /// </summary>
+    /// <param name="items">Specification attributes</param>
+    /// <param name="key">Key of StaticDropDown</param>
+    /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
+    /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
+    /// <param name="defaultItemValue">Default item value; pass "0" to use default value of the default item value</param>
+    /// <param name="selectedValue">Selected Value; pass desired value to set an option as Selected = True</param>
+    /// <param name="selectedValueLi">Selected Values; pass desired values to set options as Selected = True</param>
+    /// <param name="separaterChar">Separater Char; pass desired char to split char separated values</param>
+    /// <param name="modelSelectedItemIds">Multiple selected Ids in mode; pass desired list to comma split ids</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    Task PrepareStaticDropDownAsync(
+        IList<SelectListItem> items,
+        Core.Domain.GenericDropDowns.GenericDropdownEntity genericDropdownEntity,
+        bool withSpecialDefaultItem = true,
+        string defaultItemText = null,
+        string defaultItemValue = "0",
+        int selectedValue = 0,
+        string selectedValuesStr = "",
+        List<int> selectedValueLi = null,
+        string separaterChar = "",
+        IList<int> modelSelectedItemIds = null);
 }
