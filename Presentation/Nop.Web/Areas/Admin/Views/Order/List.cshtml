@@ -11,8 +11,8 @@
 }
 
 @{
-    const string hideSearchBlockAttributeName = "OrdersPage.HideSearchBlock";
-    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+        const string hideSearchBlockAttributeName = "OrdersPage.HideSearchBlock";
+        var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
 }
 
 @if (Model.LicenseCheckModel.BlockPages != true)

@@ -10,10 +10,10 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
 
     public HolidayModel()
     {
-        Locales = new List<HolidayLocalizedModel>();
+        Locales = [];
 
-        SelectedStoreIds = new List<int>();
-        AvailableStores = new List<SelectListItem>();
+        SelectedStoreIds = [];
+        AvailableStores = [];
 
         AvailableYears = [];
     }
@@ -25,6 +25,7 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.AcademicYearId")]
     public int AcademicYearId { get; set; }
     public IList<SelectListItem> AvailableYears { get; set; }
+    public string AcademicYear { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.Name")]
     public string Name { get; set; }
@@ -38,35 +39,12 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.DateToUtc")]
     public DateTime DateToUtc { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.StoreId")]
-    public int StoreId { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.Deleted")]
-    public bool Deleted { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.LimitedToStores")]
-    public bool LimitedToStores { get; set; }
-
     public IList<HolidayLocalizedModel> Locales { get; set; }
 
     //store mapping
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.LimitedToStores")]
     public IList<int> SelectedStoreIds { get; set; }
     public IList<SelectListItem> AvailableStores { get; set; }
-
-
 
     #endregion
 }

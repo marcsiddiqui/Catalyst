@@ -338,6 +338,30 @@ public partial class CommonHelper
         return EqualityComparer<T>.Default.Equals(value, default(T));
     }
 
+    public static async Task<TResult> ExecuteIfNotNullOrDefaultAsync<TEntity, TResult>(
+        TEntity entity,
+        Func<TEntity, Task<TResult>> action,
+        TResult fallback = default)
+        where TEntity : class
+    {
+        if (entity == null)
+            return fallback;
+
+        return await action(entity);
+    }
+
+    public static TResult ExecuteIfNotNullOrDefault<TEntity, TResult>(
+        TEntity entity,
+        Func<TEntity, TResult> action,
+        TResult fallback = default)
+        where TEntity : class
+    {
+        if (entity == null)
+            return fallback;
+
+        return action(entity);
+    }
+
     #endregion
 
     #region Properties

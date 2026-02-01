@@ -9,6 +9,7 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Translation;
 using Nop.Services;
+using Nop.Services.AcademicYears;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -63,12 +64,14 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly IWarehouseService _warehouseService;
     protected readonly TranslationSettings _translationSettings;
     protected readonly IGenericDropDownOptionService _genericDropDownOptionService;
+    protected readonly IAcademicYearService _academicYearService;
 
     #endregion
 
     #region Ctor
 
-    public BaseAdminModelFactory(ICategoryService categoryService,
+    public BaseAdminModelFactory(
+        ICategoryService categoryService,
         ICategoryTemplateService categoryTemplateService,
         ICountryService countryService,
         ICurrencyService currencyService,
@@ -93,8 +96,8 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         IVendorService vendorService,
         IWarehouseService warehouseService,
         TranslationSettings translationSettings,
-        IGenericDropDownOptionService genericDropDownOptionService
-        )
+        IGenericDropDownOptionService genericDropDownOptionService,
+        IAcademicYearService academicYearService)
     {
         _categoryService = categoryService;
         _categoryTemplateService = categoryTemplateService;
@@ -122,6 +125,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _warehouseService = warehouseService;
         _translationSettings = translationSettings;
         _genericDropDownOptionService = genericDropDownOptionService;
+        _academicYearService = academicYearService;
     }
 
     #endregion
@@ -1084,6 +1088,21 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
+    }
+
+    public virtual async Task PrepareAvailableYearsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        //prepare available stores
+        var availableEntities = await _academicYearService.GetAllAcademicYearsAsync();
+        foreach (var store in availableEntities)
+        {
+            items.Add(new SelectListItem { Value = store.Id.ToString(), Text = store.Name });
+        }
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
     }
 
     #endregion

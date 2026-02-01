@@ -1,4 +1,3 @@
-@using Nop.Web.Areas.Admin.Models.HolidaysNEvents
 @model HolidaySearchModel
 
 @{
@@ -6,6 +5,10 @@
     ViewBag.PageTitle = T("Admin.HolidaysNEvents.Holidays").Text;
     //active menu item (system name)
     NopHtml.SetActiveMenuItemSystemName("Holidays");
+
+    const string hideSearchBlockAttributeName = "HolidayPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+
 }
 
 
@@ -18,7 +21,6 @@
             <i class="fas fa-square-plus"></i>
             @T("Admin.Common.AddNew")
         </a>
-@*PublishActiveHelperButtons*@
     </div>
 </div>
 
@@ -26,6 +28,47 @@
     <div class="container-fluid">
     <div class="form-horizontal">
         <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                        </div>
+
+                        <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                            <div class="row">
+                                <div class="form-group row" @(Model.AvailableStores.SelectionIsNotPossible()? Html.Raw("style=\"display:none\"") : null)>
+                                    <div class="col-md-4">
+                                        <nop-label asp-for="SearchStoreId" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <nop-select asp-for="SearchStoreId" asp-items="Model.AvailableStores" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group row" @(Model.AvailableYears.SelectionIsNotPossible()? Html.Raw("style=\"display:none\"") : null)>
+                                    <div class="col-md-4">
+                                        <nop-label asp-for="SearchYearId" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <nop-select asp-for="SearchYearId" asp-items="Model.AvailableYears" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-orders" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             <div class="card card-default">
                 <div class="card-body">
                     @await Html.PartialAsync("Table", new DataTablesModel
@@ -44,7 +87,7 @@
                                 ClassName =  NopColumnClassDefaults.CenterAll,
                                 Width = "50"
                             },
-                            new ColumnProperty(nameof(HolidayModel.AcademicYearId))
+                            new ColumnProperty(nameof(HolidayModel.AcademicYear))
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.AcademicYearId").Text,
                                 Width = "100",
@@ -74,13 +117,7 @@
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(HolidayModel.StoreId))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.StoreId").Text,
-                                Width = "100",
-                            },
-
-                            new ColumnProperty(nameof(HolidayModel.CreatedBy))
+                            new ColumnProperty(nameof(HolidayModel.CreatedByName))
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedBy").Text,
                                 Width = "100",
@@ -92,7 +129,7 @@
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(HolidayModel.UpdatedBy))
+                            new ColumnProperty(nameof(HolidayModel.UpdatedByName))
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedBy").Text,
                                 Width = "100",
@@ -103,21 +140,6 @@
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedOnUtc").Text,
                                 Width = "100",
                             },
-
-                            new ColumnProperty(nameof(HolidayModel.Deleted))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Deleted").Text,
-                                Width = "100",
-                                ClassName =  NopColumnClassDefaults.CenterAll,
-                            },
-
-                            new ColumnProperty(nameof(HolidayModel.LimitedToStores))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.LimitedToStores").Text,
-                                Width = "100",
-                                ClassName =  NopColumnClassDefaults.CenterAll,
-                            },
-
 
                             new ColumnProperty(nameof(HolidayModel.Id))
                             {

@@ -350,4 +350,6 @@ public partial interface IBaseAdminModelFactory
         List<int> selectedValueLi = null,
         string separaterChar = "",
         IList<int> modelSelectedItemIds = null);
+
+    Task PrepareAvailableYearsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null);
 }

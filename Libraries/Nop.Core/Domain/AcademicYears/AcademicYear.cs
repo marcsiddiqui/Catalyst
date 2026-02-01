@@ -16,6 +16,4 @@ public partial class AcademicYear : LogInfoSupportedBaseEntity, ILocalizedEntity
     public DateTime EndDate { get; set; }
 
     public bool Deleted { get; set; }
-
-
 }

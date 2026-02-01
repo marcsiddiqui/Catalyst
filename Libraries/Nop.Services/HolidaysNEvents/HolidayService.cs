@@ -1,6 +1,8 @@
+using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Nop.Core;
 using Nop.Core.Domain.HolidaysNEvents;
 using Nop.Data;
+using Nop.Services.Stores;
 
 namespace Nop.Services.HolidaysNEvents;
 
@@ -9,16 +11,18 @@ public partial class HolidayService : IHolidayService
     #region Fields
 
     protected readonly IRepository<Holiday> _holidayRepository;
+    protected readonly IStoreMappingService _storeMappingService;
 
     #endregion
 
     #region Ctor
 
     public HolidayService(
-        IRepository<Holiday> holidayRepository
-        )
+        IRepository<Holiday> holidayRepository,
+        IStoreMappingService storeMappingService)
     {
         _holidayRepository = holidayRepository;
+        _storeMappingService = storeMappingService;
     }
 
     #endregion
@@ -26,47 +30,31 @@ public partial class HolidayService : IHolidayService
     #region Methods
 
     public virtual async Task<IPagedList<Holiday>> GetAllHolidaysAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int academicYearId = 0, IEnumerable<int> academicYearIds = null,
-        string name = null, IEnumerable<string> names = null,
-        int storeId = 0, IEnumerable<int> storeIds = null,
-        BooleanFilter deleted = BooleanFilter.False,
-        BooleanFilter limitedToStores = BooleanFilter.Both,
-        int pageIndex = 0, int pageSize = int.MaxValue)
+        IEnumerable<int> academicYearIds = default,
+        string name = default,
+        int storeId = default,
+        bool includeDeleted = default,
+        bool showHidden = false,
+        int pageIndex = default,
+        int pageSize = int.MaxValue)
     {
         var productReviews = await _holidayRepository.GetAllPagedAsync(async query =>
         {
-            if (id > 0)
-                query = query.Where(x => x.Id == id);
-
-            if (ids != null && ids.Any())
-                query = query.Where(x => ids.Contains(x.Id));
-
-            if (academicYearId > 0)
-                query = query.Where(x => academicYearId == x.AcademicYearId);
-
-            if (academicYearIds != null && academicYearIds.Any())
+            if (academicYearIds != null)
                 query = query.Where(x => academicYearIds.Contains(x.AcademicYearId));
 
             if (!string.IsNullOrWhiteSpace(name))
                 query = query.Where(x => name == x.Name);
 
-            if (names != null && names.Any())
-                query = query.Where(x => names.Contains(x.Name));
-
-            if (storeId > 0)
-                query = query.Where(x => storeId == x.StoreId);
-
-            if (storeIds != null && storeIds.Any())
-                query = query.Where(x => storeIds.Contains(x.StoreId));
-
-            query = query.WhereBoolean(x => x.Deleted, deleted);
-
-            query = query.WhereBoolean(x => x.LimitedToStores, limitedToStores);
+            if (!showHidden || storeId > 0)
+            {
+                //apply store mapping constraints
+                query = await _storeMappingService.ApplyStoreMapping(query, storeId);
+            }
 
             return query;
 
-        }, pageIndex, pageSize);
+        }, pageIndex, pageSize, includeDeleted: includeDeleted);
 
         return productReviews;
     }
@@ -94,7 +82,7 @@ public partial class HolidayService : IHolidayService
 
         await _holidayRepository.InsertAsync(holiday);
     }
-    
+
     public virtual async Task InsertHolidayAsync(IEnumerable<Holiday> holidays)
     {
         if (holidays == null || !holidays.Any())

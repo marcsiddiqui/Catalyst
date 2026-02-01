@@ -34,13 +34,13 @@ public partial class AcademicYearService : IAcademicYearService
     #region AcademicYear
 
     public virtual async Task<IPagedList<AcademicYear>> GetAllAcademicYearsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        string name = null, IEnumerable<string> names = null,
-
-
-        BooleanFilter deleted = BooleanFilter.False,
-
-        int pageIndex = 0, int pageSize = int.MaxValue)
+        int id = 0,
+        IEnumerable<int> ids = null,
+        string name = null,
+        IEnumerable<string> names = null,
+        bool includeDeleted = default,
+        int pageIndex = 0,
+        int pageSize = int.MaxValue)
     {
         var productReviews = await _academicYearRepository.GetAllPagedAsync(async query =>
         {
@@ -56,15 +56,9 @@ public partial class AcademicYearService : IAcademicYearService
             if (names != null && names.Any())
                 query = query.Where(x => names.Contains(x.Name));
 
-
-
-            query = query.WhereBoolean(x => x.Deleted, deleted);
-
-
-
             return query;
 
-        }, pageIndex, pageSize);
+        }, pageIndex, pageSize, includeDeleted: includeDeleted);
 
         return productReviews;
     }
@@ -92,7 +86,7 @@ public partial class AcademicYearService : IAcademicYearService
 
         await _academicYearRepository.InsertAsync(academicYear);
     }
-    
+
     public virtual async Task InsertAcademicYearAsync(IEnumerable<AcademicYear> academicYears)
     {
         if (academicYears == null || !academicYears.Any())
