@@ -59,6 +59,12 @@ public partial record FeeModel : BaseNopEntityModel
 
     public IList<SelectListItem> AvailableStudents { get; set; }
 
+    public string StudentName { get; set; }
+
+    public string FeeType { get; set; }
+
+    public string FormattedFeeDate { get; set; }
+
     #endregion
 }
 

@@ -35,7 +35,7 @@ public partial class FeeService : IFeeService
         int customerId = 0, IEnumerable<int> customerIds = null,
         int feeTypeId = 0, IEnumerable<int> feeTypeIds = null,
         BooleanFilter deleted = BooleanFilter.False,
-
+        DateTime? feeDate = null,
 
 
         int pageIndex = 0, int pageSize = int.MaxValue)
@@ -65,6 +65,9 @@ public partial class FeeService : IFeeService
 
             if (feeTypeIds != null && feeTypeIds.Any())
                 query = query.Where(x => feeTypeIds.Contains(x.FeeTypeId));
+
+            if (feeDate.HasValue)
+                query = query.Where(x => x.FeeDate.Year == feeDate.Value.Year && x.FeeDate.Month == feeDate.Value.Month);
 
             query = query.WhereBoolean(x => x.Deleted, deleted);
 

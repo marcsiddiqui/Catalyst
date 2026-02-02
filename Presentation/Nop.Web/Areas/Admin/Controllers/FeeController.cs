@@ -1,3 +1,4 @@
+using Markdig.Syntax;
 using Microsoft.AspNetCore.Mvc;
 using Nop.Core.Domain.Fees;
 using Nop.Services.Fees;
@@ -94,6 +95,12 @@ public partial class FeeController : BaseAdminController
     [CheckPermission(StandardPermission.Fees.MANAGE_FEES)]
     public virtual async Task<IActionResult> Create(FeeModel model, bool continueEditing)
     {
+        var exsitingFees = await _feeService.GetAllFeesAsync(customerId: model.CustomerId, feeTypeId: model.FeeTypeId, feeDate: model.FeeDate);
+        if (exsitingFees != null && exsitingFees.Any())
+        {
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Admin.Fee.Already.Exsits"));
+        }
+
         if (ModelState.IsValid)
         {
             var fee = model.ToEntity<Fee>();
@@ -102,7 +109,6 @@ public partial class FeeController : BaseAdminController
             //activity log
             await _customerActivityService.InsertActivityAsync("AddNewFee",
                 string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewFee"), fee.Id), fee);
-
 
 
             //{{StoreMappingSaveMethodCallHere}}

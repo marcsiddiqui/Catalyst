@@ -11,7 +11,7 @@ public partial interface IAcademicYearService
     Task<IPagedList<AcademicYear>> GetAllAcademicYearsAsync(
         int id = 0, IEnumerable<int> ids = null,
         string name = null, IEnumerable<string> names = null,
-
+        int year = 0,
 
         BooleanFilter deleted = BooleanFilter.False,
 

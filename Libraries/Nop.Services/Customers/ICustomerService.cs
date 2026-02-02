@@ -47,6 +47,7 @@ public partial interface ICustomerService
         string email = null, string username = null, string firstName = null, string lastName = null,
         int dayOfBirth = 0, int monthOfBirth = 0,
         string company = null, string phone = null, string zipPostalCode = null, string ipAddress = null,
+        int id = 0, IEnumerable<int> ids = null,
         bool? isActive = null, int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false);
 
     /// <summary>

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Nop.Core.Domain.AcademicYears;
 using Nop.Services.AcademicYears;
+using Nop.Services.Helpers;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
@@ -25,6 +26,7 @@ public partial class AcademicYearController : BaseAdminController
     protected readonly INotificationService _notificationService;
     protected readonly IStoreMappingService _storeMappingService;
     protected readonly IAcademicYearTermModelFactory _academicYearTermModelFactory;
+    protected readonly IDateTimeHelper _dateTimeHelper;
 
     #endregion
 
@@ -38,7 +40,8 @@ public partial class AcademicYearController : BaseAdminController
         ILocalizedEntityService localizedEntityService,
         INotificationService notificationService,
         IStoreMappingService storeMappingService,
-        IAcademicYearTermModelFactory academicYearTermModelFactory
+        IAcademicYearTermModelFactory academicYearTermModelFactory,
+        IDateTimeHelper dateTimeHelper
         )
     {
         _academicYearModelFactory = academicYearModelFactory;
@@ -49,6 +52,7 @@ public partial class AcademicYearController : BaseAdminController
         _notificationService = notificationService;
         _storeMappingService = storeMappingService;
         _academicYearTermModelFactory = academicYearTermModelFactory;
+        _dateTimeHelper = dateTimeHelper;
     }
 
     #endregion
@@ -80,6 +84,40 @@ public partial class AcademicYearController : BaseAdminController
 
         }
     }
+
+    public virtual async Task PriceDateFromAndToValidation(AcademicYearModel model, bool isEditRecord = false)
+    {
+        var startUtc = _dateTimeHelper.ConvertToUtcTime(model.StartDate, TimeZoneInfo.Local);
+        var endUtc = _dateTimeHelper.ConvertToUtcTime(model.EndDate, TimeZoneInfo.Local);
+
+        // Basic validation
+        if (endUtc <= startUtc)
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Admin.Start.Date.Is.Greater"));
+
+        var academicYears = (await _academicYearService.GetAllAcademicYearsAsync()).Where(x => !isEditRecord || x.Id != model.Id).ToList();
+
+        // Exact date match check
+        if (academicYears.Any(x => x.StartDate == startUtc || x.EndDate == endUtc || x.StartDate == endUtc || x.EndDate == startUtc))
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Already.Exists"));
+
+        // Overlapping date ranges check
+        bool hasOverlap = academicYears.Any(x => x.StartDate < endUtc && x.EndDate > startUtc );
+
+        if (hasOverlap)
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Range.Overlaps"));
+
+        // New range fully contains an existing range
+        if (academicYears.Any(x => startUtc <= x.StartDate && endUtc >= x.EndDate))
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Inputted.Date.Contains.Existing.Date"));
+
+        // Existing range fully contains new range
+        if (academicYears.Any(x => x.StartDate <= startUtc && x.EndDate >= endUtc))
+            ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Is.Between.Existing.Dates"));
+
+        model.StartDate = startUtc;
+        model.EndDate = endUtc;
+    }
+
 
     #endregion
 
@@ -122,6 +160,8 @@ public partial class AcademicYearController : BaseAdminController
     [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS)]
     public virtual async Task<IActionResult> Create(AcademicYearModel model, bool continueEditing)
     {
+        await PriceDateFromAndToValidation(model);
+
         if (ModelState.IsValid)
         {
             var academicYear = model.ToEntity<AcademicYear>();
@@ -135,7 +175,7 @@ public partial class AcademicYearController : BaseAdminController
             await UpdateLocalesAsync(academicYear, model);
 
 
-//{{StoreMappingSaveMethodCallHere}}
+            //{{StoreMappingSaveMethodCallHere}}
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.AcademicYears.AcademicYears.Added"));
 
@@ -175,6 +215,8 @@ public partial class AcademicYearController : BaseAdminController
         if (academicYear == null)
             return RedirectToAction("List");
 
+        await PriceDateFromAndToValidation(model, true);
+
         if (ModelState.IsValid)
         {
             academicYear = model.ToEntity(academicYear);
@@ -188,7 +230,7 @@ public partial class AcademicYearController : BaseAdminController
             await UpdateLocalesAsync(academicYear, model);
 
 
-//{{StoreMappingSaveMethodCallHere}}
+            //{{StoreMappingSaveMethodCallHere}}
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.AcademicYears.AcademicYears.Updated"));
 
