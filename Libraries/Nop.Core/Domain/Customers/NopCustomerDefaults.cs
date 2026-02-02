@@ -32,6 +32,51 @@ public static partial class NopCustomerDefaults
     /// </summary>
     public static string VendorsRoleName => "Vendors";
 
+    /// <summary>
+    /// Gets a system name of 'SchoolAdmin' customer role
+    /// </summary>
+    public static string SchoolAdminRoleName => "SchoolAdmin";
+
+    /// <summary>
+    /// Gets a system name of 'Principal' customer role
+    /// </summary>
+    public static string PrincipalRoleName => "Principal";
+
+    /// <summary>
+    /// Gets a system name of 'VicePrincipal' customer role
+    /// </summary>
+    public static string VicePrincipalRoleName => "VicePrincipal";
+
+    /// <summary>
+    /// Gets a system name of 'Teacher' customer role
+    /// </summary>
+    public static string TeacherRoleName => "Teacher";
+
+    /// <summary>
+    /// Gets a system name of 'Parent' customer role
+    /// </summary>
+    public static string ParentRoleName => "Parent";
+
+    /// <summary>
+    /// Gets a system name of 'Student' customer role
+    /// </summary>
+    public static string StudentRoleName => "Student";
+
+    /// <summary>
+    /// Gets a system name of 'Receptionist' customer role
+    /// </summary>
+    public static string ReceptionistRoleName => "Receptionist";
+
+    /// <summary>
+    /// Gets a system name of 'Incharge' customer role
+    /// </summary>
+    public static string InchargeRoleName => "Incharge";
+
+    /// <summary>
+    /// Gets a system name of 'Examination' customer role
+    /// </summary>
+    public static string ExaminationRoleName => "Examination";
+
     #endregion
 
     #region System customers
