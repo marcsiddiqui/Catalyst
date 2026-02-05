@@ -37,9 +37,6 @@ public partial record GenericDropDownOptionModel : BaseNopEntityModel, ILocalize
     [NopResourceDisplayName("Admin.Configuration.GenericDropDownOptions.Fields.IsSystemOption")]
     public bool IsSystemOption { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.GenericDropDownOptions.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
     public IList<GenericDropDownOptionLocalizedModel> Locales { get; set; }
 
 
