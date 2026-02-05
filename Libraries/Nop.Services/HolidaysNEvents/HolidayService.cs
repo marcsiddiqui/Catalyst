@@ -33,7 +33,6 @@ public partial class HolidayService : IHolidayService
         IEnumerable<int> academicYearIds = default,
         string name = default,
         int storeId = default,
-        bool includeDeleted = default,
         bool showHidden = false,
         int pageIndex = default,
         int pageSize = int.MaxValue)
@@ -54,7 +53,7 @@ public partial class HolidayService : IHolidayService
 
             return query;
 
-        }, pageIndex, pageSize, includeDeleted: includeDeleted);
+        }, pageIndex, pageSize, includeDeleted: false);
 
         return productReviews;
     }
