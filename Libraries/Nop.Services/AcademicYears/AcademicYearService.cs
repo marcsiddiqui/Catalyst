@@ -1,6 +1,8 @@
 using Nop.Core;
 using Nop.Core.Domain.AcademicYears;
+using Nop.Core.Domain.Fees;
 using Nop.Data;
+using static Nop.Services.Security.StandardPermission;
 
 namespace Nop.Services.AcademicYears;
 
@@ -11,6 +13,7 @@ public partial class AcademicYearService : IAcademicYearService
     protected readonly IRepository<AcademicYear> _academicYearRepository;
     protected readonly IRepository<AcademicYearGradeSectionMapping> _academicYearGradeSectionMappingRepository;
     protected readonly IRepository<AcademicYearTerm> _academicYearTermRepository;
+    protected readonly IWorkContext _workContext;
 
     #endregion
 
@@ -19,12 +22,14 @@ public partial class AcademicYearService : IAcademicYearService
     public AcademicYearService(
         IRepository<AcademicYear> academicYearRepository,
         IRepository<AcademicYearGradeSectionMapping> academicYearGradeSectionMappingRepository,
-        IRepository<AcademicYearTerm> academicYearTermRepository
+        IRepository<AcademicYearTerm> academicYearTermRepository,
+        IWorkContext workContext
         )
     {
         _academicYearRepository = academicYearRepository;
         _academicYearGradeSectionMappingRepository = academicYearGradeSectionMappingRepository;
         _academicYearTermRepository = academicYearTermRepository;
+        _workContext = workContext;
     }
 
     #endregion
@@ -34,13 +39,13 @@ public partial class AcademicYearService : IAcademicYearService
     #region AcademicYear
 
     public virtual async Task<IPagedList<AcademicYear>> GetAllAcademicYearsAsync(
-        int id = 0,
-        IEnumerable<int> ids = null,
-        string name = null,
-        IEnumerable<string> names = null,
-        bool includeDeleted = default,
-        int pageIndex = 0,
-        int pageSize = int.MaxValue)
+        int id = 0, IEnumerable<int> ids = null,
+        string name = null, IEnumerable<string> names = null,
+        int year = 0,
+
+        BooleanFilter deleted = BooleanFilter.False,
+
+        int pageIndex = 0, int pageSize = int.MaxValue)
     {
         var productReviews = await _academicYearRepository.GetAllPagedAsync(async query =>
         {
@@ -55,6 +60,13 @@ public partial class AcademicYearService : IAcademicYearService
 
             if (names != null && names.Any())
                 query = query.Where(x => names.Contains(x.Name));
+
+            if (year > 0)
+                query = query.Where(x => x.StartDate.Year == year);
+
+            query = query.WhereBoolean(x => x.Deleted, deleted);
+
+
 
             return query;
 
@@ -84,6 +96,9 @@ public partial class AcademicYearService : IAcademicYearService
         if (academicYear == null)
             return;
 
+        academicYear.CreatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+        academicYear.CreatedOnUtc = DateTime.UtcNow;
+
         await _academicYearRepository.InsertAsync(academicYear);
     }
 
@@ -91,6 +106,13 @@ public partial class AcademicYearService : IAcademicYearService
     {
         if (academicYears == null || !academicYears.Any())
             return;
+
+        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
+        foreach (var academicYear in academicYears)
+        {
+            academicYear.CreatedBy = customerId;
+            academicYear.CreatedOnUtc = DateTime.UtcNow;
+        }
 
         await _academicYearRepository.InsertAsync(academicYears.ToList());
     }
@@ -100,6 +122,9 @@ public partial class AcademicYearService : IAcademicYearService
         if (academicYear == null)
             return;
 
+        academicYear.UpdatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+        academicYear.UpdatedOnUtc = DateTime.UtcNow;
+
         await _academicYearRepository.UpdateAsync(academicYear);
     }
 
@@ -107,6 +132,13 @@ public partial class AcademicYearService : IAcademicYearService
     {
         if (academicYears == null || !academicYears.Any())
             return;
+
+        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
+        foreach (var academicYear in academicYears)
+        {
+            academicYear.UpdatedBy = customerId;
+            academicYear.UpdatedOnUtc = DateTime.UtcNow;
+        }
 
         await _academicYearRepository.UpdateAsync(academicYears.ToList());
     }

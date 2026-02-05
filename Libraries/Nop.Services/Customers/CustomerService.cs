@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using MailKit.Search;
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Blogs;
@@ -173,10 +174,15 @@ public partial class CustomerService : ICustomerService
         string email = null, string username = null, string firstName = null, string lastName = null,
         int dayOfBirth = 0, int monthOfBirth = 0,
         string company = null, string phone = null, string zipPostalCode = null, string ipAddress = null,
+        int id = 0, IEnumerable<int> ids = null,
         bool? isActive = null, int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false)
     {
         var customers = await _customerRepository.GetAllPagedAsync(query =>
         {
+            if (id > 0)
+                query = query.Where(x => x.Id == id);
+            if (ids != null && ids.Any())
+                query = query.Where(x => ids.Contains(x.Id));
             if (createdFromUtc.HasValue)
                 query = query.Where(c => createdFromUtc.Value <= c.CreatedOnUtc);
             if (createdToUtc.HasValue)

@@ -67,6 +67,9 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
             {
                 var academicYearModel = academicYear.ToModel<AcademicYearModel>();
 
+                academicYearModel.FormattedStartDate = academicYear.StartDate.ToLocalTime().ToString("dd-MMMM-yyyy");
+                academicYearModel.FormattedEndDate = academicYear.EndDate.ToLocalTime().ToString("dd-MMMM-yyyy");
+
                 return academicYearModel;
             });
         });
@@ -90,15 +93,26 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
             localizedModelConfiguration = async (locale, languageId) =>
             {
                 locale.Name = await _localizationService.GetLocalizedAsync(academicYear, entity => entity.Name, languageId, false, false);
-
-
             };
+
+            model.StartDate = academicYear.StartDate.ToLocalTime();
+            model.EndDate = academicYear.EndDate.ToLocalTime();
         }
 
         //set default values for the new model
         if (academicYear == null)
         {
-            
+            var currentYearAacademicYear = (await _academicYearService.GetAllAcademicYearsAsync(year: DateTime.Now.Year)).FirstOrDefault();
+            if (currentYearAacademicYear == null)
+            {
+                model.StartDate = new DateTime(DateTime.UtcNow.Year, 04, 01);
+                model.EndDate = new DateTime(DateTime.UtcNow.Year + 1, 03, 31);
+            }
+            else
+            {
+                model.StartDate = new DateTime(DateTime.UtcNow.Year + 1, 04, 01);
+                model.EndDate = new DateTime(DateTime.UtcNow.Year + 2, 03, 31);
+            }
         }
 
         //prepare localized models

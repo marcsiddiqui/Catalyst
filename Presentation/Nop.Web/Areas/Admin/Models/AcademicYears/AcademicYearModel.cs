@@ -51,6 +51,14 @@ public partial record AcademicYearModel : BaseNopEntityModel, ILocalizedModel<Ac
 
 
     #endregion
+
+    #region Extra Model Properties
+
+    public string FormattedStartDate { get; set; }
+
+    public string FormattedEndDate { get; set; }
+
+    #endregion
 }
 
 public partial record AcademicYearLocalizedModel : ILocalizedLocaleModel

@@ -12,7 +12,7 @@ public partial interface IFeeService
         int customerId = 0, IEnumerable<int> customerIds = null,
         int feeTypeId = 0, IEnumerable<int> feeTypeIds = null,
         BooleanFilter deleted = BooleanFilter.False,
-
+        DateTime? feeDate = null,
 
 
         int pageIndex = 0, int pageSize = int.MaxValue);

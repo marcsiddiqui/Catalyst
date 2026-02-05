@@ -9,13 +9,13 @@ public partial interface IAcademicYearService
     #region AcademicYear
 
     Task<IPagedList<AcademicYear>> GetAllAcademicYearsAsync(
-        int id = 0,
-        IEnumerable<int> ids = null,
-        string name = null,
-        IEnumerable<string> names = null,
-        bool includeDeleted = default,
-        int pageIndex = 0,
-        int pageSize = int.MaxValue);
+        int id = 0, IEnumerable<int> ids = null,
+        string name = null, IEnumerable<string> names = null,
+        int year = 0,
+
+        BooleanFilter deleted = BooleanFilter.False,
+
+        int pageIndex = 0, int pageSize = int.MaxValue);
 
     Task<AcademicYear> GetAcademicYearByIdAsync(int id);
 
