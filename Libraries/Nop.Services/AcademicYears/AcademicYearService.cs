@@ -42,9 +42,6 @@ public partial class AcademicYearService : IAcademicYearService
         int id = 0, IEnumerable<int> ids = null,
         string name = null, IEnumerable<string> names = null,
         int year = 0,
-
-        BooleanFilter deleted = BooleanFilter.False,
-
         int pageIndex = 0, int pageSize = int.MaxValue)
     {
         var productReviews = await _academicYearRepository.GetAllPagedAsync(async query =>
@@ -64,13 +61,9 @@ public partial class AcademicYearService : IAcademicYearService
             if (year > 0)
                 query = query.Where(x => x.StartDate.Year == year);
 
-            query = query.WhereBoolean(x => x.Deleted, deleted);
-
-
-
             return query;
 
-        }, pageIndex, pageSize, includeDeleted: includeDeleted);
+        }, pageIndex, pageSize, includeDeleted: false);
 
         return productReviews;
     }

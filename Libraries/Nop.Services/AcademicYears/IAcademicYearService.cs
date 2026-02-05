@@ -12,9 +12,6 @@ public partial interface IAcademicYearService
         int id = 0, IEnumerable<int> ids = null,
         string name = null, IEnumerable<string> names = null,
         int year = 0,
-
-        BooleanFilter deleted = BooleanFilter.False,
-
         int pageIndex = 0, int pageSize = int.MaxValue);
 
     Task<AcademicYear> GetAcademicYearByIdAsync(int id);
@@ -22,7 +19,7 @@ public partial interface IAcademicYearService
     Task<IList<AcademicYear>> GetAcademicYearsByIdsAsync(IEnumerable<int> ids);
 
     Task InsertAcademicYearAsync(AcademicYear academicYear);
-    
+
     Task InsertAcademicYearAsync(IEnumerable<AcademicYear> academicYears);
 
     Task UpdateAcademicYearAsync(AcademicYear academicYear);

@@ -57,7 +57,9 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
         ArgumentNullException.ThrowIfNull(searchModel);
 
         //get academicYears
-        var academicYears = (await _academicYearService.GetAllAcademicYearsAsync()).ToPagedList(searchModel);
+        var academicYears = await _academicYearService.GetAllAcademicYearsAsync(
+            pageIndex: searchModel.Page - 1,
+            pageSize: searchModel.PageSize);
 
         //prepare list model
         var model = await new AcademicYearListModel().PrepareToGridAsync(searchModel, academicYears, () =>
