@@ -1,4 +1,3 @@
-using DocumentFormat.OpenXml.Vml.Spreadsheet;
 using Nop.Core;
 using Nop.Core.Domain.HolidaysNEvents;
 using Nop.Data;
@@ -33,7 +32,6 @@ public partial class HolidayService : IHolidayService
         IEnumerable<int> academicYearIds = default,
         string name = default,
         int storeId = default,
-        bool showHidden = false,
         int pageIndex = default,
         int pageSize = int.MaxValue)
     {
@@ -42,10 +40,10 @@ public partial class HolidayService : IHolidayService
             if (academicYearIds != null)
                 query = query.Where(x => academicYearIds.Contains(x.AcademicYearId));
 
-            if (!string.IsNullOrWhiteSpace(name))
-                query = query.Where(x => name == x.Name);
+            if (!CommonHelper.IsDefault(name))
+                query = query.Where(x => name.Contains(x.Name));
 
-            if (!showHidden || storeId > 0)
+            if (storeId > 0)
             {
                 //apply store mapping constraints
                 query = await _storeMappingService.ApplyStoreMapping(query, storeId);

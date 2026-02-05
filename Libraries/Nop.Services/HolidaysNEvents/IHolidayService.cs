@@ -10,7 +10,6 @@ public partial interface IHolidayService
         IEnumerable<int> academicYearIds = default,
         string name = default,
         int storeId = default,
-        bool showHidden = false,
         int pageIndex = default,
         int pageSize = int.MaxValue);
 

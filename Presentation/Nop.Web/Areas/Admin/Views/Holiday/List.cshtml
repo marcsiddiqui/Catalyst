@@ -109,12 +109,14 @@
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateFromUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
                             new ColumnProperty(nameof(HolidayModel.DateToUtc))
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateToUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
                             new ColumnProperty(nameof(HolidayModel.CreatedByName))
@@ -127,6 +129,7 @@
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedOnUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
                             new ColumnProperty(nameof(HolidayModel.UpdatedByName))
@@ -139,6 +142,7 @@
                             {
                                 Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedOnUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
                             new ColumnProperty(nameof(HolidayModel.Id))

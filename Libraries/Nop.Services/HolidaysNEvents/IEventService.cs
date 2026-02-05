@@ -9,16 +9,11 @@ public partial interface IEventService
     #region Event
 
     Task<IPagedList<Event>> GetAllEventsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int academicYearId = 0, IEnumerable<int> academicYearIds = null,
-        string name = null, IEnumerable<string> names = null,
-        int storeId = 0, IEnumerable<int> storeIds = null,
-
-
-        BooleanFilter deleted = BooleanFilter.False,
-        BooleanFilter limitedToStores = BooleanFilter.Both,
-
-        int pageIndex = 0, int pageSize = int.MaxValue);
+        int academicYearId = default,
+        string name = default,
+        int storeId = default,
+        int pageIndex = default,
+        int pageSize = int.MaxValue);
 
     Task<Event> GetEventByIdAsync(int id);
 
@@ -41,11 +36,12 @@ public partial interface IEventService
     #region AcademicYearGradeSectionEventMapping
 
     Task<IPagedList<AcademicYearGradeSectionEventMapping>> GetAllAcademicYearGradeSectionEventMappingsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int eventId = 0, IEnumerable<int> eventIds = null,
-        int academicYearGradeSectionMappingId = 0, IEnumerable<int> academicYearGradeSectionMappingIds = null,
-
-        int pageIndex = 0, int pageSize = int.MaxValue);
+        int eventId = 0,
+        IEnumerable<int> eventIds = null,
+        int academicYearGradeSectionMappingId = 0,
+        IEnumerable<int> academicYearGradeSectionMappingIds = null,
+        int pageIndex = 0,
+        int pageSize = int.MaxValue);
 
     Task<AcademicYearGradeSectionEventMapping> GetAcademicYearGradeSectionEventMappingByIdAsync(int id);
 
@@ -68,13 +64,12 @@ public partial interface IEventService
     #region StudentEventMapping
 
     Task<IPagedList<StudentEventMapping>> GetAllStudentEventMappingsAsync(
-        int id = 0, IEnumerable<int> ids = null,
-        int eventId = 0, IEnumerable<int> eventIds = null,
-        int customerId = 0, IEnumerable<int> customerIds = null,
-
-
-
-        int pageIndex = 0, int pageSize = int.MaxValue);
+        int eventId = 0,
+        IEnumerable<int> eventIds = null,
+        int customerId = 0,
+        IEnumerable<int> customerIds = null,
+        int pageIndex = 0,
+        int pageSize = int.MaxValue);
 
     Task<StudentEventMapping> GetStudentEventMappingByIdAsync(int id);
 

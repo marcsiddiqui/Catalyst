@@ -1,4 +1,3 @@
-@using Nop.Web.Areas.Admin.Models.HolidaysNEvents
 @model EventSearchModel
 
 @{
@@ -44,7 +43,7 @@
                                 ClassName =  NopColumnClassDefaults.CenterAll,
                                 Width = "50"
                             },
-                            new ColumnProperty(nameof(EventModel.AcademicYearId))
+                            new ColumnProperty(nameof(EventModel.AcademicYear))
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.AcademicYearId").Text,
                                 Width = "100",
@@ -66,21 +65,17 @@
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.StartDateUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
                             new ColumnProperty(nameof(EventModel.EndDateUtc))
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.EndDateUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
-                            new ColumnProperty(nameof(EventModel.StoreId))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Events.Fields.StoreId").Text,
-                                Width = "100",
-                            },
-
-                            new ColumnProperty(nameof(EventModel.CreatedBy))
+                            new ColumnProperty(nameof(EventModel.CreatedByName))
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.CreatedBy").Text,
                                 Width = "100",
@@ -90,9 +85,10 @@
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.CreatedOnUtc").Text,
                                 Width = "100",
+                                Render = new RenderDate()
                             },
 
-                            new ColumnProperty(nameof(EventModel.UpdatedBy))
+                            new ColumnProperty(nameof(EventModel.UpdatedByName))
                             {
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.UpdatedBy").Text,
                                 Width = "100",
@@ -103,21 +99,6 @@
                                 Title = T("Admin.HolidaysNEvents.Events.Fields.UpdatedOnUtc").Text,
                                 Width = "100",
                             },
-
-                            new ColumnProperty(nameof(EventModel.Deleted))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Events.Fields.Deleted").Text,
-                                Width = "100",
-                                ClassName =  NopColumnClassDefaults.CenterAll,
-                            },
-
-                            new ColumnProperty(nameof(EventModel.LimitedToStores))
-                            {
-                                Title = T("Admin.HolidaysNEvents.Events.Fields.LimitedToStores").Text,
-                                Width = "100",
-                                ClassName =  NopColumnClassDefaults.CenterAll,
-                            },
-
 
                             new ColumnProperty(nameof(EventModel.Id))
                             {

@@ -1884,8 +1884,20 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
     protected virtual void CustomModelMaps()
     {
-        CreateMap<Event, EventModel>();
-        CreateMap<EventModel, Event>();
+        CreateMap<Event, EventModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()))
+            .ForMember(model => model.StartDateUtc, options => options.MapFrom(x => x.StartDateUtc.ToLocalTime()))
+            .ForMember(model => model.EndDateUtc, options => options.MapFrom(x => x.EndDateUtc.ToLocalTime()));
+        CreateMap<EventModel, Event>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.StartDateUtc, options => options.MapFrom(x => x.StartDateUtc.GetValueOrDefault().ToUniversalTime()))
+            .ForMember(model => model.EndDateUtc, options => options.MapFrom(x => x.EndDateUtc.GetValueOrDefault().ToUniversalTime()));
 
         CreateMap<Holiday, HolidayModel>()
             .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
