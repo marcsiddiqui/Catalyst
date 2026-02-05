@@ -81,6 +81,7 @@ public partial class HolidayModelFactory : IHolidayModelFactory
 
         //get holidays
         var holidays = await _holidayService.GetAllHolidaysAsync(
+            storeId: searchModel.SearchStoreId,
             pageIndex: searchModel.Page - 1,
             pageSize: searchModel.PageSize);
 
@@ -138,6 +139,8 @@ public partial class HolidayModelFactory : IHolidayModelFactory
         model.AvailableYears = await (await _academicYearService.GetAllAcademicYearsAsync())
             .ToSelectList(x => (x as AcademicYear).Name)
             .ToListAsync();
+
+        model.AvailableYears.Insert(0,new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem(text: _localizationService.GetResourceAsync("admin.common.select").Result, value: "0"));
 
 
         return model;

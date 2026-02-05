@@ -1899,8 +1899,8 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
             .ForMember(model => model.UpdatedBy, options => options.Ignore())
             .ForMember(model => model.UpdatedOnUtc, options => options.Ignore())
-            .ForMember(model => model.DateFromUtc, options => options.MapFrom(x => x.DateFromUtc.ToUniversalTime()))
-            .ForMember(model => model.DateToUtc, options => options.MapFrom(x => x.DateToUtc.ToUniversalTime()));
+            .ForMember(model => model.DateFromUtc, options => options.MapFrom(x => x.DateFromUtc.GetValueOrDefault().ToUniversalTime()))
+            .ForMember(model => model.DateToUtc, options => options.MapFrom(x => x.DateToUtc.GetValueOrDefault().ToUniversalTime()));
 
         CreateMap<AcademicYear, AcademicYearModel>();
         CreateMap<AcademicYearModel, AcademicYear>();

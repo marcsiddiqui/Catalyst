@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace Nop.Web.Areas.Admin.Models.HolidaysNEvents;
 
@@ -34,10 +35,12 @@ public partial record HolidayModel : BaseNopEntityModel, ILocalizedModel<Holiday
     public string Description { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.DateFromUtc")]
-    public DateTime DateFromUtc { get; set; }
+    [UIHint("DateTimeNullable")]
+    public DateTime? DateFromUtc { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Holidays.Fields.DateToUtc")]
-    public DateTime DateToUtc { get; set; }
+    [UIHint("DateTimeNullable")]
+    public DateTime? DateToUtc { get; set; }
 
     public IList<HolidayLocalizedModel> Locales { get; set; }
 
