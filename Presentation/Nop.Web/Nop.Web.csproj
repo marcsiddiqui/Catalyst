@@ -68,6 +68,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\lib\magnific-popup\jquery.magnific-popup.js" />
+    <None Include="wwwroot\lib\magnific-popup\jquery.magnific-popup.min.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
 
@@ -118,5 +124,8 @@
       
       More details here: https://docs.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals#concurrent-garbage-collection-->
     <ConcurrentGarbageCollection>false</ConcurrentGarbageCollection>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 </Project>

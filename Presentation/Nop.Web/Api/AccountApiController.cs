@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 
 namespace Nop.Web.Api
 {
-    [ApiExplorerSettings(GroupName = SwaggerAPIGroup.Public)]
+    [ApiExplorerSettings(GroupName = SwaggerAPIGroup.Application)]
     [Produces("application/json")]
     [Route("api/account")]
     public class AccountApiController : Controller
