@@ -60,7 +60,20 @@ using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Themes;
 using Nop.Web.Framework.UI;
 using TaskScheduler = Nop.Services.ScheduleTasks.TaskScheduler;
-//{AddNewServicesNamespacesHereWithNopCCodeGenerator}
+using Nop.Services.HolidaysNEvents;
+using Nop.Services.AcademicYears;
+using Nop.Services.GenericDropDowns;
+using Nop.Services.Fees;
+using Nop.Services.GradeManagement;
+using Nop.Services.Subjects;
+using Nop.Services.Students;
+//{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
+
+
+
+
+
+
 
 
 namespace Nop.Web.Framework.Infrastructure;
@@ -250,7 +263,28 @@ public partial class NopStartup : INopStartup
 
         #region Custom New Services
 
-//{AddNewServicesScopeHereWithNopCCodeGenerator}
+        services.AddScoped<IEventService, EventService>();
+        services.AddScoped<IHolidayService, HolidayService>();
+        services.AddScoped<IAcademicYearService, AcademicYearService>();
+        services.AddScoped<IGenericDropDownOptionService, GenericDropDownOptionService>();
+        services.AddScoped<IFeeService, FeeService>();
+        services.AddScoped<IFeePaymentsService, FeePaymentsService>();
+        services.AddScoped<IGradeService, GradeService>();
+        services.AddScoped<ISubjectService, SubjectService>();
+        services.AddScoped<ISectionService, SectionService>();
+        services.AddScoped<ISubjectGradeMappingService, SubjectGradeMappingService>();
+        services.AddScoped<IAcademicYearGradeSectionStudentMappingService, AcademicYearGradeSectionStudentMappingService>();
+//{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
+
+
+
+
+
+
+
+
+
 
 
         #endregion

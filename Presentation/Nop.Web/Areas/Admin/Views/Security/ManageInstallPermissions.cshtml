@@ -116,7 +116,6 @@
                                                 <td class="col-allow text-center">
                                                 <input type="checkbox" class="checkbox-child" data-category-id="${accordionId}" data-permission-id="${p.Id}" ${p.IsEnabledOnInstall ? "checked" : ""} />
                                                 </td>
-                                                <td class="col-roles"><button type="button" class="btn btn-danger"><i class="fas fa-trash"></i>@T("Admin.Remove.From.All.Roles").Text</button></td>
                                             </tr>
                                         `).join("");
 
@@ -143,7 +142,6 @@
                                                                     <th class="col-allow text-center">
                                                                         <input type="checkbox" class="checkbox-master" data-category-id="${accordionId}" />
                                                                     </th>
-                                                                    <th class="col-roles">Action</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>

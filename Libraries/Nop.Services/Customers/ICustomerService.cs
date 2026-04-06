@@ -47,6 +47,7 @@ public partial interface ICustomerService
         string email = null, string username = null, string firstName = null, string lastName = null,
         int dayOfBirth = 0, int monthOfBirth = 0,
         string company = null, string phone = null, string zipPostalCode = null, string ipAddress = null,
+        int id = 0, IEnumerable<int> ids = null,
         bool? isActive = null, int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false);
 
     /// <summary>
@@ -506,6 +507,106 @@ public partial interface ICustomerService
     /// The task result contains the result
     /// </returns>
     Task<bool> IsVendorAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a School Administrator
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsSchoolAdminAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Principal
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsPrincipalAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Vice Principal
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsVicePrincipalAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Teacher
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsTeacherAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Parent
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsParentAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Student
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsStudentAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is a Receptionist
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsReceptionistAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is an Incharge
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsInchargeAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
+    /// <summary>
+    /// Gets a value indicating whether customer is part of Examination role
+    /// </summary>
+    /// <param name="customer">Customer</param>
+    /// <param name="onlyActiveCustomerRoles">A value indicating whether we should look only in active customer roles</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation.
+    /// The task result contains the result
+    /// </returns>
+    Task<bool> IsExaminationAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+
 
     /// <summary>
     /// Updates the customer role

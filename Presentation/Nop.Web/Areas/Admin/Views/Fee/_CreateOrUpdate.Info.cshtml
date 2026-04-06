@@ -1,0 +1,66 @@
+@using Nop.Web.Areas.Admin.Models.Fees
+@model FeeModel
+
+<div class="card-body">
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="AcademicYearGradeSectionMappingId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="AcademicYearGradeSectionMappingId"/>
+            <span asp-validation-for="AcademicYearGradeSectionMappingId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CustomerId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="CustomerId" class="form-control" asp-items="Model.AvailableStudents" />
+            <span asp-validation-for="CustomerId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Amount"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Amount"/>
+            <span asp-validation-for="Amount"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Discount"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Discount"/>
+            <span asp-validation-for="Discount"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FeeTypeId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="FeeTypeId" class="form-control" asp-items="Model.AvailableFeeTypes" />
+            <span asp-validation-for="FeeTypeId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FeeDate"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FeeDate"/>
+            <span asp-validation-for="FeeDate"></span>
+        </div>
+    </div>
+
+</div>
