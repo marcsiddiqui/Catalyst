@@ -9,9 +9,11 @@ using Nop.Core.Domain.Shipping;
 using Nop.Core.Domain.Tax;
 using Nop.Core.Domain.Translation;
 using Nop.Services;
+using Nop.Services.AcademicYears;
 using Nop.Services.Catalog;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
+using Nop.Services.GenericDropDowns;
 using Nop.Services.Helpers;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -61,12 +63,15 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly IVendorService _vendorService;
     protected readonly IWarehouseService _warehouseService;
     protected readonly TranslationSettings _translationSettings;
+    protected readonly IGenericDropDownOptionService _genericDropDownOptionService;
+    protected readonly IAcademicYearService _academicYearService;
 
     #endregion
 
     #region Ctor
 
-    public BaseAdminModelFactory(ICategoryService categoryService,
+    public BaseAdminModelFactory(
+        ICategoryService categoryService,
         ICategoryTemplateService categoryTemplateService,
         ICountryService countryService,
         ICurrencyService currencyService,
@@ -90,7 +95,9 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         ITopicTemplateService topicTemplateService,
         IVendorService vendorService,
         IWarehouseService warehouseService,
-        TranslationSettings translationSettings)
+        TranslationSettings translationSettings,
+        IGenericDropDownOptionService genericDropDownOptionService,
+        IAcademicYearService academicYearService)
     {
         _categoryService = categoryService;
         _categoryTemplateService = categoryTemplateService;
@@ -117,6 +124,8 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _vendorService = vendorService;
         _warehouseService = warehouseService;
         _translationSettings = translationSettings;
+        _genericDropDownOptionService = genericDropDownOptionService;
+        _academicYearService = academicYearService;
     }
 
     #endregion
@@ -1005,7 +1014,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
-    }    
+    }
 
     /// <summary>
     /// Prepare translation supported model
@@ -1021,6 +1030,79 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         model.PreTranslationAvailable = allLanguages.Any(l =>
             !_translationSettings.NotTranslateLanguages.Contains(l.Id) &&
             l.Id != _translationSettings.TranslateFromLanguageId);
+    }
+
+    /// <summary>
+    /// Prepare available dynamic static dropdown
+    /// </summary>
+    /// <param name="items">Specification attributes</param>
+    /// <param name="key">Key of StaticDropDown</param>
+    /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
+    /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
+    /// <param name="defaultItemValue">Default item value; pass "0" to use default value of the default item value</param>
+    /// <param name="selectedValue">Selected Value; pass desired value to set an option as Selected = True</param>
+    /// <param name="selectedValueLi">Selected Values; pass desired values to set options as Selected = True</param>
+    /// <param name="separaterChar">Separater Char; pass desired char to split char separated values</param>
+    /// <param name="modelSelectedItemIds">Multiple selected Ids in mode; pass desired list to comma split ids</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    public virtual async Task PrepareStaticDropDownAsync(
+        IList<SelectListItem> items,
+        Core.Domain.GenericDropDowns.GenericDropdownEntity genericDropdownEntity,
+        bool withSpecialDefaultItem = true,
+        string defaultItemText = null,
+        string defaultItemValue = "0",
+        int selectedValue = 0,
+        string selectedValuesStr = "",
+        List<int> selectedValueLi = null,
+        string separaterChar = "",
+        IList<int> modelSelectedItemIds = null)
+    {
+        selectedValueLi = selectedValueLi == null || !selectedValueLi.Any() ? new List<int>() : selectedValueLi;
+
+        if (selectedValue != 0)
+            selectedValueLi.Add(selectedValue);
+
+        else if (!string.IsNullOrWhiteSpace(selectedValuesStr) && selectedValuesStr.Contains(separaterChar))
+            selectedValueLi.AddRange(selectedValuesStr.Split(separaterChar).Select(z => int.Parse(z)).ToList());
+
+        // if after spliting ids list is not empty then we will maintain the ids in the model so we can use it ahead
+        if (selectedValueLi != null && selectedValueLi.Any())
+        {
+            modelSelectedItemIds = new List<int>();
+            ((List<int>)modelSelectedItemIds).AddRange(selectedValueLi);
+        }
+
+        var staticDropDownValues = await _genericDropDownOptionService.GetGenericDropDownOptionsByEntityAsync(genericDropdownEntity);
+        if (staticDropDownValues != null && staticDropDownValues.Any())
+        {
+            foreach (var staticDropDownValue in staticDropDownValues.OrderBy(x => x.OrderBy))
+            {
+                var selected = false;
+                selected = selectedValueLi.Where(x => x == staticDropDownValue.Value).Any();
+                items.Add(new SelectListItem() { Text = await _localizationService.GetResourceAsync($"Admin.Option.{staticDropDownValue.Text}"), Value = staticDropDownValue.Value.ToString(), Selected = selected });
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(defaultItemText))
+            defaultItemText = await _localizationService.GetResourceAsync("Admin.Common.Select");
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
+    }
+
+    public virtual async Task PrepareAvailableYearsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        //prepare available stores
+        var availableEntities = await _academicYearService.GetAllAcademicYearsAsync();
+        foreach (var store in availableEntities)
+        {
+            items.Add(new SelectListItem { Value = store.Id.ToString(), Text = store.Name });
+        }
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
     }
 
     #endregion

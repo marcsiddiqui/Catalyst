@@ -1,4 +1,4 @@
-﻿using Nop.Core.Infrastructure;
+using Nop.Core.Infrastructure;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Helpers;
 using Nop.Web.Framework.Factories;
@@ -118,7 +118,24 @@ public partial class NopStartup : INopStartup
 
         #region Customer Model Factories
 
+        services.AddScoped<Areas.Admin.Factories.IEventModelFactory, Areas.Admin.Factories.EventModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IHolidayModelFactory, Areas.Admin.Factories.HolidayModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IAcademicYearModelFactory, Areas.Admin.Factories.AcademicYearModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IAcademicYearTermModelFactory, Areas.Admin.Factories.AcademicYearTermModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IGenericDropDownOptionModelFactory, Areas.Admin.Factories.GenericDropDownOptionModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IFeeModelFactory, Areas.Admin.Factories.FeeModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IGradeModelFactory, Areas.Admin.Factories.GradeModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.ISubjectModelFactory, Areas.Admin.Factories.SubjectModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.ISectionModelFactory, Areas.Admin.Factories.SectionModelFactory>();
 //{{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}}
+
+
+
+
+
+
+
+
 
         #endregion
     }

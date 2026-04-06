@@ -1,0 +1,227 @@
+@model HolidaySearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.HolidaysNEvents.Holidays").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Holidays");
+
+    const string hideSearchBlockAttributeName = "HolidayPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.HolidaysNEvents.Holidays")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+                <div class="card card-default card-search">
+                    <div class="card-body">
+                        <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                            <div class="search-text">@T("Admin.Common.Search")</div>
+                            <div class="icon-search"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></div>
+                            <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                        </div>
+
+                        <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                            <div class="row">
+                                <div class="form-group row" @(Model.AvailableStores.SelectionIsNotPossible()? Html.Raw("style=\"display:none\"") : null)>
+                                    <div class="col-md-4">
+                                        <nop-label asp-for="SearchStoreId" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <nop-select asp-for="SearchStoreId" asp-items="Model.AvailableStores" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group row" @(Model.AvailableYears.SelectionIsNotPossible()? Html.Raw("style=\"display:none\"") : null)>
+                                    <div class="col-md-4">
+                                        <nop-label asp-for="SearchYearId" />
+                                    </div>
+                                    <div class="col-md-8">
+                                        <nop-select asp-for="SearchYearId" asp-items="Model.AvailableYears" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center col-12">
+                                    <button type="button" id="search-orders" class="btn btn-primary btn-search">
+                                        <i class="fas fa-magnifying-glass"></i>
+                                        @T("Admin.Common.Search")
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "holidays-grid",
+                        UrlRead = new DataUrl("HolidayList", "Holiday", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(HolidayModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_holidays"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(HolidayModel.AcademicYear))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.AcademicYearId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Name))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Description))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.Description").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.DateFromUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateFromUtc").Text,
+                                Width = "100",
+                                Render = new RenderDate()
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.DateToUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.DateToUtc").Text,
+                                Width = "100",
+                                Render = new RenderDate()
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.CreatedByName))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                                Render = new RenderDate()
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.UpdatedByName))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.HolidaysNEvents.Holidays.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                                Render = new RenderDate()
+                            },
+
+                            new ColumnProperty(nameof(HolidayModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Holiday/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "Holiday"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#holidays-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "Holiday"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#holidays-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

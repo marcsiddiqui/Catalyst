@@ -1,0 +1,200 @@
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@model GradeSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.GradeManagement.Grades").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Grades");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.GradeManagement.Grades")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+        <button type="button" id="activate-selected" class="btn bg-teal">
+            <i class="fas fa-square-check"></i>
+            @T("Admin.GradeManagement.Grades.ActivateSelected")
+        </button>
+        <button type="button" id="deactivate-selected" class="btn btn-secondary">
+            <i class="fas fa-square-minus"></i>
+            @T("Admin.GradeManagement.Grades.DeactivateSelected")
+        </button>
+
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "grades-grid",
+                        UrlRead = new DataUrl("GradeList", "Grade", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(GradeModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_grades"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(GradeModel.Name))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.Name").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.IsActive))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.IsActive").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.Deleted))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.BaseFeeAmount))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.BaseFeeAmount").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.StoreId))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.StoreId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.CreatedBy))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.CreatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.UpdatedBy))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(GradeModel.LimitedToStores))
+                            {
+                                Title = T("Admin.GradeManagement.Grades.Fields.LimitedToStores").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(GradeModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Grade/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"activate selected" button
+                            $('#activate-selected').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("ActivateSelected", "Grade"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#grades-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('activateSelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"deactivate selected" button
+                            $('#deactivate-selected').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("DeactivateSelected", "Grade"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('deactivateSelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#grades-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<nop-alert asp-alert-id="activateSelectedFailed" />
+<nop-alert asp-alert-id="deactivateSelectedFailed" />
+<nop-alert asp-alert-id="nothingSelectedAlert" />

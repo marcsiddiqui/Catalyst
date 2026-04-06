@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using AutoMapper.Internal;
 using Nop.Core.Configuration;
 using Nop.Core.Domain.Affiliates;
@@ -70,7 +70,26 @@ using Nop.Web.Areas.Admin.Models.Vendors;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Models.Translation;
 using Nop.Web.Framework.WebOptimizer;
+using Nop.Web.Areas.Admin.Models.HolidaysNEvents;
+using Nop.Core.Domain.HolidaysNEvents;
+using Nop.Web.Areas.Admin.Models.AcademicYears;
+using Nop.Core.Domain.AcademicYears;
+using Nop.Core.Domain.GenericDropDowns;
+using Nop.Web.Areas.Admin.Models.GenericDropDowns;
+using Nop.Web.Areas.Admin.Models.Fees;
+using Nop.Core.Domain.Fees;
+using Nop.Web.Areas.Admin.Models.GradeManagement;
+using Nop.Core.Domain.GradeManagement;
+using Nop.Web.Areas.Admin.Models.Subjects;
+using Nop.Core.Domain.Subjects;
+using Nop.Core;
+using Nop.Services.Customers;
 //{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+
+
+
+
+
 
 namespace Nop.Web.Areas.Admin.Infrastructure.Mapper;
 
@@ -117,6 +136,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateVendorsMaps();
         CreateWarehouseMaps();
         CreateMenuMaps();
+        CustomModelMaps();
 
         //add some generic mapping rules
         this.Internal().ForAllMaps((mapConfiguration, map) =>
@@ -440,7 +460,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(settings => settings.UseLinksInRequiredProductWarnings, options => options.Ignore())
             .ForMember(settings => settings.UseStandardSearchWhenSearchProviderThrowsException, options => options.Ignore())
             .ForMember(settings => settings.ActiveSearchProviderSystemName, options => options.Ignore())
-            .ForMember(settings => settings.VendorProductReviewsPageSize, options => options.Ignore());        
+            .ForMember(settings => settings.VendorProductReviewsPageSize, options => options.Ignore());
 
         CreateMap<ProductCategory, CategoryProductModel>()
             .ForMember(model => model.ProductName, options => options.Ignore());
@@ -1854,9 +1874,71 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(entity => entity.EntityId, options => options.Ignore());
     }
 
+    private async Task<string> GetNameAsync(int customerId)
+    {
+        var _customerService = CommonHelper.Initialize<ICustomerService>();
+        var customer = await _customerService.GetCustomerByIdAsync(customerId);
+        return await CommonHelper.ExecuteIfNotNullOrDefaultAsync(customer,
+            customer => _customerService.GetCustomerFullNameAsync(customer));
+    }
+
     protected virtual void CustomModelMaps()
     {
-//{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+        CreateMap<Event, EventModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()))
+            .ForMember(model => model.StartDateUtc, options => options.MapFrom(x => x.StartDateUtc.ToLocalTime()))
+            .ForMember(model => model.EndDateUtc, options => options.MapFrom(x => x.EndDateUtc.ToLocalTime()));
+        CreateMap<EventModel, Event>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.StartDateUtc, options => options.MapFrom(x => x.StartDateUtc.GetValueOrDefault().ToUniversalTime()))
+            .ForMember(model => model.EndDateUtc, options => options.MapFrom(x => x.EndDateUtc.GetValueOrDefault().ToUniversalTime()));
+
+        CreateMap<Holiday, HolidayModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()))
+            .ForMember(model => model.DateFromUtc, options => options.MapFrom(x => x.DateFromUtc.ToLocalTime()))
+            .ForMember(model => model.DateToUtc, options => options.MapFrom(x => x.DateToUtc.ToLocalTime()));
+        CreateMap<HolidayModel, Holiday>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.DateFromUtc, options => options.MapFrom(x => x.DateFromUtc.GetValueOrDefault().ToUniversalTime()))
+            .ForMember(model => model.DateToUtc, options => options.MapFrom(x => x.DateToUtc.GetValueOrDefault().ToUniversalTime()));
+
+        CreateMap<AcademicYear, AcademicYearModel>();
+        CreateMap<AcademicYearModel, AcademicYear>();
+
+        CreateMap<AcademicYearTerm, AcademicYearTermModel>();
+        CreateMap<AcademicYearTermModel, AcademicYearTerm>();
+
+        CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
+        CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
+
+        CreateMap<Fee, FeeModel>();
+        CreateMap<FeeModel, Fee>();
+
+        CreateMap<FeePayment, FeePaymentModel>();
+        CreateMap<FeePaymentModel, FeePayment>();
+
+        CreateMap<Grade, GradeModel>();
+        CreateMap<GradeModel, Grade>();
+
+        CreateMap<Subject, SubjectModel>();
+        CreateMap<SubjectModel, Subject>();
+
+        CreateMap<Section, SectionModel>();
+        CreateMap<SectionModel, Section>();
+        //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
     }
 
     #endregion

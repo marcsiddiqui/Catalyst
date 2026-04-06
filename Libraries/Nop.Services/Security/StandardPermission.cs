@@ -1,4 +1,4 @@
-﻿namespace Nop.Services.Security;
+namespace Nop.Services.Security;
 
 /// <summary>
 /// Standard permission
@@ -157,5 +157,46 @@ public partial class StandardPermission
         public const string ACCESS_CLOSED_STORE = $"{nameof(PublicStore)}.AccessClosedStore";
     }
 
-    //{{NewPermissionsToken}}
+    public partial class HolidaysNEvents
+    {
+        public const string MANAGE_EVENTS = $"{nameof(HolidaysNEvents)}.ManageEvents";
+        public const string MANAGE_HOLIDAYS = $"{nameof(HolidaysNEvents)}.ManageHolidays";
+    }
+
+    public partial class AcademicYears
+    {
+        public const string MANAGE_ACADEMICYEARS = $"{nameof(AcademicYears)}.ManageAcademicYears";
+        public const string MANAGE_ACADEMICYEARTERMS = $"{nameof(AcademicYears)}.ManageAcademicYearTerms";
+    }
+
+    public partial class GenericDropDowns
+    {
+        public const string MANAGE_GENERICDROPDOWNOPTIONS = $"{nameof(GenericDropDowns)}.ManageGenericDropDownOptions";
+    }
+
+    public partial class Fees
+    {
+        public const string MANAGE_FEES = $"{nameof(Fees)}.ManageFees";
+    }
+
+    public partial class GradeManagement
+    {
+        public const string MANAGE_GRADES = $"{nameof(GradeManagement)}.ManageGrades";
+        public const string MANAGE_SECTIONS = $"{nameof(GradeManagement)}.ManageSections";
+    }
+
+    public partial class Subjects
+    {
+        public const string MANAGE_SUBJECTS = $"{nameof(Subjects)}.ManageSubjects";
+    }
+
+//{{NewPermissionsToken}}
+
+
+
+
+
+
+
+
 }
