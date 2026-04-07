@@ -10,6 +10,8 @@ using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Subjects;
 using Nop.Web.Framework.Mvc.Filters;
+using Nop.Core;
+using Humanizer.DateTimeHumanizeStrategy;
 
 namespace Nop.Web.Areas.Admin.Controllers;
 
@@ -24,6 +26,7 @@ public partial class SubjectController : BaseAdminController
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly INotificationService _notificationService;
     protected readonly IStoreMappingService _storeMappingService;
+    protected readonly IWorkContext _workContext;
 
     #endregion
 
@@ -36,7 +39,9 @@ public partial class SubjectController : BaseAdminController
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         INotificationService notificationService,
-        IStoreMappingService storeMappingService)
+        IStoreMappingService storeMappingService,
+        IWorkContext workContext
+        )
     {
         _subjectModelFactory = subjectModelFactory;
         _subjectService = subjectService;
@@ -45,6 +50,7 @@ public partial class SubjectController : BaseAdminController
         _localizedEntityService = localizedEntityService;
         _notificationService = notificationService;
         _storeMappingService = storeMappingService;
+        _workContext = workContext;
     }
 
     #endregion
@@ -108,6 +114,8 @@ public partial class SubjectController : BaseAdminController
         if (ModelState.IsValid)
         {
             var subject = model.ToEntity<Subject>();
+            subject.CreatedOnUtc = DateTime.UtcNow;
+            subject.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
             await _subjectService.InsertSubjectAsync(subject);
 
             //activity log
@@ -160,7 +168,11 @@ public partial class SubjectController : BaseAdminController
 
         if (ModelState.IsValid)
         {
+            model.CreatedBy = subject.CreatedBy;
+            model.CreatedOnUtc = subject.CreatedOnUtc;
             subject = model.ToEntity(subject);
+            subject.UpdatedOnUtc = DateTime.UtcNow;
+            subject.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
             await _subjectService.UpdateSubjectAsync(subject);
 
             //activity log
