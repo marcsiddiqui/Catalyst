@@ -50,38 +50,6 @@
                                 Width = "100",
                             },
 
-                            new ColumnProperty(nameof(SectionModel.Deleted))
-                            {
-                                Title = T("Admin.Sections.Sections.Fields.Deleted").Text,
-                                Width = "100",
-                                ClassName =  NopColumnClassDefaults.CenterAll,
-                            },
-
-                            new ColumnProperty(nameof(SectionModel.CreatedBy))
-                            {
-                                Title = T("Admin.Sections.Sections.Fields.CreatedBy").Text,
-                                Width = "100",
-                            },
-
-                            new ColumnProperty(nameof(SectionModel.CreatedOnUtc))
-                            {
-                                Title = T("Admin.Sections.Sections.Fields.CreatedOnUtc").Text,
-                                Width = "100",
-                            },
-
-                            new ColumnProperty(nameof(SectionModel.UpdatedBy))
-                            {
-                                Title = T("Admin.Sections.Sections.Fields.UpdatedBy").Text,
-                                Width = "100",
-                            },
-
-                            new ColumnProperty(nameof(SectionModel.UpdatedOnUtc))
-                            {
-                                Title = T("Admin.Sections.Sections.Fields.UpdatedOnUtc").Text,
-                                Width = "100",
-                            },
-
-
                             new ColumnProperty(nameof(SectionModel.Id))
                             {
                                 Title = T("Admin.Common.Edit").Text,
@@ -92,7 +60,7 @@
                         }
                     })
 
-                    <script>
+                    @* <script>
                         $(function() {
                             //"{{CamelCaseTrueAction}} selected" button
                             $('#{{TrueActionId}}').click(function (e) {
@@ -154,7 +122,7 @@
                                 return false;
                             });
                         });
-                    </script>
+                    </script> *@
                 </div>
             </div>
         </div>

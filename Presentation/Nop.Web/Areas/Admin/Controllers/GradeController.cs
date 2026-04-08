@@ -1,4 +1,6 @@
+using Markdig.Extensions.Tables;
 using Microsoft.AspNetCore.Mvc;
+using Nop.Core;
 using Nop.Core.Domain.GradeManagement;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
@@ -10,6 +12,7 @@ using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Web.Framework.Mvc.Filters;
+using System.Configuration;
 
 namespace Nop.Web.Areas.Admin.Controllers;
 
@@ -26,6 +29,7 @@ public partial class GradeController : BaseAdminController
     protected readonly IStoreMappingService _storeMappingService;
     protected readonly ISectionModelFactory _sectionModelFactory;
     protected readonly ISectionService _sectionService;
+    protected readonly IWorkContext _workContext;
 
     #endregion
 
@@ -40,7 +44,8 @@ public partial class GradeController : BaseAdminController
         INotificationService notificationService,
         IStoreMappingService storeMappingService,
         ISectionModelFactory sectionModelFactory,
-        ISectionService sectionService
+        ISectionService sectionService,
+        IWorkContext workContext
         )
     {
         _gradeModelFactory = gradeModelFactory;
@@ -52,6 +57,7 @@ public partial class GradeController : BaseAdminController
         _storeMappingService = storeMappingService;
         _sectionModelFactory = sectionModelFactory;
         _sectionService = sectionService;
+        _workContext = workContext;
     }
 
     #endregion
@@ -128,6 +134,8 @@ public partial class GradeController : BaseAdminController
         if (ModelState.IsValid)
         {
             var grade = model.ToEntity<Grade>();
+            grade.CreatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+            grade.CreatedOnUtc = DateTime.UtcNow;
             await _gradeService.InsertGradeAsync(grade);
 
             //activity log
@@ -180,7 +188,11 @@ public partial class GradeController : BaseAdminController
 
         if (ModelState.IsValid)
         {
+            model.CreatedBy = grade.CreatedBy;
+            model.CreatedOnUtc = grade.CreatedOnUtc;
             grade = model.ToEntity(grade);
+            grade.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+            grade.UpdatedOnUtc = DateTime.UtcNow;
             await _gradeService.UpdateGradeAsync(grade);
 
             //activity log
@@ -309,6 +321,8 @@ public partial class GradeController : BaseAdminController
         if (ModelState.IsValid)
         {
             var section = model.ToEntity<Section>();
+            section.CreatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+            section.CreatedOnUtc = DateTime.UtcNow;
             await _sectionService.InsertSectionAsync(section);
 
             //activity log
@@ -361,7 +375,11 @@ public partial class GradeController : BaseAdminController
 
         if (ModelState.IsValid)
         {
+            model.CreatedBy = section.CreatedBy;
+            model.CreatedOnUtc = section.CreatedOnUtc;
             section = model.ToEntity(section);
+            section.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+            section.UpdatedOnUtc = DateTime.UtcNow;
             await _sectionService.UpdateSectionAsync(section);
 
             //activity log
