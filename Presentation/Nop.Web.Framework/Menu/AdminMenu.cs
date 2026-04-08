@@ -112,7 +112,7 @@ public partial class AdminMenu : IAdminMenu
                             SystemName = "AcademicYearTerms",
                             Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.AcademicYearTerms"),
                             PermissionNames = new[] { StandardPermission.AcademicYears.MANAGE_ACADEMICYEARTERMS },
-                            Url = GetMenuItemUrl("AcademicYearTerm", "List"),
+                            Url = GetMenuItemUrl("AcademicYear", "AcademicYearTermList"),
                             IconClass = "far fa-dot-circle"
                         },
                         new()
@@ -128,7 +128,7 @@ public partial class AdminMenu : IAdminMenu
                             SystemName = "Sections",
                             Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Sections"),
                             PermissionNames = new[] { StandardPermission.GradeManagement.MANAGE_SECTIONS },
-                            Url = GetMenuItemUrl("Section", "List"),
+                            Url = GetMenuItemUrl("Grade", "SectionList"),
                             IconClass = "far fa-dot-circle"
                         },
                         new()
