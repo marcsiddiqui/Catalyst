@@ -84,7 +84,8 @@ public partial class AcademicYearService : IAcademicYearService
         return await _academicYearRepository.GetByIdsAsync(ids.ToList());
     }
 
-    public virtual async Task InsertAcademicYearAsync(AcademicYear academicYear)
+    public virtual async Task 
+        InsertAcademicYearAsync(AcademicYear academicYear)
     {
         if (academicYear == null)
             return;
