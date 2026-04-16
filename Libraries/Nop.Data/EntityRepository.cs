@@ -1,12 +1,13 @@
-﻿using System.Linq.Expressions;
-using System.Transactions;
-using Nop.Core;
+﻿using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Configuration;
 using Nop.Core.Domain.Common;
 using Nop.Core.Domain.LogInfo;
 using Nop.Core.Events;
 using Nop.Core.Infrastructure;
+
+using System.Linq.Expressions;
+using System.Transactions;
 
 namespace Nop.Data;
 
@@ -32,7 +33,8 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         INopDataProvider dataProvider,
         IShortTermCacheManager shortTermCacheManager,
         IStaticCacheManager staticCacheManager,
-        AppSettings appSettings)
+        AppSettings appSettings
+        )
     {
         _eventPublisher = eventPublisher;
         _dataProvider = dataProvider;
@@ -44,7 +46,6 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
             DistributedCacheType.SqlServer => true,
             _ => false
         };
-
     }
 
     #endregion
@@ -413,8 +414,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
         if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
         {
-            var _workContext = CommonHelper.Initialize<IWorkContext>();
-
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
             logInfoSupportedBaseEntity.CreatedOnUtc = DateTime.UtcNow;
             logInfoSupportedBaseEntity.CreatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
         }
@@ -435,6 +435,13 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
     {
         ArgumentNullException.ThrowIfNull(entity);
 
+        if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            logInfoSupportedBaseEntity.CreatedOnUtc = DateTime.UtcNow;
+            logInfoSupportedBaseEntity.CreatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+        }
+
         _dataProvider.InsertEntity(entity);
 
         //event notification
@@ -453,6 +460,20 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         ArgumentNullException.ThrowIfNull(entities);
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var now  = DateTime.UtcNow;
+
+            foreach (var entity in entities)
+            {
+                logInfoSupportedBaseEntity.CreatedOnUtc = now;
+                logInfoSupportedBaseEntity.CreatedBy = customer.Id;
+            }
+        }
+
         await _dataProvider.BulkInsertEntitiesAsync(entities);
         transaction.Complete();
 
@@ -474,6 +495,20 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         ArgumentNullException.ThrowIfNull(entities);
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult();
+            var now = DateTime.UtcNow;
+
+            foreach (var entity in entities)
+            {
+                logInfoSupportedBaseEntity.CreatedOnUtc = now;
+                logInfoSupportedBaseEntity.CreatedBy = customer.Id;
+            }
+        }
+
         _dataProvider.BulkInsertEntities(entities);
         transaction.Complete();
 
@@ -509,6 +544,13 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
     {
         ArgumentNullException.ThrowIfNull(entity);
 
+        if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            logInfoSupportedBaseEntity.UpdatedOnUtc = DateTime.UtcNow;
+            logInfoSupportedBaseEntity.UpdatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+        }
+
         await _dataProvider.UpdateEntityAsync(entity);
 
         //event notification
@@ -524,6 +566,13 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
     public virtual void Update(TEntity entity, bool publishEvent = true)
     {
         ArgumentNullException.ThrowIfNull(entity);
+
+        if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            logInfoSupportedBaseEntity.UpdatedOnUtc = DateTime.UtcNow;
+            logInfoSupportedBaseEntity.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+        }
 
         _dataProvider.UpdateEntity(entity);
 
@@ -544,6 +593,19 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
         if (!entities.Any())
             return;
+
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var now = DateTime.UtcNow;
+
+            foreach (var entity in entities)
+            {
+                logInfoSupportedBaseEntity.UpdatedOnUtc = now;
+                logInfoSupportedBaseEntity.UpdatedBy = customer.Id;
+            }
+        }
 
         await _dataProvider.UpdateEntitiesAsync(entities);
 
@@ -566,6 +628,19 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
         if (!entities.Any())
             return;
+
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult();
+            var now = DateTime.UtcNow;
+
+            foreach (var entity in entities)
+            {
+                logInfoSupportedBaseEntity.UpdatedOnUtc = now;
+                logInfoSupportedBaseEntity.UpdatedBy = customer.Id;
+            }
+        }
 
         _dataProvider.UpdateEntities(entities);
 
@@ -591,6 +666,12 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         {
             case ISoftDeletedEntity softDeletedEntity:
                 softDeletedEntity.Deleted = true;
+                if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                {
+                    var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+                    logInfoSupportedBaseEntity.UpdatedOnUtc = DateTime.UtcNow;
+                    logInfoSupportedBaseEntity.UpdatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
+                }
                 await _dataProvider.UpdateEntityAsync(entity);
                 break;
 
@@ -617,6 +698,12 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         {
             case ISoftDeletedEntity softDeletedEntity:
                 softDeletedEntity.Deleted = true;
+                if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                {
+                    var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+                    logInfoSupportedBaseEntity.UpdatedOnUtc = DateTime.UtcNow;
+                    logInfoSupportedBaseEntity.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
+                }
                 _dataProvider.UpdateEntity(entity);
                 break;
 
@@ -649,8 +736,20 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
             await _dataProvider.BulkDeleteEntitiesAsync(entities);
         else
         {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = await _workContext.GetCurrentCustomerAsync();
+            var now = DateTime.UtcNow;
+
             foreach (var entity in entities)
+            {
+                if (entity is LogInfoSupportedBaseEntity logEntity)
+                {
+                    logEntity.UpdatedOnUtc = now;
+                    logEntity.UpdatedBy = customer.Id;
+                }
+
                 ((ISoftDeletedEntity)entity).Deleted = true;
+            }
 
             await _dataProvider.UpdateEntitiesAsync(entities);
         }
@@ -683,8 +782,19 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
             _dataProvider.BulkDeleteEntities(entities);
         else
         {
+            var _workContext = EngineContext.Current.Resolve<IWorkContext>();
+            var customer = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult();
+            var now = DateTime.UtcNow;
+
             foreach (var entity in entities)
+            {
+                if (entity is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                {
+                    logInfoSupportedBaseEntity.UpdatedOnUtc = now;
+                    logInfoSupportedBaseEntity.UpdatedBy = customer.Id;
+                }
                 ((ISoftDeletedEntity)entity).Deleted = true;
+            }
 
             _dataProvider.UpdateEntities(entities);
         }
