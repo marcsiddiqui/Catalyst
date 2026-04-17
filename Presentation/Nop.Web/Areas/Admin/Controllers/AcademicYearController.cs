@@ -370,11 +370,7 @@ public partial class AcademicYearController : BaseAdminController
 
         if (ModelState.IsValid)
         {
-            model.CreatedOnUtc = academicYearTerm.CreatedOnUtc;
-            model.CreatedBy = academicYearTerm.CreatedBy;
             academicYearTerm = model.ToEntity(academicYearTerm);
-            academicYearTerm.UpdatedOnUtc = DateTime.UtcNow;
-            academicYearTerm.UpdatedBy = 0;
             await _academicYearService.UpdateAcademicYearTermAsync(academicYearTerm);
 
             //activity log

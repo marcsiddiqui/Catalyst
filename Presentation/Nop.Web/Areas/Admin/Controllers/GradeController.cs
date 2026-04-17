@@ -134,8 +134,6 @@ public partial class GradeController : BaseAdminController
         if (ModelState.IsValid)
         {
             var grade = model.ToEntity<Grade>();
-            grade.CreatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
-            grade.CreatedOnUtc = DateTime.UtcNow;
             await _gradeService.InsertGradeAsync(grade);
 
             //activity log
@@ -191,8 +189,6 @@ public partial class GradeController : BaseAdminController
             model.CreatedBy = grade.CreatedBy;
             model.CreatedOnUtc = grade.CreatedOnUtc;
             grade = model.ToEntity(grade);
-            grade.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
-            grade.UpdatedOnUtc = DateTime.UtcNow;
             await _gradeService.UpdateGradeAsync(grade);
 
             //activity log

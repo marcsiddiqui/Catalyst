@@ -1914,29 +1914,85 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.DateFromUtc, options => options.MapFrom(x => x.DateFromUtc.GetValueOrDefault().ToUniversalTime()))
             .ForMember(model => model.DateToUtc, options => options.MapFrom(x => x.DateToUtc.GetValueOrDefault().ToUniversalTime()));
 
-        CreateMap<AcademicYear, AcademicYearModel>();
-        CreateMap<AcademicYearModel, AcademicYear>();
+        CreateMap<AcademicYear, AcademicYearModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<AcademicYearModel, AcademicYear>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<AcademicYearTerm, AcademicYearTermModel>();
-        CreateMap<AcademicYearTermModel, AcademicYearTerm>();
+        CreateMap<AcademicYearTerm, AcademicYearTermModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<AcademicYearTermModel, AcademicYearTerm>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
         CreateMap<GenericDropDownOption, GenericDropDownOptionModel>();
         CreateMap<GenericDropDownOptionModel, GenericDropDownOption>();
 
-        CreateMap<Fee, FeeModel>();
-        CreateMap<FeeModel, Fee>();
+        CreateMap<Fee, FeeModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<FeeModel, Fee>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<FeePayment, FeePaymentModel>();
-        CreateMap<FeePaymentModel, FeePayment>();
+        CreateMap<FeePayment, FeePaymentModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<FeePaymentModel, FeePayment>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<Grade, GradeModel>();
-        CreateMap<GradeModel, Grade>();
+        CreateMap<Grade, GradeModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<GradeModel, Grade>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<Subject, SubjectModel>();
-        CreateMap<SubjectModel, Subject>();
+        CreateMap<Subject, SubjectModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<SubjectModel, Subject>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<Section, SectionModel>();
-        CreateMap<SectionModel, Section>();
+        CreateMap<Section, SectionModel>()
+            .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
+            .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
+            .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
+        CreateMap<SectionModel, Section>()
+            .ForMember(model => model.CreatedBy, options => options.Ignore())
+            .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
+            .ForMember(model => model.UpdatedBy, options => options.Ignore())
+            .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
         //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
 
     }
