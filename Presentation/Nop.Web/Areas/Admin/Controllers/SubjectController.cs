@@ -114,8 +114,6 @@ public partial class SubjectController : BaseAdminController
         if (ModelState.IsValid)
         {
             var subject = model.ToEntity<Subject>();
-            subject.CreatedOnUtc = DateTime.UtcNow;
-            subject.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
             await _subjectService.InsertSubjectAsync(subject);
 
             //activity log
@@ -168,11 +166,7 @@ public partial class SubjectController : BaseAdminController
 
         if (ModelState.IsValid)
         {
-            model.CreatedBy = subject.CreatedBy;
-            model.CreatedOnUtc = subject.CreatedOnUtc;
             subject = model.ToEntity(subject);
-            subject.UpdatedOnUtc = DateTime.UtcNow;
-            subject.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
             await _subjectService.UpdateSubjectAsync(subject);
 
             //activity log

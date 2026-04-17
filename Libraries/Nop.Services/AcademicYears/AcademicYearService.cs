@@ -84,13 +84,11 @@ public partial class AcademicYearService : IAcademicYearService
         return await _academicYearRepository.GetByIdsAsync(ids.ToList());
     }
 
-    public virtual async Task InsertAcademicYearAsync(AcademicYear academicYear)
+    public virtual async Task 
+        InsertAcademicYearAsync(AcademicYear academicYear)
     {
         if (academicYear == null)
             return;
-
-        academicYear.CreatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
-        academicYear.CreatedOnUtc = DateTime.UtcNow;
 
         await _academicYearRepository.InsertAsync(academicYear);
     }
@@ -100,13 +98,6 @@ public partial class AcademicYearService : IAcademicYearService
         if (academicYears == null || !academicYears.Any())
             return;
 
-        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
-        foreach (var academicYear in academicYears)
-        {
-            academicYear.CreatedBy = customerId;
-            academicYear.CreatedOnUtc = DateTime.UtcNow;
-        }
-
         await _academicYearRepository.InsertAsync(academicYears.ToList());
     }
 
@@ -115,9 +106,6 @@ public partial class AcademicYearService : IAcademicYearService
         if (academicYear == null)
             return;
 
-        academicYear.UpdatedBy = (await _workContext.GetCurrentCustomerAsync()).Id;
-        academicYear.UpdatedOnUtc = DateTime.UtcNow;
-
         await _academicYearRepository.UpdateAsync(academicYear);
     }
 
@@ -125,13 +113,6 @@ public partial class AcademicYearService : IAcademicYearService
     {
         if (academicYears == null || !academicYears.Any())
             return;
-
-        var customerId = (await _workContext.GetCurrentCustomerAsync()).Id;
-        foreach (var academicYear in academicYears)
-        {
-            academicYear.UpdatedBy = customerId;
-            academicYear.UpdatedOnUtc = DateTime.UtcNow;
-        }
 
         await _academicYearRepository.UpdateAsync(academicYears.ToList());
     }

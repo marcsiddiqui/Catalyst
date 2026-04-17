@@ -1,3 +1,5 @@
+using AspNetCoreGeneratedDocument;
+
 using Microsoft.AspNetCore.Mvc;
 using Nop.Core.Domain.AcademicYears;
 using Nop.Services.AcademicYears;
@@ -331,9 +333,9 @@ public partial class AcademicYearController : BaseAdminController
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Academics.AcademicYearTerms.Added"));
 
             if (!continueEditing)
-                return RedirectToAction("List");
+                return RedirectToAction("AcademicYearTermList");
 
-            return RedirectToAction("Edit", new { id = academicYearTerm.Id });
+            return RedirectToAction("AcademicYearTermEdit", new { id = academicYearTerm.Id });
         }
 
         //prepare model
@@ -349,7 +351,7 @@ public partial class AcademicYearController : BaseAdminController
         //try to get a academicYearTerm with the specified id
         var academicYearTerm = await _academicYearService.GetAcademicYearTermByIdAsync(id);
         if (academicYearTerm == null)
-            return RedirectToAction("List");
+            return RedirectToAction("AcademicYearTermList");
 
         //prepare model
         var model = await _academicYearTermModelFactory.PrepareAcademicYearTermModelAsync(null, academicYearTerm);
@@ -364,7 +366,7 @@ public partial class AcademicYearController : BaseAdminController
         //try to get a academicYearTerm with the specified id
         var academicYearTerm = await _academicYearService.GetAcademicYearTermByIdAsync(model.Id);
         if (academicYearTerm == null)
-            return RedirectToAction("List");
+            return RedirectToAction("AcademicYearTermList");
 
         if (ModelState.IsValid)
         {
@@ -384,9 +386,9 @@ public partial class AcademicYearController : BaseAdminController
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Academics.AcademicYearTerms.Updated"));
 
             if (!continueEditing)
-                return RedirectToAction("List");
+                return RedirectToAction("AcademicYearTermList");
 
-            return RedirectToAction("Edit", new { id = academicYearTerm.Id });
+            return RedirectToAction("AcademicYearTermEdit", new { id = academicYearTerm.Id });
         }
 
         //prepare model
@@ -403,7 +405,7 @@ public partial class AcademicYearController : BaseAdminController
         //try to get a academicYearTerm with the specified id
         var academicYearTerm = await _academicYearService.GetAcademicYearTermByIdAsync(id);
         if (academicYearTerm == null)
-            return RedirectToAction("List");
+            return RedirectToAction("AcademicYearTermList");
 
         try
         {
@@ -415,12 +417,12 @@ public partial class AcademicYearController : BaseAdminController
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Academics.AcademicYearTerms.Deleted"));
 
-            return RedirectToAction("List");
+            return RedirectToAction("AcademicYearTermList");
         }
         catch (Exception exc)
         {
             await _notificationService.ErrorNotificationAsync(exc);
-            return RedirectToAction("Edit", new { id = academicYearTerm.Id });
+            return RedirectToAction("AcademicYearTermEdit", new { id = academicYearTerm.Id });
         }
     }
 
