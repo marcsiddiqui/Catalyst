@@ -144,7 +144,8 @@ public partial class GradeController : BaseAdminController
             await UpdateLocalesAsync(grade, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.GradeManagement.Grades.Added"));
 
@@ -199,7 +200,8 @@ public partial class GradeController : BaseAdminController
             await UpdateLocalesAsync(grade, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.GradeManagement.Grades.Updated"));
 

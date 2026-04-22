@@ -118,7 +118,8 @@ public partial class EventController : BaseAdminController
             await UpdateLocalesAsync(@event, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(event, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(@event, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.HolidaysNEvents.Events.Added"));
 
@@ -171,7 +172,8 @@ public partial class EventController : BaseAdminController
             await UpdateLocalesAsync(@event, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(event, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(@event, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.HolidaysNEvents.Events.Updated"));
 
