@@ -28,21 +28,7 @@ public partial record SubjectModel : BaseNopEntityModel, ILocalizedModel<Subject
     [NopResourceDisplayName("Admin.Configuration.Subjects.Fields.Deleted")]
     public bool Deleted { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Subjects.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Subjects.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Subjects.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Subjects.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     public IList<SubjectLocalizedModel> Locales { get; set; }
-
-
 
     #endregion
 }

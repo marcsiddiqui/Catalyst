@@ -25,18 +25,6 @@ public partial record SectionModel : BaseNopEntityModel, ILocalizedModel<Section
     [NopResourceDisplayName("Admin.Configuration.Sections.Fields.Deleted")]
     public bool Deleted { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Sections.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Sections.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Sections.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Sections.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     public IList<SectionLocalizedModel> Locales { get; set; }
 
 

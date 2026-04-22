@@ -31,18 +31,6 @@ public partial record AcademicYearTermModel : BaseNopEntityModel, ILocalizedMode
     [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.Weitage")]
     public decimal Weitage { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.Deleted")]
     public bool Deleted { get; set; }
 

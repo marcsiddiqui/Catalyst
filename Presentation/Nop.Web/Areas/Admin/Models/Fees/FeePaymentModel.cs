@@ -26,20 +26,6 @@ public partial record FeePaymentModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.FeePaymentses.Fields.StatusId")]
     public int StatusId { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.FeePaymentses.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.FeePaymentses.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.FeePaymentses.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.FeePaymentses.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
-
-
     #endregion
 }
 

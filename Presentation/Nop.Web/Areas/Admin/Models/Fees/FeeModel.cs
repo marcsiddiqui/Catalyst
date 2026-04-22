@@ -39,18 +39,6 @@ public partial record FeeModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.Fees.Fields.Deleted")]
     public bool Deleted { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Fees.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Fees.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Fees.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Fees.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     #endregion
 
     #region Extra Model Properties
