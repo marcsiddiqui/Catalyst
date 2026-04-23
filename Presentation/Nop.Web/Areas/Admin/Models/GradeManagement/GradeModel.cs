@@ -37,18 +37,6 @@ public partial record GradeModel : BaseNopEntityModel, ILocalizedModel<GradeLoca
     [NopResourceDisplayName("Admin.Configuration.Grades.Fields.StoreId")]
     public int StoreId { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Grades.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Grades.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Grades.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Grades.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Grades.Fields.LimitedToStores")]
     public bool LimitedToStores { get; set; }
 

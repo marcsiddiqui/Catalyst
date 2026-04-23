@@ -144,7 +144,8 @@ public partial class GradeController : BaseAdminController
             await UpdateLocalesAsync(grade, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.GradeManagement.Grades.Added"));
 
@@ -199,7 +200,8 @@ public partial class GradeController : BaseAdminController
             await UpdateLocalesAsync(grade, model);
 
 
-            //Stores            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
+            //Stores
+            await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.GradeManagement.Grades.Updated"));
 
@@ -317,8 +319,6 @@ public partial class GradeController : BaseAdminController
         if (ModelState.IsValid)
         {
             var section = model.ToEntity<Section>();
-            section.CreatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
-            section.CreatedOnUtc = DateTime.UtcNow;
             await _sectionService.InsertSectionAsync(section);
 
             //activity log
@@ -334,9 +334,9 @@ public partial class GradeController : BaseAdminController
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Added"));
 
             if (!continueEditing)
-                return RedirectToAction("List");
+                return RedirectToAction("SectionList");
 
-            return RedirectToAction("Edit", new { id = section.Id });
+            return RedirectToAction("SectionEdit", new { id = section.Id });
         }
 
         //prepare model
@@ -352,7 +352,7 @@ public partial class GradeController : BaseAdminController
         //try to get a section with the specified id
         var section = await _sectionService.GetSectionByIdAsync(id);
         if (section == null)
-            return RedirectToAction("List");
+            return RedirectToAction("SectionList");
 
         //prepare model
         var model = await _sectionModelFactory.PrepareSectionModelAsync(null, section);
@@ -367,15 +367,11 @@ public partial class GradeController : BaseAdminController
         //try to get a section with the specified id
         var section = await _sectionService.GetSectionByIdAsync(model.Id);
         if (section == null)
-            return RedirectToAction("List");
+            return RedirectToAction("SectionList");
 
         if (ModelState.IsValid)
         {
-            model.CreatedBy = section.CreatedBy;
-            model.CreatedOnUtc = section.CreatedOnUtc;
             section = model.ToEntity(section);
-            section.UpdatedBy = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult().Id;
-            section.UpdatedOnUtc = DateTime.UtcNow;
             await _sectionService.UpdateSectionAsync(section);
 
             //activity log
@@ -391,9 +387,9 @@ public partial class GradeController : BaseAdminController
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Updated"));
 
             if (!continueEditing)
-                return RedirectToAction("List");
+                return RedirectToAction("SectionList");
 
-            return RedirectToAction("Edit", new { id = section.Id });
+            return RedirectToAction("SectionEdit", new { id = section.Id });
         }
 
         //prepare model
@@ -410,7 +406,7 @@ public partial class GradeController : BaseAdminController
         //try to get a section with the specified id
         var section = await _sectionService.GetSectionByIdAsync(id);
         if (section == null)
-            return RedirectToAction("List");
+            return RedirectToAction("SectionList");
 
         try
         {
@@ -422,12 +418,12 @@ public partial class GradeController : BaseAdminController
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Sections.Sections.Deleted"));
 
-            return RedirectToAction("List");
+            return RedirectToAction("SectionList");
         }
         catch (Exception exc)
         {
             await _notificationService.ErrorNotificationAsync(exc);
-            return RedirectToAction("Edit", new { id = section.Id });
+            return RedirectToAction("SectionEdit", new { id = section.Id });
         }
     }
 

@@ -31,18 +31,6 @@ public partial record AcademicYearModel : BaseNopEntityModel, ILocalizedModel<Ac
     [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.EndDate")]
     public DateTime EndDate { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.AcademicYears.Fields.Deleted")]
     public bool Deleted { get; set; }
 
