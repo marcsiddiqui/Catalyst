@@ -6,6 +6,8 @@ namespace Nop.Services.GradeManagement;
 
 public partial interface IGradeService
 {
+    #region Grade
+
     Task<IPagedList<Grade>> GetAllGradesAsync(
         int id = 0, IEnumerable<int> ids = null,
         string name = null, IEnumerable<string> names = null,
@@ -33,4 +35,34 @@ public partial interface IGradeService
     Task DeleteGradeAsync(Grade grade);
 
     Task DeleteGradeAsync(IEnumerable<Grade> grades);
+
+    #endregion
+
+    #region Methods
+
+    Task<IPagedList<GradeSubjectMapping>> GetAllGradeSubjectMappingsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int gradeId = 0, IEnumerable<int> gradeIds = null,
+        int subjectId = 0, IEnumerable<int> subjectIds = null,
+        int sectionId = 0, IEnumerable<int> sectionIds = null,
+        BooleanFilter deleted = BooleanFilter.False,
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task<GradeSubjectMapping> GetGradeSubjectMappingByIdAsync(int id);
+
+    Task<IList<GradeSubjectMapping>> GetGradeSubjectMappingsByIdsAsync(IEnumerable<int> ids);
+
+    Task InsertGradeSubjectMappingAsync(GradeSubjectMapping gradeSubjectMapping);
+
+    Task InsertGradeSubjectMappingAsync(IEnumerable<GradeSubjectMapping> gradeSubjectMappings);
+
+    Task UpdateGradeSubjectMappingAsync(GradeSubjectMapping gradeSubjectMapping);
+
+    Task UpdateGradeSubjectMappingAsync(IEnumerable<GradeSubjectMapping> gradeSubjectMappings);
+
+    Task DeleteGradeSubjectMappingAsync(GradeSubjectMapping gradeSubjectMapping);
+
+    Task DeleteGradeSubjectMappingAsync(IEnumerable<GradeSubjectMapping> gradeSubjectMappings);
+
+    #endregion
 }
