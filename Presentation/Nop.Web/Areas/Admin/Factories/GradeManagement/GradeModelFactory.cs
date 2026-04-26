@@ -1,6 +1,7 @@
 using Nop.Core.Domain.GradeManagement;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
+using Nop.Services.Subjects;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Web.Framework.Factories;
@@ -16,6 +17,8 @@ public partial class GradeModelFactory : IGradeModelFactory
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
+    protected readonly ISubjectService _subjectService;
+    protected readonly ISectionService _sectionService;
 
     #endregion
 
@@ -24,12 +27,16 @@ public partial class GradeModelFactory : IGradeModelFactory
     public GradeModelFactory(IGradeService gradeService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
-        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory)
+        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
+        ISubjectService subjectService,
+        ISectionService sectionService)
     {
         _gradeService = gradeService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
+        _subjectService = subjectService;
+        _sectionService = sectionService;
     }
 
     #endregion
@@ -109,6 +116,38 @@ public partial class GradeModelFactory : IGradeModelFactory
         //prepare available stores
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, grade, excludeProperties);
 
+
+        return model;
+    }
+
+    #endregion
+
+    #region GradeSubjectMapping
+
+    public virtual async Task<GradeSubjectListModel> PrepareGradeSubjectListModelAsync(GradeSubjectSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //get grades
+        var gradeSubjectMappings = (await _gradeService.GetAllGradeSubjectMappingsAsync()).ToPagedList(searchModel);
+        var sujects = (await _subjectService.GetAllSubjectsAsync(ids: gradeSubjectMappings.Select(gsm => gsm.SubjectId))).ToList();
+        var sections = (await _sectionService.GetAllSectionsAsync(ids: gradeSubjectMappings.Select(gsm => gsm.SectionId ?? 0))).ToList();
+
+        //prepare list model
+        var model = await new GradeSubjectListModel().PrepareToGridAsync(searchModel, gradeSubjectMappings, () =>
+        {
+            //fill in model values from the entity
+            return gradeSubjectMappings.SelectAwait(async grade =>
+            {
+                var gradeModel = grade.ToModel<GradeSubjectModel>();
+                var subject = sujects.FirstOrDefault(s => s.Id == grade.SubjectId);
+                gradeModel.SubjectName = subject?.Name;
+                var section = sections.FirstOrDefault(s => s.Id == grade.SectionId);
+                gradeModel.SectionName = section?.Name;
+
+                return gradeModel;
+            });
+        });
 
         return model;
     }

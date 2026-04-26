@@ -2,9 +2,12 @@
 @model GradeModel
 
 @{
-    const string hideInfoBlockAttributeName = "GradePage.HideInfoBlock";
     var customer = await workContext.GetCurrentCustomerAsync();
+    const string hideInfoBlockAttributeName = "GradePage.HideInfoBlock";
     var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+
+    const string hideGradeSubjectMappingBlockAttributeName = "GradePage.GradeSubjectMappingBlock";
+    var hideGradeSubjectMappingBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideGradeSubjectMappingBlockAttributeName);
 }
 
 <div asp-validation-summary="All"></div>
@@ -15,6 +18,9 @@
         <div class="form-horizontal">
             <nop-cards id="grade-cards">
                 <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Info", Model)</nop-card>
+            </nop-cards>
+            <nop-cards id="grade-cards">
+                <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Subject.Mapping")" asp-hide-block-attribute-name="@hideGradeSubjectMappingBlockAttributeName" asp-hide="@hideGradeSubjectMappingBlock" asp-advanced="false">@await Html.PartialAsync("_GradeSubjectMappngScreen", Model)</nop-card>
             </nop-cards>
         </div>
     </div>

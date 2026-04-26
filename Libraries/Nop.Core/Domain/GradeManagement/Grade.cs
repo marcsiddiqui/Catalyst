@@ -21,7 +21,7 @@ public partial class Grade : LogInfoSupportedBaseEntity, ILocalizedEntity, IStor
     public bool LimitedToStores { get; set; }
 }
 
-public partial class GradeSubjectMapping : LogInfoSupportedBaseEntity, ILocalizedEntity, ISoftDeletedEntity
+public partial class GradeSubjectMapping : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 {
     public int GradeId { get; set; }
     

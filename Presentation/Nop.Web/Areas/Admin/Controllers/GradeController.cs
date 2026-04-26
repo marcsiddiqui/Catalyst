@@ -282,6 +282,21 @@ public partial class GradeController : BaseAdminController
 
     #endregion
 
+    #region GradeSubjectMapping
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.Subjects.MANAGE_SUBJECTS)]
+    public virtual async Task<IActionResult> GradeSubjectGrid(GradeSubjectSearchModel searchModel)
+    {
+        //prepare model
+        var model = await _gradeModelFactory.PrepareGradeSubjectListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    #endregion
+
     #region Sections
 
     [CheckPermission(StandardPermission.GradeManagement.MANAGE_SECTIONS)]
