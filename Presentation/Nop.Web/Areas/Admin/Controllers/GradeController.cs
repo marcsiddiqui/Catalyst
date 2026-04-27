@@ -1,5 +1,9 @@
 using Markdig.Extensions.Tables;
+
 using Microsoft.AspNetCore.Mvc;
+
+using Newtonsoft.Json;
+
 using Nop.Core;
 using Nop.Core.Domain.GradeManagement;
 using Nop.Services.GradeManagement;
@@ -12,6 +16,7 @@ using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Web.Framework.Mvc.Filters;
+
 using System.Configuration;
 
 namespace Nop.Web.Areas.Admin.Controllers;
@@ -284,6 +289,15 @@ public partial class GradeController : BaseAdminController
 
     #region GradeSubjectMapping
 
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> PendingGradeSubjectMappingPopup()
+    {
+        //prepare model
+        var model = await _gradeModelFactory.PrepareGradeModelAsync(new GradeModel(), null);
+
+        return View(model);
+    }
+
     [HttpPost]
     [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
     [CheckPermission(StandardPermission.Subjects.MANAGE_SUBJECTS)]
@@ -294,6 +308,26 @@ public partial class GradeController : BaseAdminController
 
         return Json(model);
     }
+
+    //[HttpPost]
+    //public virtual async Task<IActionResult> SaveGradeSubjectLabFees(string items)
+    //{
+    //    if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManagePlugins))
+    //        return AccessDeniedView();
+
+    //    var list = JsonConvert.DeserializeObject<List<GradeSubjectLabFeeDto>>(items);
+
+    //    foreach (var item in list)
+    //    {
+    //        var mapping = await _gradeSubjectMappingService.GetByIdAsync(item.Id);
+    //        if (mapping == null) continue;
+
+    //        mapping.LabFee = item.LabFee;
+    //        await _gradeSubjectMappingService.UpdateAsync(mapping);
+    //    }
+
+    //    return Json(new { Result = "success" });
+    //}
 
     #endregion
 
