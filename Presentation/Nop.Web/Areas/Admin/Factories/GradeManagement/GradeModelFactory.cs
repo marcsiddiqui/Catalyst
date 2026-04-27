@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core.Domain.GradeManagement;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
@@ -43,7 +44,26 @@ public partial class GradeModelFactory : IGradeModelFactory
 
     #region Utilities
 
-    
+    public virtual async Task PrepareSections(IList<SelectListItem> items, int sectionId = 0)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        items.Add(new SelectListItem { Value = "0", Text = await _localizationService.GetResourceAsync("Admin.Section.Select"), Selected = sectionId == 0 });
+
+        var sections = await _sectionService.GetAllSectionsAsync();
+        foreach (var section in sections)
+            items.Add(new SelectListItem { Value = section.Id.ToString(), Text = section.Name, Selected = section.Id == sectionId });
+    }
+
+    public virtual async Task PrepareSubjects(IList<SelectListItem> items, int subjectId = 0)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        items.Add(new SelectListItem { Value = "0", Text = await _localizationService.GetResourceAsync("Admin.Subject.Select"), Selected = subjectId == 0 });
+        var subjects = await _subjectService.GetAllSubjectsAsync();
+        foreach (var subject in subjects)
+            items.Add(new SelectListItem { Value = subject.Id.ToString(), Text = subject.Name, Selected = subject.Id == subjectId });
+    }
 
     #endregion
 
@@ -139,7 +159,7 @@ public partial class GradeModelFactory : IGradeModelFactory
             //fill in model values from the entity
             return gradeSubjectMappings.SelectAwait(async grade =>
             {
-                var gradeModel = grade.ToModel<GradeSubjectModel>();
+                var gradeModel = grade.ToModel<GradeSubjectMappingModel>();
                 var subject = sujects.FirstOrDefault(s => s.Id == grade.SubjectId);
                 gradeModel.SubjectName = subject?.Name;
                 var section = sections.FirstOrDefault(s => s.Id == grade.SectionId);
@@ -148,6 +168,29 @@ public partial class GradeModelFactory : IGradeModelFactory
                 return gradeModel;
             });
         });
+
+        return model;
+    }
+
+    public virtual async Task<GradeSubjectMappingModel> PrepareGradeSubjectMappingModelAsync(GradeSubjectMappingModel model, GradeSubjectMapping grade, bool excludeProperties = false)
+    {
+        if (grade != null)
+        {
+            //fill in model values from the entity
+            if (model == null)
+            {
+                model = grade.ToModel<GradeSubjectMappingModel>();
+            }
+        }
+
+        //set default values for the new model
+        if (grade == null)
+        {
+
+        }
+
+        await PrepareSections(model.AvailableSections, model.SectionId ?? 0);
+        await PrepareSubjects(model.AvailableSubjects, model.SubjectId);
 
         return model;
     }

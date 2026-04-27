@@ -20,26 +20,26 @@
                 LengthMenu = Model.GradeSubjectSearchModel.AvailablePageSizes,
                 ColumnCollection = new List<ColumnProperty>
                 {
-                    new ColumnProperty(nameof(GradeSubjectModel.SubjectName))
+                    new ColumnProperty(nameof(GradeSubjectMappingModel.SubjectName))
                     {
                         Title = T("Admin.Grade.Subject.Mapping.SubjectName").Text
                     },
-                    new ColumnProperty(nameof(GradeSubjectModel.LabFee))
+                    new ColumnProperty(nameof(GradeSubjectMappingModel.LabFee))
                     {
                         Title = T("Admin.Grade.Subject.Mapping.LabFee").Text
                     },
-                    new ColumnProperty(nameof(GradeSubjectModel.SectionName))
+                    new ColumnProperty(nameof(GradeSubjectMappingModel.SectionName))
                     {
                         Title = T("Admin.Grade.Subject.Mapping.SectionName").Text
                     },
-                    new ColumnProperty(nameof(GradeSubjectModel.Id))
+                    new ColumnProperty(nameof(GradeSubjectMappingModel.Id))
                     {
                         Title = T("Admin.Common.Edit").Text,
                         Width = "100",
                         ClassName =  NopColumnClassDefaults.Button,
                         Render = new RenderCustom("renderGradeSubjectEditColumn")
                     },
-                    new ColumnProperty(nameof(GradeSubjectModel.Id))
+                    new ColumnProperty(nameof(GradeSubjectMappingModel.Id))
                     {
                         Title = T("Admin.Common.Delete").Text,
                         Width = "100",
@@ -51,12 +51,12 @@
 
             <script>
                 function renderGradeSubjectEditColumn(data, type, row, meta) {
-                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Product/TierPriceEditPopup/")' + data + '?btnId=btnAddNewGradeSubjectMapping&formId=product-form\', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Grade/AddOrEditGradeSubjectMappingPopup/")?gradeId=' + row.GradeId + '&mappingId=' + row.Id + ', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
                 }
             </script>
         </div>
         <div class="card-footer">
-            <button type="submit" id="btnAddNewTierPrice" onclick="javascript:OpenWindow('@(Url.Action("PendingGradeSubjectMappingPopup", "Grade", new { gradeId = Model.Id, btnId = "btnAddNewGradeSubjectMapping"}))', 800, 600, true); return false;" class="btn btn-primary">
+            <button type="submit" id="btnAddNewTierPrice" onclick="javascript:OpenWindow('@(Url.Action("AddOrEditGradeSubjectMappingPopup", "Grade", new { gradeId = Model.Id, mappingId = 0}))', 800, 600, true); return false;" class="btn btn-primary">
                 @T("Admin.Grade.Subject.Mapping.AddNew")
             </button>
             <button type="submit" id="btnAddNewGradeSubjectMapping" style="display: none"></button>

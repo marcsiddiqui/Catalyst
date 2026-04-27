@@ -1994,12 +1994,12 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.UpdatedBy, options => options.Ignore())
             .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        CreateMap<GradeSubjectMapping, GradeSubjectModel>()
+        CreateMap<GradeSubjectMapping, GradeSubjectMappingModel>()
             .ForMember(model => model.CreatedByName, options => options.MapFrom(x => GetNameAsync(x.CreatedBy).GetAwaiter().GetResult()))
             .ForMember(model => model.CreatedOnUtc, options => options.MapFrom(x => x.CreatedOnUtc.ToLocalTime()))
             .ForMember(model => model.UpdatedByName, options => options.MapFrom(x => GetNameAsync(x.UpdatedBy).GetAwaiter().GetResult()))
             .ForMember(model => model.UpdatedOnUtc, options => options.MapFrom(x => x.UpdatedOnUtc.GetValueOrDefault().ToLocalTime()));
-        CreateMap<GradeSubjectModel, GradeSubjectMapping>()
+        CreateMap<GradeSubjectMappingModel, GradeSubjectMapping>()
             .ForMember(model => model.CreatedBy, options => options.Ignore())
             .ForMember(model => model.CreatedOnUtc, options => options.Ignore())
             .ForMember(model => model.UpdatedBy, options => options.Ignore())

@@ -290,10 +290,11 @@ public partial class GradeController : BaseAdminController
     #region GradeSubjectMapping
 
     [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
-    public virtual async Task<IActionResult> PendingGradeSubjectMappingPopup()
+    public virtual async Task<IActionResult> AddOrEditGradeSubjectMappingPopup(int gradeId, int mappingId = 0)
     {
+        var gradeSubjectMapping = mappingId > 0 ? (await _gradeService.GetGradeSubjectMappingByIdAsync(mappingId)) : null;
         //prepare model
-        var model = await _gradeModelFactory.PrepareGradeModelAsync(new GradeModel(), null);
+        var model = await _gradeModelFactory.PrepareGradeSubjectMappingModelAsync(new GradeSubjectMappingModel(), gradeSubjectMapping);
 
         return View(model);
     }
@@ -309,25 +310,76 @@ public partial class GradeController : BaseAdminController
         return Json(model);
     }
 
-    //[HttpPost]
-    //public virtual async Task<IActionResult> SaveGradeSubjectLabFees(string items)
-    //{
-    //    if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManagePlugins))
-    //        return AccessDeniedView();
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public virtual async Task<IActionResult> GradeSubjectMappingSave(
+    [FromBody] GradeSubjectMappingModel model)
+    {
+        if (model.Id > 0)
+        {
+            var mapping = await _gradeService.GetGradeSubjectMappingByIdAsync(model.Id);
+            if (mapping == null || mapping.Deleted)
+                return Json(new { Result = "error", Errors = new[] { "Mapping not found." } });
 
-    //    var list = JsonConvert.DeserializeObject<List<GradeSubjectLabFeeDto>>(items);
+            if (mapping.SubjectId != model.SubjectId || mapping.SectionId != model.SectionId)
+            {
+                var exists = await _gradeService.GetAllGradeSubjectMappingsAsync(subjectId: model.SubjectId, sectionId: model.SectionId ?? 0, gradeId: mapping.GradeId);
 
-    //    foreach (var item in list)
-    //    {
-    //        var mapping = await _gradeSubjectMappingService.GetByIdAsync(item.Id);
-    //        if (mapping == null) continue;
+                if (exists != null && exists.Any())
+                    return Json(new { Result = "error", Errors = new[] { "This subject/section combination already exists." } });
+            }
 
-    //        mapping.LabFee = item.LabFee;
-    //        await _gradeSubjectMappingService.UpdateAsync(mapping);
-    //    }
+            mapping.SubjectId = model.SubjectId;
+            mapping.SectionId = model.SectionId;
+            mapping.LabFee = model.LabFee;
 
-    //    return Json(new { Result = "success" });
-    //}
+            await _gradeService.UpdateGradeSubjectMappingAsync(mapping);
+
+            return Json(new { Result = "success" });
+        }
+
+        if (model.SelectedSubjectIds == null || !model.SelectedSubjectIds.Any())
+            return Json(new { Result = "error", Errors = new[] { "Please select at least one subject." } });
+
+        var errors = new List<string>();
+
+        var sectionIds = (model.SelectedSectionIds != null && model.SelectedSectionIds.Any())
+            ? model.SelectedSectionIds
+            : new List<int> { 0 };
+
+        foreach (var subjectId in model.SelectedSubjectIds)
+        {
+            foreach (var sectionId in sectionIds)
+            {
+                var exists = await _gradeService.GetAllGradeSubjectMappingsAsync(subjectId: subjectId, sectionId: sectionId == 0 ? 0 : sectionId, gradeId: model.GradeId);
+
+                if (exists != null && exists.Any())
+                {
+                    errors.Add($"Mapping for subject {subjectId} / section {sectionId} already exists.");
+                    continue;
+                }
+
+                var mapping = new GradeSubjectMapping
+                {
+                    GradeId = model.GradeId,
+                    SubjectId = subjectId,
+                    SectionId = sectionId == 0 ? null : (int?)sectionId,
+                    LabFee = model.LabFee,
+                    Deleted = false
+                };
+
+                await _gradeService.InsertGradeSubjectMappingAsync(mapping);
+            }
+        }
+
+        if (errors.Any() && errors.Count < model.SelectedSubjectIds.Count * sectionIds.Count)
+            return Json(new { Result = "success", Warnings = errors });
+
+        if (errors.Any())
+            return Json(new { Result = "error", Errors = errors });
+
+        return Json(new { Result = "success" });
+    }
 
     #endregion
 
