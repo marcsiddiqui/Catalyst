@@ -4,134 +4,92 @@
 <section class="content">
     <div class="container-fluid">
         <div class="form-horizontal">
-            <div class="form-horizontal">
-                <div class="cards-group">
-                    <div class="card card-default card-popup">
-                        <div class="card-body">
-                            @if (Model.Id > 0)
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-3">
-                                        <nop-label asp-for="SubjectId" />
-                                    </div>
-                                    <div class="col-md-9">
-                                        <nop-select asp-for="SubjectId" asp-items="Model.AvailableSubjects" />
-                                        <span asp-validation-for="SubjectId"></span>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-3">
-                                        <nop-label asp-for="SectionId" />
-                                    </div>
-                                    <div class="col-md-9">
-                                        <nop-select asp-for="SectionId" asp-items="Model.AvailableSections" />
-                                        <span asp-validation-for="SectionId"></span>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="form-group row">
-                                    <div class="col-md-3">
-                                        <nop-label asp-for="SelectedSubjectIds" />
-                                    </div>
-                                    <div class="col-md-9">
-                                        <nop-select asp-for="SelectedSubjectIds" asp-items="Model.AvailableSubjects" asp-multiple="true" />
-                                        <script>
-                                            $(function() {
-                                                var subjectIdsInput = $('#@Html.IdFor(model => model.SelectedSubjectIds)').select2({
-                                                    closeOnSelect: false,
-                                                    @if (!Model.AvailableSubjects.Any())
-                                                    {
-                                                                <text>
-                                                                disabled: true,
-                                                                placeholder: 'No subjects available',
-                                                                </text>
-                                                    }
-                                                });
-                                            });
-                                        </script>
-                                    </div>
-                                </div>
-
-                                <div class="form-group row">
-                                    <div class="col-md-3">
-                                        <nop-label asp-for="SelectedSectionIds" />
-                                    </div>
-                                    <div class="col-md-9">
-                                        <nop-select asp-for="SelectedSectionIds" asp-items="Model.AvailableSections" asp-multiple="true" />
-                                        <script>
-                                            $(function() {
-                                                var sectionIdsInput = $('#@Html.IdFor(model => model.SelectedSectionIds)').select2({
-                                                    closeOnSelect: false,
-                                                    @if (!Model.AvailableSections.Any())
-                                                    {
-                                                                <text>
-                                                                disabled: true,
-                                                                placeholder: 'No sections available',
-                                                                </text>
-                                                    }
-                                                });
-                                            });
-                                        </script>
-                                    </div>
-                                </div>
-                            }
-
+            <div class="cards-group">
+                <div class="card card-default card-popup">
+                    <div class="card-body">
+                        @if (Model.Id > 0)
+                        {
                             <div class="form-group row">
-                                <div class="col-md-3">
-                                    <nop-label asp-for="LabFee" />
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SubjectId" />
                                 </div>
-                                <div class="col-md-9">
-                                    <nop-editor asp-for="LabFee" />
-                                    <span asp-validation-for="LabFee"></span>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SubjectId" asp-items="Model.AvailableSubjects" />
+                                    <span asp-validation-for="SubjectId"></span>
                                 </div>
                             </div>
 
-                            <script>
-                                function saveGradeSubjectMapping() {
-                                    var isEdit = @(Model.Id > 0 ? "true" : "false");
-                                    var payload = {
-                                        Id: @Model.Id,
-                                        GradeId: @Model.GradeId,
-                                        LabFee: parseFloat($('#@Html.IdFor(m => m.LabFee)').val()) || 0
-                                    };
-
-                                    if (isEdit) {
-                                        payload.SubjectId = parseInt($('#@Html.IdFor(m => m.SubjectId)').val()) || 0;
-                                        payload.SectionId = parseInt($('#@Html.IdFor(m => m.SectionId)').val()) || null;
-                                    } else {
-                                        payload.SelectedSubjectIds = $('#@Html.IdFor(m => m.SelectedSubjectIds)').val() || [];
-                                        payload.SelectedSectionIds = $('#@Html.IdFor(m => m.SelectedSectionIds)').val() || [];
-                                    }
-
-                                    $.ajax({
-                                        url: '@Url.Action("GradeSubjectMappingSave", "Grade")',
-                                        type: 'POST',
-                                        data: JSON.stringify(payload),
-                                        contentType: 'application/json',
-                                        headers: {
-                                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                                        },
-                                        success: function (response) {
-                                            if (response.Result === 'success') {
-                                                if (response.Warnings && response.Warnings.length > 0) {
-                                                    // some mappings were skipped as duplicates but others succeeded
-                                                    alert('Saved with warnings:\n' + response.Warnings.join('\n'));
-                                                }
-                                                parent.location.reload();
-                                            } else {
-                                                var errors = response.Errors || ['An error occurred.'];
-                                                alert(errors.join('\n'));
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SectionId" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SectionId" asp-items="Model.AvailableSections" />
+                                    <span asp-validation-for="SectionId"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SelectedSubjectIds" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <select id="@Html.IdFor(m => m.SelectedSubjectIds)"
+                                            name="@Html.NameFor(m => m.SelectedSubjectIds)"
+                                            multiple="multiple"
+                                            style="width:100%">
+                                        @foreach (var item in Model.AvailableSubjects)
+                                        {
+                                            if (item.Selected)
+                                            {
+                                                <option value="@item.Value" selected="selected">@item.Text</option>
                                             }
-                                        },
-                                        error: function (xhr) {
-                                            alert('Request failed: ' + xhr.statusText);
+                                            else
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
                                         }
-                                    });
-                                }
-                            </script>
+                                    </select>
+                                    <span asp-validation-for="SelectedSubjectIds"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SelectedSectionIds" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <select id="@Html.IdFor(m => m.SelectedSectionIds)"
+                                            name="@Html.NameFor(m => m.SelectedSectionIds)"
+                                            multiple="multiple"
+                                            style="width:100%">
+                                        @foreach (var item in Model.AvailableSections)
+                                        {
+                                            if (item.Selected)
+                                            {
+                                                <option value="@item.Value" selected="selected">@item.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@item.Value">@item.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                    <span asp-validation-for="SelectedSectionIds"></span>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="form-group row">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="LabFee" />
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="LabFee" />
+                                <span asp-validation-for="LabFee"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,3 +97,78 @@
         </div>
     </div>
 </section>
+
+<script>
+    $(function () {
+        @if (Model.Id == 0)
+        {
+                <text>
+                var $subjectEl = $('#@Html.IdFor(m => m.SelectedSubjectIds)');
+                var $sectionEl = $('#@Html.IdFor(m => m.SelectedSectionIds)');
+
+                if ($subjectEl.data('kendoMultiSelect')) {
+                    $subjectEl.data('kendoMultiSelect').destroy();
+                }
+                if ($sectionEl.data('kendoMultiSelect')) {
+                    $sectionEl.data('kendoMultiSelect').destroy();
+                }
+
+                $subjectEl.kendoMultiSelect({
+                    autoClose: false,
+                    placeholder: '@(Model.AvailableSubjects.Any() ? "Select subjects..." : "No subjects available")',
+                    enable: @(Model.AvailableSubjects.Any() ? "true" : "false")
+                });
+
+                $sectionEl.kendoMultiSelect({
+                    autoClose: false,
+                    placeholder: '@(Model.AvailableSections.Any() ? "Select sections..." : "No sections available")',
+                    enable: @(Model.AvailableSections.Any() ? "true" : "false")
+                });
+                </text>
+        }
+    });
+
+    function saveGradeSubjectMapping() {
+        var isEdit = @(Model.Id > 0 ? "true" : "false");
+        var payload = {
+            Id: @Model.Id,
+            GradeId: @Model.GradeId,
+            LabFee: parseFloat($('#@Html.IdFor(m => m.LabFee)').val()) || 0
+        };
+
+        if (isEdit) {
+            payload.SubjectId = parseInt($('#@Html.IdFor(m => m.SubjectId)').val()) || 0;
+            payload.SectionId = parseInt($('#@Html.IdFor(m => m.SectionId)').val()) || null;
+        } else {
+            var subjectWidget = $('#@Html.IdFor(m => m.SelectedSubjectIds)').data('kendoMultiSelect');
+            var sectionWidget = $('#@Html.IdFor(m => m.SelectedSectionIds)').data('kendoMultiSelect');
+
+            payload.SelectedSubjectIds = subjectWidget ? subjectWidget.value() : [];
+            payload.SelectedSectionIds = sectionWidget ? sectionWidget.value() : [];
+        }
+
+        $.ajax({
+            url: '@Url.Action("GradeSubjectMappingSave", "Grade")',
+            type: 'POST',
+            data: JSON.stringify(payload),
+            contentType: 'application/json',
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                if (response.Result === 'success') {
+                    if (response.Warnings && response.Warnings.length > 0) {
+                        alert('Saved with warnings:\n' + response.Warnings.join('\n'));
+                    }
+                    parent.location.reload();
+                } else {
+                    var errors = response.Errors || ['An error occurred.'];
+                    alert(errors.join('\n'));
+                }
+            },
+            error: function (xhr) {
+                alert('Request failed: ' + xhr.statusText);
+            }
+        });
+    }
+</script>
