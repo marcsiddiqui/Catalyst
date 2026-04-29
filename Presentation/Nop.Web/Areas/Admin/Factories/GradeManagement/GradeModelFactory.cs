@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Nop.Core.Domain.GradeManagement;
+using Nop.Core.Domain.Subjects;
+using Nop.Services;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
 using Nop.Services.Subjects;
@@ -48,21 +51,16 @@ public partial class GradeModelFactory : IGradeModelFactory
     {
         ArgumentNullException.ThrowIfNull(items);
 
-        items.Add(new SelectListItem { Value = "0", Text = await _localizationService.GetResourceAsync("Admin.Section.Select"), Selected = sectionId == 0 });
-
         var sections = await _sectionService.GetAllSectionsAsync();
-        foreach (var section in sections)
-            items.Add(new SelectListItem { Value = section.Id.ToString(), Text = section.Name, Selected = section.Id == sectionId });
+        items = [.. sections.ToSelectList(s => (s as Section)?.Name)];
     }
 
     public virtual async Task PrepareSubjects(IList<SelectListItem> items, int subjectId = 0)
     {
         ArgumentNullException.ThrowIfNull(items);
 
-        items.Add(new SelectListItem { Value = "0", Text = await _localizationService.GetResourceAsync("Admin.Subject.Select"), Selected = subjectId == 0 });
         var subjects = await _subjectService.GetAllSubjectsAsync();
-        foreach (var subject in subjects)
-            items.Add(new SelectListItem { Value = subject.Id.ToString(), Text = subject.Name, Selected = subject.Id == subjectId });
+        items = [.. subjects.ToSelectList(s => (s as Subject)?.Name)];
     }
 
     #endregion
@@ -125,7 +123,7 @@ public partial class GradeModelFactory : IGradeModelFactory
         //set default values for the new model
         if (grade == null)
         {
-            
+
         }
 
         //prepare localized models

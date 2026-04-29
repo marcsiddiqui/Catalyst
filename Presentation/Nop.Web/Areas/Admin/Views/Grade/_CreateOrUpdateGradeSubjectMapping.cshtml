@@ -36,22 +36,7 @@
                                     <nop-label asp-for="SelectedSubjectIds" />
                                 </div>
                                 <div class="col-sm-9">
-                                    <select id="@Html.IdFor(m => m.SelectedSubjectIds)"
-                                            name="@Html.NameFor(m => m.SelectedSubjectIds)"
-                                            multiple="multiple"
-                                            style="width:100%">
-                                        @foreach (var item in Model.AvailableSubjects)
-                                        {
-                                            if (item.Selected)
-                                            {
-                                                <option value="@item.Value" selected="selected">@item.Text</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@item.Value">@item.Text</option>
-                                            }
-                                        }
-                                    </select>
+                                    <nop-select asp-for="SelectedSubjectIds" asp-items="Model.AvailableSubjects" asp-multiple="true" />
                                     <span asp-validation-for="SelectedSubjectIds"></span>
                                 </div>
                             </div>
@@ -61,22 +46,7 @@
                                     <nop-label asp-for="SelectedSectionIds" />
                                 </div>
                                 <div class="col-sm-9">
-                                    <select id="@Html.IdFor(m => m.SelectedSectionIds)"
-                                            name="@Html.NameFor(m => m.SelectedSectionIds)"
-                                            multiple="multiple"
-                                            style="width:100%">
-                                        @foreach (var item in Model.AvailableSections)
-                                        {
-                                            if (item.Selected)
-                                            {
-                                                <option value="@item.Value" selected="selected">@item.Text</option>
-                                            }
-                                            else
-                                            {
-                                                <option value="@item.Value">@item.Text</option>
-                                            }
-                                        }
-                                    </select>
+                                    <nop-select asp-for="SelectedSectionIds" asp-items="Model.AvailableSections" asp-multiple="true" />
                                     <span asp-validation-for="SelectedSectionIds"></span>
                                 </div>
                             </div>

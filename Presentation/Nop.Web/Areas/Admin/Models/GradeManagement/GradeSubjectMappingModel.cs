@@ -12,6 +12,9 @@ public partial record GradeSubjectMappingModel : BaseNopEntityModel
     {
         AvailableSections = new List<SelectListItem>();
         AvailableSubjects = new List<SelectListItem>();
+
+        SelectedSubjectIds = [];
+        SelectedSectionIds = [];
     }
 
     #endregion
