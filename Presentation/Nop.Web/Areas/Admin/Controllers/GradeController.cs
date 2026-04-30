@@ -312,8 +312,7 @@ public partial class GradeController : BaseAdminController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public virtual async Task<IActionResult> GradeSubjectMappingSave(
-    [FromBody] GradeSubjectMappingModel model)
+    public virtual async Task<IActionResult> GradeSubjectMappingSave(GradeSubjectMappingModel model)
     {
         if (model.Id > 0)
         {

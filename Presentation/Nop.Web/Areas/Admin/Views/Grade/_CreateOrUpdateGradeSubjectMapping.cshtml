@@ -72,7 +72,7 @@
     $(function () {
         @if (Model.Id == 0)
         {
-                <text>
+            <text>
                 var $subjectEl = $('#@Html.IdFor(m => m.SelectedSubjectIds)');
                 var $sectionEl = $('#@Html.IdFor(m => m.SelectedSectionIds)');
 
@@ -94,7 +94,7 @@
                     placeholder: '@(Model.AvailableSections.Any() ? "Select sections..." : "No sections available")',
                     enable: @(Model.AvailableSections.Any() ? "true" : "false")
                 });
-                </text>
+            </text>
         }
     });
 
@@ -110,18 +110,16 @@
             payload.SubjectId = parseInt($('#@Html.IdFor(m => m.SubjectId)').val()) || 0;
             payload.SectionId = parseInt($('#@Html.IdFor(m => m.SectionId)').val()) || null;
         } else {
-            var subjectWidget = $('#@Html.IdFor(m => m.SelectedSubjectIds)').data('kendoMultiSelect');
-            var sectionWidget = $('#@Html.IdFor(m => m.SelectedSectionIds)').data('kendoMultiSelect');
-
-            payload.SelectedSubjectIds = subjectWidget ? subjectWidget.value() : [];
-            payload.SelectedSectionIds = sectionWidget ? sectionWidget.value() : [];
+            payload.SelectedSubjectIds = $('#SelectedSubjectIds').val();
+            payload.SelectedSectionIds = $('#SelectedSectionIds').val();
         }
+
+        console.log("payload", payload);
 
         $.ajax({
             url: '@Url.Action("GradeSubjectMappingSave", "Grade")',
             type: 'POST',
-            data: JSON.stringify(payload),
-            contentType: 'application/json',
+            data: payload,
             headers: {
                 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
             },

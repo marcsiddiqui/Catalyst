@@ -52,7 +52,9 @@ public partial class GradeModelFactory : IGradeModelFactory
         ArgumentNullException.ThrowIfNull(items);
 
         var sections = await _sectionService.GetAllSectionsAsync();
-        items = [.. sections.ToSelectList(s => (s as Section)?.Name)];
+        var selectItems = sections.ToSelectList(s => (s as Section)?.Name);
+        foreach (var item in selectItems)
+            items.Add(item);
     }
 
     public virtual async Task PrepareSubjects(IList<SelectListItem> items, int subjectId = 0)
@@ -60,7 +62,9 @@ public partial class GradeModelFactory : IGradeModelFactory
         ArgumentNullException.ThrowIfNull(items);
 
         var subjects = await _subjectService.GetAllSubjectsAsync();
-        items = [.. subjects.ToSelectList(s => (s as Subject)?.Name)];
+        var selectItems = subjects.ToSelectList(s => (s as Subject)?.Name);
+        foreach (var item in selectItems)
+            items.Add(item);
     }
 
     #endregion
