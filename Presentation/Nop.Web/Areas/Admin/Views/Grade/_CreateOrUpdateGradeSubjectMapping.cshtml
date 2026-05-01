@@ -7,6 +7,8 @@
             <div class="cards-group">
                 <div class="card card-default card-popup">
                     <div class="card-body">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.GradeId" />
                         @if (Model.Id > 0)
                         {
                             <div class="form-group row">
@@ -100,9 +102,10 @@
 
     function saveGradeSubjectMapping() {
         var isEdit = @(Model.Id > 0 ? "true" : "false");
+
         var payload = {
             Id: @Model.Id,
-            GradeId: @Model.GradeId,
+            GradeId: $("#GradeId").val(),
             LabFee: parseFloat($('#@Html.IdFor(m => m.LabFee)').val()) || 0
         };
 
@@ -128,7 +131,9 @@
                     if (response.Warnings && response.Warnings.length > 0) {
                         alert('Saved with warnings:\n' + response.Warnings.join('\n'));
                     }
-                    parent.location.reload();
+                    // Close popup and trigger button on parent window
+                    window.opener.$("#btnAddNewGradeSubjectMapping").click();
+                    window.close();
                 } else {
                     var errors = response.Errors || ['An error occurred.'];
                     alert(errors.join('\n'));

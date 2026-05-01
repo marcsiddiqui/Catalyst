@@ -48,10 +48,9 @@
                     }
                 }
             })
-
             <script>
                 function renderGradeSubjectEditColumn(data, type, row, meta) {
-                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Grade/AddOrEditGradeSubjectMappingPopup/")?gradeId=' + row.GradeId + '&mappingId=' + row.Id + ', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Grade/AddOrEditGradeSubjectMappingPopup/")' + data + '?gradeId=' + @Model.Id + '&mappingId=' + row.Id + '\', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
                 }
             </script>
         </div>
@@ -63,7 +62,7 @@
             <script>
                 $(function() {
                     $('#btnAddNewGradeSubjectMapping').click(function () {
-                        updateTable('#tierprices-grid');
+                    updateTable('#gradeSubjectMapping-grid');
                         //return false to don't reload a page
                         return false;
                     });

@@ -294,7 +294,7 @@ public partial class GradeController : BaseAdminController
     {
         var gradeSubjectMapping = mappingId > 0 ? (await _gradeService.GetGradeSubjectMappingByIdAsync(mappingId)) : null;
         //prepare model
-        var model = await _gradeModelFactory.PrepareGradeSubjectMappingModelAsync(new GradeSubjectMappingModel(), gradeSubjectMapping);
+        var model = await _gradeModelFactory.PrepareGradeSubjectMappingModelAsync(gradeSubjectMapping == null ? new GradeSubjectMappingModel() : null, gradeSubjectMapping);
 
         return View(model);
     }
