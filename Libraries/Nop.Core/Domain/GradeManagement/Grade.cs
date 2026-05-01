@@ -19,6 +19,17 @@ public partial class Grade : LogInfoSupportedBaseEntity, ILocalizedEntity, IStor
     public int StoreId { get; set; }
 
     public bool LimitedToStores { get; set; }
+}
 
-
+public partial class GradeSubjectMapping : LogInfoSupportedBaseEntity, ISoftDeletedEntity
+{
+    public int GradeId { get; set; }
+    
+    public int SubjectId { get; set; }
+    
+    public int? SectionId { get; set; }
+    
+    public decimal LabFee { get; set; }
+    
+    public bool Deleted { get; set; }
 }

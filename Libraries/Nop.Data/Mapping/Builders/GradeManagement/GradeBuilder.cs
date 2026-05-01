@@ -13,3 +13,14 @@ public partial class GradeBuilder : NopEntityBuilder<Grade>
 
     #endregion
 }
+
+public partial class GradeSubjectMappingBuilder : NopEntityBuilder<GradeSubjectMapping>
+{
+    #region Methods
+
+    public override void MapEntity(CreateTableExpressionBuilder table)
+    {
+    }
+
+    #endregion
+}

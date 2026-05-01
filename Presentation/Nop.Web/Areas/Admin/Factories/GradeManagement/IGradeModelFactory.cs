@@ -10,4 +10,12 @@ public partial interface IGradeModelFactory
     Task<GradeListModel> PrepareGradeListModelAsync(GradeSearchModel searchModel);
 
     Task<GradeModel> PrepareGradeModelAsync(GradeModel model, Grade grade, bool excludeProperties = false);
+
+    #region GradeSubjectMapping
+
+    Task<GradeSubjectListModel> PrepareGradeSubjectListModelAsync(GradeSubjectSearchModel searchModel);
+
+    Task<GradeSubjectMappingModel> PrepareGradeSubjectMappingModelAsync(GradeSubjectMappingModel model, GradeSubjectMapping grade, bool excludeProperties = false);
+
+    #endregion
 }
