@@ -11,7 +11,7 @@ public partial record AcademicYearModel : BaseNopEntityModel, ILocalizedModel<Ac
     public AcademicYearModel()
     {
         Locales = new List<AcademicYearLocalizedModel>();
-
+        AcademicYearGradeSectionMappingSearchModel = new AcademicYearGradeSectionMappingSearchModel();
 
     }
 
@@ -45,6 +45,8 @@ public partial record AcademicYearModel : BaseNopEntityModel, ILocalizedModel<Ac
     public string FormattedStartDate { get; set; }
 
     public string FormattedEndDate { get; set; }
+
+    public AcademicYearGradeSectionMappingSearchModel AcademicYearGradeSectionMappingSearchModel { get; set; }
 
     #endregion
 }

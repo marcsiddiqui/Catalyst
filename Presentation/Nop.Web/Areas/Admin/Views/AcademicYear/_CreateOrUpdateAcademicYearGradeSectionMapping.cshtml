@@ -1,0 +1,147 @@
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcademicYearGradeSectionMappingModel
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-popup">
+                    <div class="card-body">
+                        <input type="hidden" asp-for="@Model.Id" />
+                        <input type="hidden" asp-for="@Model.AcademicYearId" />
+                        @if (Model.Id > 0)
+                        {
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="GradeId" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="GradeId" asp-items="Model.AvailableGrades" />
+                                    <span asp-validation-for="GradeId"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SectionId" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SectionId" asp-items="Model.AvailableSections" />
+                                    <span asp-validation-for="SectionId"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SelectedGradeIds" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SelectedGradeIds" asp-items="Model.AvailableGrades" asp-multiple="true" />
+                                    <span asp-validation-for="SelectedGradeIds"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SelectedSectionIds" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SelectedSectionIds" asp-items="Model.AvailableSections" asp-multiple="true" />
+                                    <span asp-validation-for="SelectedSectionIds"></span>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="form-group row">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="ExamTermCount" />
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="ExamTermCount" />
+                                <span asp-validation-for="ExamTermCount"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(function () {
+        @if (Model.Id == 0)
+        {
+            <text>
+                var $gradeEl = $('#@Html.IdFor(m => m.SelectedGradeIds)');
+                var $sectionEl = $('#@Html.IdFor(m => m.SelectedSectionIds)');
+
+                if ($gradeEl.data('kendoMultiSelect')) {
+                    $gradeEl.data('kendoMultiSelect').destroy();
+                }
+                if ($sectionEl.data('kendoMultiSelect')) {
+                    $sectionEl.data('kendoMultiSelect').destroy();
+                }
+
+                $gradeEl.kendoMultiSelect({
+                    autoClose: false,
+                    placeholder: '@(Model.AvailableGrades.Any() ? "Select subjects..." : "No grades available")',
+                    enable: @(Model.AvailableGrades.Any() ? "true" : "false")
+                });
+
+                $sectionEl.kendoMultiSelect({
+                    autoClose: false,
+                    placeholder: '@(Model.AvailableSections.Any() ? "Select sections..." : "No sections available")',
+                    enable: @(Model.AvailableSections.Any() ? "true" : "false")
+                });
+            </text>
+        }
+    });
+
+    function saveAcademicYearGradeSectionMapping() {
+        var isEdit = @(Model.Id > 0 ? "true" : "false");
+
+        var payload = {
+            Id: @Model.Id,
+            GradeId: $("#GradeId").val(),
+            ExamTermCount: parseFloat($('#@Html.IdFor(m => m.ExamTermCount)').val()) || 0
+        };
+
+        if (isEdit) {
+            payload.GradeId = parseInt($('#@Html.IdFor(m => m.GradeId)').val()) || 0;
+            payload.SectionId = parseInt($('#@Html.IdFor(m => m.SectionId)').val()) || null;
+        } else {
+            payload.SelectedGradeIds = $('#SelectedGradeIds').val();
+            payload.SelectedSectionIds = $('#SelectedSectionIds').val();
+        }
+
+        console.log("payload", payload);
+
+        $.ajax({
+            url: '@Url.Action("AcademicYearGradeSectionMappingSave", "AcademicYear")',
+            type: 'POST',
+            data: payload,
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                if (response.Result === 'success') {
+                    if (response.Warnings && response.Warnings.length > 0) {
+                        alert('Saved with warnings:\n' + response.Warnings.join('\n'));
+                    }
+                    // Close popup and trigger button on parent window
+                    window.opener.$("#btnAddNewAcademicYearGradeSectionMapping").click();
+                    window.close();
+                } else {
+                    var errors = response.Errors || ['An error occurred.'];
+                    alert(errors.join('\n'));
+                }
+            },
+            error: function (xhr) {
+                alert('Request failed: ' + xhr.statusText);
+            }
+        });
+    }
+</script>
