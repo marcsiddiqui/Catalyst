@@ -59,10 +59,10 @@
             <button type="submit" id="btnAddNewAcademicYearGradeSectionMapping" onclick="javascript:OpenWindow('@(Url.Action("AddOrEditAcademicYearGradeSectionMappingPopup", "AcademicYear", new { academicYearId = Model.Id, mappingId = 0}))', 800, 600, true); return false;" class="btn btn-primary">
                 @T("Admin.Configuration.AcademicYears.Grade.Section.Mapping.AddNew")
             </button>
-            <button type="submit" id="btnAddNewAcademicYearGradeSectionMapping" style="display: none"></button>
+            <button type="submit" id="btnToLoadAcademicYearGradeSectionMapping" style="display: none"></button>
             <script>
                 $(function() {
-                    $('#btnAddNewAcademicYearGradeSectionMapping').click(function () {
+                    $('#btnToLoadAcademicYearGradeSectionMapping').click(function () {
                     updateTable('#academicYearGradeSectionMapping-grid');
                         //return false to don't reload a page
                         return false;

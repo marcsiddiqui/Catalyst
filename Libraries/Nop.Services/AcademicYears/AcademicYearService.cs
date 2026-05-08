@@ -177,7 +177,7 @@ public partial class AcademicYearService : IAcademicYearService
 
             return query;
 
-        }, pageIndex, pageSize);
+        }, pageIndex, pageSize, includeDeleted: false);
 
         return productReviews;
     }

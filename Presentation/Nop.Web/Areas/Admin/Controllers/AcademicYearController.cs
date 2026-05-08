@@ -433,7 +433,7 @@ public partial class AcademicYearController : BaseAdminController
 
     [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
     [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS)]
-    public virtual async Task<IActionResult> AddOrEditAcademicYearGradeSectionMappingPopup(int gradeId, int mappingId = 0)
+    public virtual async Task<IActionResult> AddOrEditAcademicYearGradeSectionMappingPopup(int academicYearId, int mappingId = 0)
     {
         var gradeSubjectMapping = mappingId > 0 ? (await _academicYearService.GetAcademicYearGradeSectionMappingByIdAsync(mappingId)) : null;
         //prepare model

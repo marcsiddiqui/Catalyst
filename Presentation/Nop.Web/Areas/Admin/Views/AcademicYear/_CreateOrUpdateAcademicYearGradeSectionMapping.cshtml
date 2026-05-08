@@ -105,7 +105,7 @@
 
         var payload = {
             Id: @Model.Id,
-            GradeId: $("#GradeId").val(),
+            AcademicYearId: $("#AcademicYearId").val(),
             ExamTermCount: parseFloat($('#@Html.IdFor(m => m.ExamTermCount)').val()) || 0
         };
 
@@ -132,7 +132,7 @@
                         alert('Saved with warnings:\n' + response.Warnings.join('\n'));
                     }
                     // Close popup and trigger button on parent window
-                    window.opener.$("#btnAddNewAcademicYearGradeSectionMapping").click();
+                    window.opener.$("#btnToLoadAcademicYearGradeSectionMapping").click();
                     window.close();
                 } else {
                     var errors = response.Errors || ['An error occurred.'];
