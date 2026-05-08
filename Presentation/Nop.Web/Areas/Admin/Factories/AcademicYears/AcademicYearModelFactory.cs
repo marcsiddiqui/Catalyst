@@ -1,8 +1,15 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Nop.Core.Domain.AcademicYears;
+using Nop.Core.Domain.GradeManagement;
+using Nop.Services;
 using Nop.Services.AcademicYears;
+using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
+using Nop.Services.Subjects;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.AcademicYears;
+using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Web.Framework.Factories;
 using Nop.Web.Framework.Models.Extensions;
 
@@ -16,6 +23,9 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
+    protected readonly IGradeService _gradeService;
+    protected readonly ISubjectService _subjectService;
+    protected readonly ISectionService _sectionService;
 
     #endregion
 
@@ -24,19 +34,44 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
     public AcademicYearModelFactory(IAcademicYearService academicYearService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
-        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory)
+        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
+        IGradeService gradeService,
+        ISubjectService subjectService,
+        ISectionService sectionService
+        )
     {
         _academicYearService = academicYearService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
+        _gradeService = gradeService;
+        _subjectService = subjectService;
+        _sectionService = sectionService;
     }
 
     #endregion
 
     #region Utilities
 
-    
+    public virtual async Task PrepareSections(IList<SelectListItem> items, int sectionId = 0)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        var sections = await _sectionService.GetAllSectionsAsync();
+        var selectItems = sections.ToSelectList(s => (s as Section)?.Name);
+        foreach (var item in selectItems)
+            items.Add(item);
+    }
+
+    public virtual async Task PrepareGrades(IList<SelectListItem> items, int subjectId = 0)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        var grades = await _gradeService.GetAllGradesAsync();
+        var selectItems = grades.ToSelectList(s => (s as Grade)?.Name);
+        foreach (var item in selectItems)
+            items.Add(item);
+    }
 
     #endregion
 
@@ -126,6 +161,61 @@ public partial class AcademicYearModelFactory : IAcademicYearModelFactory
 
         return model;
     }
+
+    #region AcademicYearGradeSectionMapping
+
+    public virtual async Task<AcademicYearGradeSectionMappingListModel> PrepareAcademicYearGradeSectionMappingListModelAsync(AcademicYearGradeSectionMappingSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        //get grades
+        var academicYearGradeSectionMappings = (await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync()).ToPagedList(searchModel);
+        var sections = (await _sectionService.GetAllSectionsAsync(ids: academicYearGradeSectionMappings.Select(gsm => gsm.SectionId))).ToList();
+        var grades = (await _gradeService.GetAllGradesAsync(ids: academicYearGradeSectionMappings.Select(gsm => gsm.GradeId))).ToList();
+
+        //prepare list model
+        var model = await new AcademicYearGradeSectionMappingListModel().PrepareToGridAsync(searchModel, academicYearGradeSectionMappings, () =>
+        {
+            //fill in model values from the entity
+            return academicYearGradeSectionMappings.SelectAwait(async academicYearGradeSectionMapping =>
+            {
+                var academicYearGradeSectionMappingModel = academicYearGradeSectionMapping.ToModel<AcademicYearGradeSectionMappingModel>();
+                var grade = grades.FirstOrDefault(s => s.Id == academicYearGradeSectionMapping.GradeId);
+                academicYearGradeSectionMappingModel.GradeName = grade?.Name;
+                var section = sections.FirstOrDefault(s => s.Id == academicYearGradeSectionMapping.SectionId);
+                academicYearGradeSectionMappingModel.SectionName = section?.Name;
+
+                return academicYearGradeSectionMappingModel;
+            });
+        });
+
+        return model;
+    }
+
+    public virtual async Task<AcademicYearGradeSectionMappingModel> PrepareAcademicYearGradeSectionMappingModelAsync(AcademicYearGradeSectionMappingModel model, AcademicYearGradeSectionMapping grade, bool excludeProperties = false)
+    {
+        if (grade != null)
+        {
+            //fill in model values from the entity
+            if (model == null)
+            {
+                model = grade.ToModel<AcademicYearGradeSectionMappingModel>();
+            }
+        }
+
+        //set default values for the new model
+        if (grade == null)
+        {
+
+        }
+
+        await PrepareGrades(model.AvailableGrades, model.GradeId);
+        await PrepareSections(model.AvailableSections, model.SectionId);
+
+        return model;
+    }
+
+    #endregion
 
     #endregion
 }

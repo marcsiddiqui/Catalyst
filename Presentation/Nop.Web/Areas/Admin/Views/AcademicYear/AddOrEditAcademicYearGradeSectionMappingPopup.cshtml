@@ -1,0 +1,29 @@
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@using Nop.Web.Areas.Admin.Models.AcademicYears
+@model AcademicYearGradeSectionMappingModel
+
+@{
+    Layout = "_AdminPopupLayout";
+
+    //page title
+    ViewBag.PageTitle = T("Admin.Configuration.AcademicYears.Grade.Section.Mapping.AddNew").Text;
+}
+
+<form>
+    <section class="content">
+        <div class="container-fluid">
+            <div class="content-header clearfix">
+                <h1 class="float-left">
+                    @T("Admin.Configuration.AcademicYears.Grade.Section.Mapping.AddNew")
+                </h1>
+                <div class="float-right">
+                    <button type="button" name="save" class="btn btn-primary" onclick="saveAcademicYearGradeSectionMapping()">
+                        <i class="far fa-floppy-disk"></i>
+                        @T("Admin.Common.Save")
+                    </button>
+                </div>
+            </div>
+            @await Html.PartialAsync("_CreateOrUpdateAcademicYearGradeSectionMapping", Model)
+        </div>
+    </section>
+</form>
