@@ -1,6 +1,7 @@
 using AspNetCoreGeneratedDocument;
 
 using Microsoft.AspNetCore.Mvc;
+
 using Nop.Core.Domain.AcademicYears;
 using Nop.Services.AcademicYears;
 using Nop.Services.Helpers;
@@ -104,7 +105,7 @@ public partial class AcademicYearController : BaseAdminController
             ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Already.Exists"));
 
         // Overlapping date ranges check
-        bool hasOverlap = academicYears.Any(x => x.StartDate < endUtc && x.EndDate > startUtc );
+        bool hasOverlap = academicYears.Any(x => x.StartDate < endUtc && x.EndDate > startUtc);
 
         if (hasOverlap)
             ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Range.Overlaps"));
