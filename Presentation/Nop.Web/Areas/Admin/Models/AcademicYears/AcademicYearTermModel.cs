@@ -22,6 +22,10 @@ public partial record AcademicYearTermModel : BaseNopEntityModel, ILocalizedMode
     [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.AcademicYearGradeSectionMappingId")]
     public int AcademicYearGradeSectionMappingId { get; set; }
 
+    public string AcademicYearGradeSectionMappingName { get; set; }
+
+    public IList<SelectListItem> AvailableAcademicYearGradeSectionMappings { get; set; } = new List<SelectListItem>();
+
     [NopResourceDisplayName("Admin.Configuration.AcademicYearTerms.Fields.ConductanceOrder")]
     public int ConductanceOrder { get; set; }
 
