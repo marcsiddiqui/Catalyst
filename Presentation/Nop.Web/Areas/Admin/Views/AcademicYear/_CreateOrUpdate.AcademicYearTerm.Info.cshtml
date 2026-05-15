@@ -39,7 +39,7 @@
             <nop-label asp-for="AcademicYearGradeSectionMappingId"/>
         </div>
         <div class="col-md-9">
-            <nop-editor asp-for="AcademicYearGradeSectionMappingId"/>
+            <nop-select asp-for="AcademicYearGradeSectionMappingId" asp-items="Model.AvailableAcademicYearGradeSectionMappings"/>
             <span asp-validation-for="AcademicYearGradeSectionMappingId"></span>
         </div>
     </div>

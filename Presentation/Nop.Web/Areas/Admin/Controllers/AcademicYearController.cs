@@ -1,6 +1,7 @@
 using AspNetCoreGeneratedDocument;
 
 using Microsoft.AspNetCore.Mvc;
+
 using Nop.Core.Domain.AcademicYears;
 using Nop.Services.AcademicYears;
 using Nop.Services.Helpers;
@@ -12,6 +13,7 @@ using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.AcademicYears;
+using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
 
 namespace Nop.Web.Areas.Admin.Controllers;
@@ -103,7 +105,7 @@ public partial class AcademicYearController : BaseAdminController
             ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Already.Exists"));
 
         // Overlapping date ranges check
-        bool hasOverlap = academicYears.Any(x => x.StartDate < endUtc && x.EndDate > startUtc );
+        bool hasOverlap = academicYears.Any(x => x.StartDate < endUtc && x.EndDate > startUtc);
 
         if (hasOverlap)
             ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Date.Range.Overlaps"));
@@ -424,6 +426,119 @@ public partial class AcademicYearController : BaseAdminController
             await _notificationService.ErrorNotificationAsync(exc);
             return RedirectToAction("AcademicYearTermEdit", new { id = academicYearTerm.Id });
         }
+    }
+
+    #endregion
+
+    #region AcademicYearGradeSectionMapping
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS)]
+    public virtual async Task<IActionResult> AddOrEditAcademicYearGradeSectionMappingPopup(int academicYearId, int mappingId = 0)
+    {
+        var gradeSubjectMapping = mappingId > 0 ? (await _academicYearService.GetAcademicYearGradeSectionMappingByIdAsync(mappingId)) : null;
+        //prepare model
+        var model = await _academicYearModelFactory.PrepareAcademicYearGradeSectionMappingModelAsync(gradeSubjectMapping == null ? new AcademicYearGradeSectionMappingModel() : null, gradeSubjectMapping);
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS)]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionMappingGrid(AcademicYearGradeSectionMappingSearchModel searchModel)
+    {
+        //prepare model
+        var model = await _academicYearModelFactory.PrepareAcademicYearGradeSectionMappingListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionMappingSave(AcademicYearGradeSectionMappingModel model)
+    {
+        if (model.Id > 0)
+        {
+            var mapping = await _academicYearService.GetAcademicYearGradeSectionMappingByIdAsync(model.Id);
+            if (mapping == null || mapping.Deleted)
+                return Json(new { Result = "error", Errors = new[] { "Mapping not found." } });
+
+            if (mapping.GradeId != model.GradeId || mapping.SectionId != model.SectionId)
+            {
+                var exists = await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync(gradeId: model.GradeId, sectionId: model.SectionId, academicYearId: mapping.AcademicYearId);
+
+                if (exists != null && exists.Any())
+                    return Json(new { Result = "error", Errors = new[] { "This grade/section combination already exists." } });
+            }
+
+            mapping.GradeId = model.GradeId;
+            mapping.SectionId = model.SectionId;
+            mapping.ExamTermCount = model.ExamTermCount;
+
+            await _academicYearService.UpdateAcademicYearGradeSectionMappingAsync(mapping);
+
+            return Json(new { Result = "success" });
+        }
+
+        if (model.SelectedGradeIds == null || !model.SelectedGradeIds.Any())
+            return Json(new { Result = "error", Errors = new[] { "Please select at least one grade." } });
+
+        var errors = new List<string>();
+
+        var sectionIds = (model.SelectedSectionIds != null && model.SelectedSectionIds.Any())
+            ? model.SelectedSectionIds
+            : new List<int> { 0 };
+
+        foreach (var gradeId in model.SelectedGradeIds)
+        {
+            foreach (var sectionId in sectionIds)
+            {
+                var exists = await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync(gradeId: gradeId, sectionId: sectionId == 0 ? 0 : sectionId, academicYearId: model.AcademicYearId);
+
+                if (exists != null && exists.Any())
+                {
+                    errors.Add($"Mapping for subject {gradeId} / section {sectionId} already exists.");
+                    continue;
+                }
+
+                var mapping = new AcademicYearGradeSectionMapping
+                {
+                    GradeId = gradeId,
+                    AcademicYearId = model.AcademicYearId,
+                    SectionId = sectionId,
+                    ExamTermCount = model.ExamTermCount,
+                };
+
+                await _academicYearService.InsertAcademicYearGradeSectionMappingAsync(mapping);
+            }
+        }
+
+        if (errors.Any() && errors.Count < model.SelectedGradeIds.Count * sectionIds.Count)
+            return Json(new { Result = "success", Warnings = errors });
+
+        if (errors.Any())
+            return Json(new { Result = "error", Errors = errors });
+
+        return Json(new { Result = "success" });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.AcademicYears.MANAGE_ACADEMICYEARS)]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionMappingDelete(int id)
+    {
+        //try to get a tier price with the specified id
+        var academicYearGradeSectionMapping = await _academicYearService.GetAcademicYearGradeSectionMappingByIdAsync(id)
+            ?? throw new ArgumentException("No grade subject mapping found with the specified id");
+
+        //try to get a product with the specified id
+        var academicYear = await _academicYearService.GetAcademicYearByIdAsync(academicYearGradeSectionMapping.AcademicYearId)
+            ?? throw new ArgumentException("No grade found with the specified id");
+
+        await _academicYearService.DeleteAcademicYearGradeSectionMappingAsync(academicYearGradeSectionMapping);
+
+        return new NullJsonResult();
     }
 
     #endregion

@@ -1,5 +1,8 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core.Domain.AcademicYears;
+using Nop.Core.Domain.GradeManagement;
 using Nop.Services.AcademicYears;
+using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.AcademicYears;
@@ -16,6 +19,8 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
     protected readonly IAcademicYearService _academicYearService;
+    protected readonly IGradeService _gradeService;
+    protected readonly ISectionService _sectionService;
 
     #endregion
 
@@ -25,21 +30,24 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
-        IAcademicYearService academicYearService
+        IAcademicYearService academicYearService,
+        IGradeService gradeService,
+        ISectionService sectionService
         )
     {
-        _localizationService = localizationService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
         _academicYearService = academicYearService;
+        _gradeService = gradeService;
+        _sectionService = sectionService;
     }
 
     #endregion
 
     #region Utilities
 
-    public virtual async Task<IDictionary<int, string>> PrepareAcademicYearGradeSectionMappingNamesAsync(IEnumerable<AcademicYearGradeSectionMapping> mappings)
+    protected virtual async Task<IDictionary<int, string>> PrepareAcademicYearGradeSectionMappingNamesAsync(IEnumerable<AcademicYearGradeSectionMapping> mappings)
     {
         var mappingList = mappings?.ToList() ?? new List<AcademicYearGradeSectionMapping>();
         if (!mappingList.Any())
@@ -66,7 +74,7 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
         });
     }
 
-    public virtual async Task PrepareAcademicYearGradeSectionMappingsAsync(IList<SelectListItem> items, int selectedMappingId = 0)
+    protected virtual async Task PrepareAcademicYearGradeSectionMappingsAsync(IList<SelectListItem> items, int selectedMappingId = 0)
     {
         ArgumentNullException.ThrowIfNull(items);
 
@@ -111,6 +119,11 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
 
         //get academicYearTerms
         var academicYearTerms = (await _academicYearService.GetAllAcademicYearTermsAsync()).ToPagedList(searchModel);
+        var mappingIds = academicYearTerms.Select(term => term.AcademicYearGradeSectionMappingId).Where(id => id > 0).Distinct().ToList();
+        IList<AcademicYearGradeSectionMapping> mappings = mappingIds.Any()
+            ? await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync(ids: mappingIds)
+            : new List<AcademicYearGradeSectionMapping>();
+        var mappingNames = await PrepareAcademicYearGradeSectionMappingNamesAsync(mappings);
 
         //prepare list model
         var model = await new AcademicYearTermListModel().PrepareToGridAsync(searchModel, academicYearTerms, () =>
@@ -119,6 +132,9 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
             return academicYearTerms.SelectAwait(async academicYearTerm =>
             {
                 var academicYearTermModel = academicYearTerm.ToModel<AcademicYearTermModel>();
+                academicYearTermModel.AcademicYearGradeSectionMappingName = mappingNames.TryGetValue(academicYearTerm.AcademicYearGradeSectionMappingId, out var mappingName)
+                    ? mappingName
+                    : academicYearTerm.AcademicYearGradeSectionMappingId.ToString();
 
                 return academicYearTermModel;
             });
@@ -158,6 +174,7 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
         if (!excludeProperties)
             model.Locales = await _localizedModelFactory.PrepareLocalizedModelsAsync(localizedModelConfiguration);
 
+        await PrepareAcademicYearGradeSectionMappingsAsync(model.AvailableAcademicYearGradeSectionMappings, model.AcademicYearGradeSectionMappingId);
 
 //{{PrepareStoreCode}}
 

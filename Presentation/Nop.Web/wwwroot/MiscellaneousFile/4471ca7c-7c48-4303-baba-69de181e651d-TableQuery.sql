@@ -8,6 +8,11 @@ CREATE TABLE [dbo].[AcademicYearGradeSectionMapping](
 	[GradeId] [int] NOT NULL,
 	[SectionId] [int] NOT NULL,
 	[ExamTermCount] [int] NOT NULL,
+	Deleted BIT NOT NULL,
+	CreatedBy INT NOT NULL,
+	CreatedOnUtc DATETIME NOT NULL,
+	UpdatedBy INT NOT NULL,
+	UpdatedOnUtc DATETIME NULL
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -18,4 +23,7 @@ ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR [Acad
 ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR [GradeId]
 ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR [SectionId]
 ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR [ExamTermCount]
+ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR Deleted
+ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR CreatedBy
+ALTER TABLE [dbo].[AcademicYearGradeSectionMapping] ADD  DEFAULT ((0)) FOR UpdatedBy
 END

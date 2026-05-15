@@ -15,6 +15,7 @@ using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
+using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
 
 using System.Configuration;
@@ -290,6 +291,7 @@ public partial class GradeController : BaseAdminController
     #region GradeSubjectMapping
 
     [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.Subjects.MANAGE_SUBJECTS)]
     public virtual async Task<IActionResult> AddOrEditGradeSubjectMappingPopup(int gradeId, int mappingId = 0)
     {
         var gradeSubjectMapping = mappingId > 0 ? (await _gradeService.GetGradeSubjectMappingByIdAsync(mappingId)) : null;
@@ -378,6 +380,24 @@ public partial class GradeController : BaseAdminController
             return Json(new { Result = "error", Errors = errors });
 
         return Json(new { Result = "success" });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    [CheckPermission(StandardPermission.Subjects.MANAGE_SUBJECTS)]
+    public virtual async Task<IActionResult> GradeSubjectDelete(int id)
+    {
+        //try to get a tier price with the specified id
+        var gradeSubjectMapping = await _gradeService.GetGradeSubjectMappingByIdAsync(id)
+            ?? throw new ArgumentException("No grade subject mapping found with the specified id");
+
+        //try to get a product with the specified id
+        var grade = await _gradeService.GetGradeByIdAsync(gradeSubjectMapping.GradeId)
+            ?? throw new ArgumentException("No grade found with the specified id");
+
+        await _gradeService.DeleteGradeSubjectMappingAsync(gradeSubjectMapping);
+
+        return new NullJsonResult();
     }
 
     #endregion
