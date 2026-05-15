@@ -47,7 +47,7 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
 
     #region Utilities
 
-    protected virtual async Task<IDictionary<int, string>> PrepareAcademicYearGradeSectionMappingNamesAsync(IEnumerable<AcademicYearGradeSectionMapping> mappings)
+    public virtual async Task<IDictionary<int, string>> PrepareAcademicYearGradeSectionMappingNamesAsync(IEnumerable<AcademicYearGradeSectionMapping> mappings)
     {
         var mappingList = mappings?.ToList() ?? new List<AcademicYearGradeSectionMapping>();
         if (!mappingList.Any())
@@ -74,7 +74,7 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
         });
     }
 
-    protected virtual async Task PrepareAcademicYearGradeSectionMappingsAsync(IList<SelectListItem> items, int selectedMappingId = 0)
+    public virtual async Task PrepareAcademicYearGradeSectionMappingsAsync(IList<SelectListItem> items, int selectedMappingId = 0)
     {
         ArgumentNullException.ThrowIfNull(items);
 
