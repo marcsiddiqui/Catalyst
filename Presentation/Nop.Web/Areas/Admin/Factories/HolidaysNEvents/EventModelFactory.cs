@@ -19,6 +19,7 @@ public partial class EventModelFactory : IEventModelFactory
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
     protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
     protected readonly IAcademicYearService _academicYearService;
+    protected readonly IAcademicYearTermModelFactory _academicYearTermModelFactory;
 
     #endregion
 
@@ -30,7 +31,8 @@ public partial class EventModelFactory : IEventModelFactory
         ILocalizedModelFactory localizedModelFactory,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
         IBaseAdminModelFactory baseAdminModelFactory,
-        IAcademicYearService academicYearService)
+        IAcademicYearService academicYearService,
+        IAcademicYearTermModelFactory academicYearTermModelFactory)
     {
         _eventService = eventService;
         _localizationService = localizationService;
@@ -38,6 +40,7 @@ public partial class EventModelFactory : IEventModelFactory
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
         _baseAdminModelFactory = baseAdminModelFactory;
         _academicYearService = academicYearService;
+        _academicYearTermModelFactory = academicYearTermModelFactory;
     }
 
     #endregion
@@ -126,6 +129,65 @@ public partial class EventModelFactory : IEventModelFactory
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, @event, excludeProperties);
 
         await _baseAdminModelFactory.PrepareAvailableYearsAsync(model.AvailableYears, defaultItemText: await _localizationService.GetResourceAsync("admin.common.select"));
+        model.AcademicYearGradeSectionEventMappingSearchModel.EventId = model.Id;
+        model.AcademicYearGradeSectionEventMappingSearchModel.SetGridPageSize();
+
+        return model;
+    }
+
+    public virtual async Task<AcademicYearGradeSectionEventMappingListModel> PrepareAcademicYearGradeSectionEventMappingListModelAsync(AcademicYearGradeSectionEventMappingSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        var mappings = await _eventService.GetAllAcademicYearGradeSectionEventMappingsAsync(
+            eventId: searchModel.EventId,
+            pageIndex: searchModel.Page - 1,
+            pageSize: searchModel.PageSize);
+
+        var mappingIds = mappings.Select(mapping => mapping.AcademicYearGradeSectionMappingId).Where(id => id > 0).Distinct().ToList();
+        var academicYearGradeSectionMappings = mappingIds.Any()
+            ? (await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync(ids: mappingIds)).ToList()
+            : new List<Nop.Core.Domain.AcademicYears.AcademicYearGradeSectionMapping>();
+        var mappingNames = await _academicYearTermModelFactory.PrepareAcademicYearGradeSectionMappingNamesAsync(academicYearGradeSectionMappings);
+
+        var model = await new AcademicYearGradeSectionEventMappingListModel().PrepareToGridAsync(searchModel, mappings, () =>
+        {
+            return mappings.SelectAwait(async mapping =>
+            {
+                var mappingModel = new AcademicYearGradeSectionEventMappingModel
+                {
+                    Id = mapping.Id,
+                    EventId = mapping.EventId,
+                    AcademicYearClassSectionMappingId = mapping.AcademicYearGradeSectionMappingId,
+                    AcademicYearClassSectionMappingName = mappingNames.TryGetValue(mapping.AcademicYearGradeSectionMappingId, out var mappingName)
+                        ? mappingName
+                        : mapping.AcademicYearGradeSectionMappingId.ToString(),
+                    Amount = mapping.Amount
+                };
+
+                return mappingModel;
+            });
+        });
+
+        return model;
+    }
+
+    public virtual async Task<AcademicYearGradeSectionEventMappingModel> PrepareAcademicYearGradeSectionEventMappingModelAsync(AcademicYearGradeSectionEventMappingModel model,
+        AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping)
+    {
+        if (academicYearGradeSectionEventMapping != null)
+        {
+            model ??= new AcademicYearGradeSectionEventMappingModel
+            {
+                Id = academicYearGradeSectionEventMapping.Id,
+                EventId = academicYearGradeSectionEventMapping.EventId,
+                AcademicYearClassSectionMappingId = academicYearGradeSectionEventMapping.AcademicYearGradeSectionMappingId,
+                Amount = academicYearGradeSectionEventMapping.Amount
+            };
+        }
+
+        await _academicYearTermModelFactory.PrepareAcademicYearGradeSectionMappingsAsync(model.AvailableAcademicYearGradeSectionMappings,
+            model.AcademicYearClassSectionMappingId);
 
         return model;
     }

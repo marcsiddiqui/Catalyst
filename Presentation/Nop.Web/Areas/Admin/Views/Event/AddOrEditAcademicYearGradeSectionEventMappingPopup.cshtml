@@ -1,0 +1,21 @@
+@model AcademicYearGradeSectionEventMappingModel
+
+@{
+    Layout = "_AdminPopupLayout";
+    ViewBag.PageTitle = T("Admin.HolidaysNEvents.Events.AcademicYearGradeSectionEventMapping").Text;
+}
+
+<form asp-controller="Event" asp-action="AcademicYearGradeSectionEventMappingSave" method="post" id="academicYearGradeSectionEventMapping-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.HolidaysNEvents.Events.AcademicYearGradeSectionEventMapping")
+        </h1>
+        <div class="float-right">
+            <button type="button" name="save" class="btn btn-primary" onclick="saveAcademicYearGradeSectionEventMapping()">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdateAcademicYearGradeSectionEventMapping", Model)
+</form>

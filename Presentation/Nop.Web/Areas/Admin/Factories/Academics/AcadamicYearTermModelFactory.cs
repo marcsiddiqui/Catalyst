@@ -39,7 +39,57 @@ public partial class AcademicYearTermModelFactory : IAcademicYearTermModelFactor
 
     #region Utilities
 
-    
+    public virtual async Task<IDictionary<int, string>> PrepareAcademicYearGradeSectionMappingNamesAsync(IEnumerable<AcademicYearGradeSectionMapping> mappings)
+    {
+        var mappingList = mappings?.ToList() ?? new List<AcademicYearGradeSectionMapping>();
+        if (!mappingList.Any())
+            return new Dictionary<int, string>();
+
+        var academicYears = (await _academicYearService.GetAcademicYearsByIdsAsync(mappingList.Select(mapping => mapping.AcademicYearId).Distinct()))?.ToList()
+            ?? new List<AcademicYear>();
+        var grades = (await _gradeService.GetGradesByIdsAsync(mappingList.Select(mapping => mapping.GradeId).Distinct()))?.ToList()
+            ?? new List<Grade>();
+        var sections = (await _sectionService.GetSectionsByIdsAsync(mappingList.Select(mapping => mapping.SectionId).Where(sectionId => sectionId > 0).Distinct()))?.ToList()
+            ?? new List<Section>();
+
+        return mappingList.ToDictionary(mapping => mapping.Id, mapping =>
+        {
+            var academicYear = academicYears.FirstOrDefault(year => year.Id == mapping.AcademicYearId);
+            var grade = grades.FirstOrDefault(item => item.Id == mapping.GradeId);
+            var section = sections.FirstOrDefault(item => item.Id == mapping.SectionId);
+
+            var yearName = academicYear != null
+                ? $"{academicYear.StartDate:yyyy} - {academicYear.EndDate:yyyy}"
+                : string.Empty;
+
+            return string.Join(" - ", new[] { grade?.Name, section?.Name, yearName }.Where(value => !string.IsNullOrWhiteSpace(value)));
+        });
+    }
+
+    public virtual async Task PrepareAcademicYearGradeSectionMappingsAsync(IList<SelectListItem> items, int selectedMappingId = 0)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        items.Add(new SelectListItem
+        {
+            Text = await _localizationService.GetResourceAsync("Admin.Common.Select"),
+            Value = "0",
+            Selected = selectedMappingId == 0
+        });
+
+        var mappings = (await _academicYearService.GetAllAcademicYearGradeSectionMappingsAsync()).ToList();
+        var mappingNames = await PrepareAcademicYearGradeSectionMappingNamesAsync(mappings);
+
+        foreach (var mapping in mappings.OrderBy(mapping => mappingNames.TryGetValue(mapping.Id, out var name) ? name : string.Empty))
+        {
+            items.Add(new SelectListItem
+            {
+                Text = mappingNames.TryGetValue(mapping.Id, out var name) ? name : mapping.Id.ToString(),
+                Value = mapping.Id.ToString(),
+                Selected = mapping.Id == selectedMappingId
+            });
+        }
+    }
 
     #endregion
 

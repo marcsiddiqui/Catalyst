@@ -9,6 +9,7 @@ using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.HolidaysNEvents;
+using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
 
 namespace Nop.Web.Areas.Admin.Controllers;
@@ -62,6 +63,109 @@ public partial class EventController : BaseAdminController
 
 
         }
+    }
+
+    #endregion
+
+    #region Academic year grade section event mappings
+
+    [CheckPermission(StandardPermission.HolidaysNEvents.MANAGE_EVENTS)]
+    public virtual async Task<IActionResult> AddOrEditAcademicYearGradeSectionEventMappingPopup(int eventId, int mappingId = 0)
+    {
+        var mapping = mappingId > 0
+            ? await _eventService.GetAcademicYearGradeSectionEventMappingByIdAsync(mappingId)
+            : null;
+
+        if (mapping != null && mapping.EventId != eventId)
+            return RedirectToAction("List");
+
+        var model = await _eventModelFactory.PrepareAcademicYearGradeSectionEventMappingModelAsync(
+            mapping == null
+                ? new AcademicYearGradeSectionEventMappingModel { EventId = eventId }
+                : null,
+            mapping);
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.HolidaysNEvents.MANAGE_EVENTS)]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionEventMappingGrid(AcademicYearGradeSectionEventMappingSearchModel searchModel)
+    {
+        var model = await _eventModelFactory.PrepareAcademicYearGradeSectionEventMappingListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.HolidaysNEvents.MANAGE_EVENTS)]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionEventMappingSave(AcademicYearGradeSectionEventMappingModel model)
+    {
+        if (model.EventId <= 0)
+            return Json(new { Result = "error", Errors = new[] { "Event is required." } });
+
+        if (model.Id > 0 && model.AcademicYearClassSectionMappingId <= 0)
+            return Json(new { Result = "error", Errors = new[] { "Class - Section - Academic Year is required." } });
+
+        if (model.Id == 0)
+        {
+            var selectedMappingIds = model.SelectedAcademicYearClassSectionMappingIds?
+                .Where(mappingId => mappingId > 0)
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (!selectedMappingIds.Any())
+                return Json(new { Result = "error", Errors = new[] { "Class - Section - Academic Year is required." } });
+
+            var existingMappings = await _eventService.GetAllAcademicYearGradeSectionEventMappingsAsync(
+                eventId: model.EventId,
+                academicYearGradeSectionMappingIds: selectedMappingIds);
+
+            if (existingMappings.Any())
+                return Json(new { Result = "error", Errors = new[] { "One or more selected Class - Section - Academic Year mappings are already mapped to the event." } });
+
+            var mappings = selectedMappingIds.Select(mappingId => new AcademicYearGradeSectionEventMapping
+            {
+                EventId = model.EventId,
+                AcademicYearGradeSectionMappingId = mappingId,
+                Amount = model.Amount
+            });
+
+            await _eventService.InsertAcademicYearGradeSectionEventMappingAsync(mappings);
+
+            return Json(new { Result = "success" });
+        }
+
+        var duplicateMappings = await _eventService.GetAllAcademicYearGradeSectionEventMappingsAsync(
+            eventId: model.EventId,
+            academicYearGradeSectionMappingId: model.AcademicYearClassSectionMappingId);
+
+        if (duplicateMappings.Any(mapping => mapping.Id != model.Id))
+            return Json(new { Result = "error", Errors = new[] { "This Class - Section - Academic Year is already mapped to the event." } });
+
+        var mapping = await _eventService.GetAcademicYearGradeSectionEventMappingByIdAsync(model.Id);
+        if (mapping == null)
+            return Json(new { Result = "error", Errors = new[] { "Mapping was not found." } });
+
+        mapping.AcademicYearGradeSectionMappingId = model.AcademicYearClassSectionMappingId;
+        mapping.Amount = model.Amount;
+
+        await _eventService.UpdateAcademicYearGradeSectionEventMappingAsync(mapping);
+
+        return Json(new { Result = "success" });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.HolidaysNEvents.MANAGE_EVENTS)]
+    public virtual async Task<IActionResult> AcademicYearGradeSectionEventMappingDelete(int id)
+    {
+        var mapping = await _eventService.GetAcademicYearGradeSectionEventMappingByIdAsync(id);
+        if (mapping == null)
+            return new NullJsonResult();
+
+        await _eventService.DeleteAcademicYearGradeSectionEventMappingAsync(mapping);
+
+        return new NullJsonResult();
     }
 
     #endregion

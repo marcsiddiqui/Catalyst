@@ -17,6 +17,7 @@ public partial record EventModel : BaseNopEntityModel, ILocalizedModel<EventLoca
         AvailableStores = [];
 
         AvailableYears = [];
+        AcademicYearGradeSectionEventMappingSearchModel = new AcademicYearGradeSectionEventMappingSearchModel();
     }
 
     #endregion
@@ -50,6 +51,7 @@ public partial record EventModel : BaseNopEntityModel, ILocalizedModel<EventLoca
     public IList<int> SelectedStoreIds { get; set; }
     public IList<SelectListItem> AvailableStores { get; set; }
 
+    public AcademicYearGradeSectionEventMappingSearchModel AcademicYearGradeSectionEventMappingSearchModel { get; set; }
 
     #endregion
 }
