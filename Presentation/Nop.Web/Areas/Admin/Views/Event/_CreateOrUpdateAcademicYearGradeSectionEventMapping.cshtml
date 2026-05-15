@@ -1,0 +1,89 @@
+@model AcademicYearGradeSectionEventMappingModel
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default card-popup">
+                    <div class="card-body">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="EventId" />
+
+                        @if (Model.Id > 0)
+                        {
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="AcademicYearClassSectionMappingId" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="AcademicYearClassSectionMappingId" asp-items="Model.AvailableAcademicYearGradeSectionMappings" />
+                                    <span asp-validation-for="AcademicYearClassSectionMappingId"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row">
+                                <div class="col-sm-3">
+                                    <nop-label asp-for="SelectedAcademicYearClassSectionMappingIds" />
+                                </div>
+                                <div class="col-sm-9">
+                                    <nop-select asp-for="SelectedAcademicYearClassSectionMappingIds" asp-items="Model.AvailableAcademicYearGradeSectionMappings" asp-multiple="true" />
+                                    <span asp-validation-for="SelectedAcademicYearClassSectionMappingIds"></span>
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group row">
+                            <div class="col-sm-3">
+                                <nop-label asp-for="Amount" />
+                            </div>
+                            <div class="col-sm-9">
+                                <nop-editor asp-for="Amount" />
+                                <span asp-validation-for="Amount"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function saveAcademicYearGradeSectionEventMapping() {
+        var isEdit = @(Model.Id > 0 ? "true" : "false");
+        var payload = {
+            Id: @Model.Id,
+            EventId: @Model.EventId,
+            Amount: parseFloat($('#@Html.IdFor(m => m.Amount)').val()) || 0
+        };
+
+        if (isEdit) {
+            payload.AcademicYearClassSectionMappingId = parseInt($('#@Html.IdFor(m => m.AcademicYearClassSectionMappingId)').val()) || 0;
+        } else {
+            payload.SelectedAcademicYearClassSectionMappingIds = $('#@Html.IdFor(m => m.SelectedAcademicYearClassSectionMappingIds)').val();
+        }
+
+        $.ajax({
+            url: '@Url.Action("AcademicYearGradeSectionEventMappingSave", "Event")',
+            type: 'POST',
+            data: payload,
+            traditional: true,
+            headers: {
+                'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+            },
+            success: function (response) {
+                if (response.Result === 'success') {
+                    window.opener.$("#btnToLoadAcademicYearGradeSectionEventMapping").click();
+                    window.close();
+                } else {
+                    var errors = response.Errors || ['An error occurred.'];
+                    alert(errors.join('\n'));
+                }
+            },
+            error: function (xhr) {
+                alert('Request failed: ' + xhr.statusText);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,73 @@
+@using Nop.Web.Areas.Admin.Models.HolidaysNEvents
+@model EventModel
+
+<div class="card card-default">
+    <div class="card-header">
+        @T("Admin.HolidaysNEvents.Events.AcademicYearGradeSectionEventMapping")
+    </div>
+    @if (Model.Id > 0)
+    {
+        <div class="card-body">
+            @await Html.PartialAsync("Table", new DataTablesModel
+            {
+                Name = "academicYearGradeSectionEventMapping-grid",
+                UrlRead = new DataUrl("AcademicYearGradeSectionEventMappingGrid", "Event", new RouteValueDictionary { [nameof(Model.AcademicYearGradeSectionEventMappingSearchModel.EventId)] = Model.Id }),
+                UrlDelete = new DataUrl("AcademicYearGradeSectionEventMappingDelete", "Event", null),
+                Length = Model.AcademicYearGradeSectionEventMappingSearchModel.PageSize,
+                LengthMenu = Model.AcademicYearGradeSectionEventMappingSearchModel.AvailablePageSizes,
+                ColumnCollection = new List<ColumnProperty>
+                {
+                    new ColumnProperty(nameof(AcademicYearGradeSectionEventMappingModel.AcademicYearClassSectionMappingName))
+                    {
+                        Title = T("Admin.HolidaysNEvents.Events.Fields.AcademicYearClassSectionMappingId").Text,
+                        Width = "220"
+                    },
+                    new ColumnProperty(nameof(AcademicYearGradeSectionEventMappingModel.Amount))
+                    {
+                        Title = T("Admin.HolidaysNEvents.Events.Fields.Amount").Text,
+                        Width = "100"
+                    },
+                    new ColumnProperty(nameof(AcademicYearGradeSectionEventMappingModel.Id))
+                    {
+                        Title = T("Admin.Common.Edit").Text,
+                        Width = "100",
+                        ClassName = NopColumnClassDefaults.Button,
+                        Render = new RenderCustom("renderAcademicYearGradeSectionEventMappingEditColumn")
+                    },
+                    new ColumnProperty(nameof(AcademicYearGradeSectionEventMappingModel.Id))
+                    {
+                        Title = T("Admin.Common.Delete").Text,
+                        Width = "100",
+                        Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                        ClassName = NopColumnClassDefaults.Button
+                    }
+                }
+            })
+            <script>
+                function renderAcademicYearGradeSectionEventMappingEditColumn(data, type, row, meta) {
+                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Event/AddOrEditAcademicYearGradeSectionEventMappingPopup/")?eventId=@Model.Id&mappingId=' + row.Id + '\', 800, 450, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+                }
+            </script>
+        </div>
+        <div class="card-footer">
+            <button type="submit" id="btnAddNewAcademicYearGradeSectionEventMapping" onclick="javascript:OpenWindow('@(Url.Action("AddOrEditAcademicYearGradeSectionEventMappingPopup", "Event", new { eventId = Model.Id, mappingId = 0 }))', 800, 450, true); return false;" class="btn btn-primary">
+                @T("Admin.Common.AddNew")
+            </button>
+            <button type="submit" id="btnToLoadAcademicYearGradeSectionEventMapping" style="display: none"></button>
+            <script>
+                $(function() {
+                    $('#btnToLoadAcademicYearGradeSectionEventMapping').click(function () {
+                        updateTable('#academicYearGradeSectionEventMapping-grid');
+                        return false;
+                    });
+                });
+            </script>
+        </div>
+    }
+    else
+    {
+        <div class="card-body">
+            @T("Admin.HolidaysNEvents.Events.AcademicYearGradeSectionEventMapping.SaveBeforeEdit")
+        </div>
+    }
+</div>

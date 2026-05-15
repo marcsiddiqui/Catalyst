@@ -10,4 +10,9 @@ public partial interface IEventModelFactory
     Task<EventListModel> PrepareEventListModelAsync(EventSearchModel searchModel);
 
     Task<EventModel> PrepareEventModelAsync(EventModel model, Event @event, bool excludeProperties = false);
+
+    Task<AcademicYearGradeSectionEventMappingListModel> PrepareAcademicYearGradeSectionEventMappingListModelAsync(AcademicYearGradeSectionEventMappingSearchModel searchModel);
+
+    Task<AcademicYearGradeSectionEventMappingModel> PrepareAcademicYearGradeSectionEventMappingModelAsync(AcademicYearGradeSectionEventMappingModel model,
+        AcademicYearGradeSectionEventMapping academicYearGradeSectionEventMapping);
 }
