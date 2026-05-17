@@ -146,29 +146,20 @@
                 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderNavbarBefore })
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav ml-auto pl-2">
-                        @* Phoenix admin theme integration start: Bootstrap 4 dropdown, vanilla JS controls. *@
-                        <li class="nav-item dropdown phoenix-nop-theme-switcher">
-                            <button class="nav-link btn btn-link dropdown-toggle dropdown-caret-none phoenix-nop-theme-toggle" type="button" id="nopAdminThemeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Theme">
-                                <span class="fas fa-sun phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="light" aria-hidden="true"></span>
-                                <span class="fas fa-moon phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="dark" aria-hidden="true"></span>
-                                <span class="fas fa-adjust phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="auto" aria-hidden="true"></span>
-                                <span class="sr-only">Theme</span>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right phoenix-nop-theme-menu" aria-labelledby="nopAdminThemeDropdown">
-                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="light" value="light">
-                                    <span class="fas fa-sun mr-2" aria-hidden="true"></span>
-                                    <span>Light</span>
-                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                        @* Phoenix admin theme integration start: switch-style controls, vanilla JS behavior. *@
+                        <li class="nav-item phoenix-nop-theme-switcher">
+                            <div class="phoenix-nop-theme-switch" role="group" aria-label="Theme">
+                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="light" value="light" title="Light theme">
+                                    <span class="fas fa-sun" aria-hidden="true"></span>
+                                    <span class="sr-only">Light</span>
                                 </button>
-                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="dark" value="dark">
-                                    <span class="fas fa-moon mr-2" aria-hidden="true"></span>
-                                    <span>Dark</span>
-                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="auto" value="auto" title="Auto theme">
+                                    <span class="fas fa-adjust" aria-hidden="true"></span>
+                                    <span class="sr-only">Auto</span>
                                 </button>
-                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="auto" value="auto">
-                                    <span class="fas fa-adjust mr-2" aria-hidden="true"></span>
-                                    <span>Auto</span>
-                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="dark" value="dark" title="Dark theme">
+                                    <span class="fas fa-moon" aria-hidden="true"></span>
+                                    <span class="sr-only">Dark</span>
                                 </button>
                             </div>
                         </li>
