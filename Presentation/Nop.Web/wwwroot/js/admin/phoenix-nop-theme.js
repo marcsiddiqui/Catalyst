@@ -6,29 +6,33 @@
 (function () {
     'use strict';
 
-    var storageKey = 'nopAdminPhoenixTheme';
     var allowedThemes = {
         light: true,
         dark: true,
         auto: true
     };
     var systemThemeQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+    var currentSelectedTheme = getInitialTheme();
 
-    function getStoredTheme() {
-        try {
-            var storedTheme = localStorage.getItem(storageKey);
-            return allowedThemes[storedTheme] ? storedTheme : 'light';
-        } catch (error) {
-            return 'light';
-        }
+    function getInitialTheme() {
+        var configuredTheme = window.nopAdminPhoenixTheme && window.nopAdminPhoenixTheme.selectedTheme;
+        var documentTheme = document.documentElement.getAttribute('data-nop-admin-theme-choice');
+        var theme = configuredTheme || documentTheme;
+
+        return allowedThemes[theme] ? theme : 'light';
     }
 
-    function storeTheme(theme) {
-        try {
-            localStorage.setItem(storageKey, theme);
-        } catch (error) {
-            // Ignore storage failures so admin behavior remains unaffected.
-        }
+    function getSaveUrl() {
+        var switchElement = document.querySelector('[data-nop-theme-save-url]');
+        var configuredUrl = window.nopAdminPhoenixTheme && window.nopAdminPhoenixTheme.saveUrl;
+
+        return switchElement && switchElement.getAttribute('data-nop-theme-save-url') || configuredUrl || '';
+    }
+
+    function getAntiForgeryToken() {
+        var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+
+        return tokenInput ? tokenInput.value : '';
     }
 
     function getResolvedTheme(theme) {
@@ -73,17 +77,52 @@
         document.documentElement.setAttribute('data-nop-admin-theme-resolved', resolvedTheme);
     }
 
-    function applyTheme(theme, shouldStore) {
+    function persistTheme(theme) {
+        var saveUrl = getSaveUrl();
+
+        if (!saveUrl) {
+            return;
+        }
+
+        var body = new URLSearchParams();
+        body.append('value', theme);
+
+        var token = getAntiForgeryToken();
+        if (token) {
+            body.append('__RequestVerificationToken', token);
+        }
+
+        fetch(saveUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: body.toString()
+        }).then(function (response) {
+            if (!response.ok) {
+                throw new Error('Failed to save admin theme preference.');
+            }
+        }).catch(function (error) {
+            if (window.console && window.console.warn) {
+                window.console.warn(error.message || error);
+            }
+        });
+    }
+
+    function applyTheme(theme, shouldPersist) {
         var selectedTheme = allowedThemes[theme] ? theme : 'light';
         var resolvedTheme = getResolvedTheme(selectedTheme);
 
-        if (shouldStore) {
-            storeTheme(selectedTheme);
-        }
+        currentSelectedTheme = selectedTheme;
 
         document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
         setBodyThemeClass(resolvedTheme);
         updateControls(selectedTheme, resolvedTheme);
+
+        if (shouldPersist) {
+            persistTheme(selectedTheme);
+        }
     }
 
     function handleThemeControlClick(event) {
@@ -108,7 +147,7 @@
     }
 
     function handleSystemThemeChange() {
-        if (getStoredTheme() === 'auto') {
+        if (currentSelectedTheme === 'auto') {
             applyTheme('auto', false);
         }
     }
@@ -116,7 +155,7 @@
     function initThemeControls() {
         document.addEventListener('click', handleThemeControlClick);
         document.addEventListener('change', handleThemeControlChange);
-        applyTheme(getStoredTheme(), false);
+        applyTheme(currentSelectedTheme, false);
 
         if (systemThemeQuery) {
             if (systemThemeQuery.addEventListener) {
@@ -127,7 +166,7 @@
         }
     }
 
-    applyTheme(getStoredTheme(), false);
+    applyTheme(currentSelectedTheme, false);
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initThemeControls);

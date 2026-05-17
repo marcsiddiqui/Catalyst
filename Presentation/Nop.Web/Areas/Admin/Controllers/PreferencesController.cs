@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using Nop.Core;
+using Nop.Core.Domain.Customers;
 using Nop.Services.Common;
 
 namespace Nop.Web.Areas.Admin.Controllers;
@@ -33,6 +35,24 @@ public partial class PreferencesController : BaseAdminController
         ArgumentException.ThrowIfNullOrEmpty(name);
 
         await _genericAttributeService.SaveAttributeAsync(await _workContext.GetCurrentCustomerAsync(), name, value);
+
+        return Json(new
+        {
+            Result = true
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public virtual async Task<IActionResult> SaveAdminThemePreference(string value)
+    {
+        //permission validation is not required here
+        value = value?.Trim().ToLowerInvariant();
+
+        if (value != "light" && value != "dark" && value != "auto")
+            return BadRequest(new { Result = false });
+
+        await _genericAttributeService.SaveAttributeAsync(await _workContext.GetCurrentCustomerAsync(), NopCustomerDefaults.PhoenixAdminThemeAttribute, value);
 
         return Json(new
         {

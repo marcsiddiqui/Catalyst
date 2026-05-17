@@ -6,9 +6,11 @@
 @inject StoreInformationSettings storeInformationSettings
 @inject AdminAreaSettings adminAreaSettings
 @inject Nop.Services.Localization.ILanguageService languageService
+@inject Nop.Services.Common.IGenericAttributeService genericAttributeService
 
 @using Nop.Core.Domain
 @using Nop.Core.Domain.Localization
+@using Nop.Core.Domain.Customers
 @using Nop.Services.Customers
 @using Nop.Services.Helpers
 
@@ -24,6 +26,11 @@
 
     //avatar
     var currentCustomer = await workContext.GetCurrentCustomerAsync();
+
+    var selectedPhoenixAdminTheme = (await genericAttributeService.GetAttributeAsync<string>(currentCustomer, NopCustomerDefaults.PhoenixAdminThemeAttribute))?.Trim().ToLowerInvariant();
+
+    if (selectedPhoenixAdminTheme != "light" && selectedPhoenixAdminTheme != "dark" && selectedPhoenixAdminTheme != "auto")
+        selectedPhoenixAdminTheme = "light";
 
     //event
     await eventPublisher.PublishAsync(new PageRenderingEvent(NopHtml));
@@ -42,16 +49,10 @@
     @* Phoenix admin theme integration start: resolve light/dark before CSS loads to reduce theme flash. *@
     <script>
         (function () {
-            var storageKey = 'nopAdminPhoenixTheme';
             var allowedThemes = { light: true, dark: true, auto: true };
-            var selectedTheme = 'light';
+            var selectedTheme = '@selectedPhoenixAdminTheme';
 
-            try {
-                var storedTheme = localStorage.getItem(storageKey);
-                if (allowedThemes[storedTheme]) {
-                    selectedTheme = storedTheme;
-                }
-            } catch (error) {
+            if (!allowedThemes[selectedTheme]) {
                 selectedTheme = 'light';
             }
 
@@ -59,6 +60,11 @@
             if (selectedTheme === 'auto') {
                 resolvedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
+
+            window.nopAdminPhoenixTheme = {
+                selectedTheme: selectedTheme,
+                saveUrl: '@Url.Action("SaveAdminThemePreference", "Preferences", new { area = AreaNames.ADMIN })'
+            };
 
             document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
             document.documentElement.setAttribute('data-nop-admin-theme-choice', selectedTheme);
@@ -87,6 +93,12 @@
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open phoenix-nop-admin">
+
+    @* Phoenix admin theme integration start: shared antiforgery token for vanilla theme preference POST. *@
+    <form id="nop-admin-antiforgery-form" method="post" class="d-none">
+        @Html.AntiForgeryToken()
+    </form>
+    @* Phoenix admin theme integration end *@
 
     <div class="localizedMsgs" style="display:none;">
         <div class="multiSelectSearchMsg">@T("Admin.Multiselect.Search")</div>
@@ -147,8 +159,8 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav ml-auto pl-2">
                         @* Phoenix admin theme integration start: switch-style controls, vanilla JS behavior. *@
-                        <li class="nav-item phoenix-nop-theme-switcher">
-                            <div class="phoenix-nop-theme-switch" role="group" aria-label="Theme">
+                        <li class="nav-item phoenix-nop-theme-switcher px-2">
+                            <div class="phoenix-nop-theme-switch" role="group" aria-label="Theme" data-nop-theme-save-url="@Url.Action("SaveAdminThemePreference", "Preferences", new { area = AreaNames.ADMIN })">
                                 <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="light" value="light" title="Light theme">
                                     <span class="fas fa-sun" aria-hidden="true"></span>
                                     <span class="sr-only">Light</span>
