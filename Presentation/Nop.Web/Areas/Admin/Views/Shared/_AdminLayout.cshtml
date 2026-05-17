@@ -39,6 +39,33 @@
 
     @NopHtml.GenerateHeadCustom()
 
+    @* Phoenix admin theme integration start: resolve light/dark before CSS loads to reduce theme flash. *@
+    <script>
+        (function () {
+            var storageKey = 'nopAdminPhoenixTheme';
+            var allowedThemes = { light: true, dark: true, auto: true };
+            var selectedTheme = 'light';
+
+            try {
+                var storedTheme = localStorage.getItem(storageKey);
+                if (allowedThemes[storedTheme]) {
+                    selectedTheme = storedTheme;
+                }
+            } catch (error) {
+                selectedTheme = 'light';
+            }
+
+            var resolvedTheme = selectedTheme;
+            if (selectedTheme === 'auto') {
+                resolvedTheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
+            document.documentElement.setAttribute('data-nop-admin-theme-choice', selectedTheme);
+        })();
+    </script>
+    @* Phoenix admin theme integration end *@
+
     @* CSS & Script resources *@
     @{
         await Html.RenderPartialAsync("_AdminScripts");
@@ -119,6 +146,33 @@
                 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderNavbarBefore })
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav ml-auto pl-2">
+                        @* Phoenix admin theme integration start: Bootstrap 4 dropdown, vanilla JS controls. *@
+                        <li class="nav-item dropdown phoenix-nop-theme-switcher">
+                            <button class="nav-link btn btn-link dropdown-toggle dropdown-caret-none phoenix-nop-theme-toggle" type="button" id="nopAdminThemeDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Theme">
+                                <span class="fas fa-sun phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="light" aria-hidden="true"></span>
+                                <span class="fas fa-moon phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="dark" aria-hidden="true"></span>
+                                <span class="fas fa-adjust phoenix-nop-theme-toggle-icon" data-nop-theme-toggle-icon="auto" aria-hidden="true"></span>
+                                <span class="sr-only">Theme</span>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right phoenix-nop-theme-menu" aria-labelledby="nopAdminThemeDropdown">
+                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="light" value="light">
+                                    <span class="fas fa-sun mr-2" aria-hidden="true"></span>
+                                    <span>Light</span>
+                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                                </button>
+                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="dark" value="dark">
+                                    <span class="fas fa-moon mr-2" aria-hidden="true"></span>
+                                    <span>Dark</span>
+                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                                </button>
+                                <button class="dropdown-item phoenix-nop-theme-item" type="button" data-nop-theme-control="auto" value="auto">
+                                    <span class="fas fa-adjust mr-2" aria-hidden="true"></span>
+                                    <span>Auto</span>
+                                    <span class="fas fa-check ml-auto phoenix-nop-theme-check" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </li>
+                        @* Phoenix admin theme integration end *@
                         <li class="nav-item">
                             @await Component.InvokeAsync(typeof(AdminLanguageSelectorViewComponent))
                         </li>
