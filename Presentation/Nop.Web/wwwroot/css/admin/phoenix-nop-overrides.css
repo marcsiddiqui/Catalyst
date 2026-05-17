@@ -1,0 +1,269 @@
+/*
+  Phoenix admin integration start.
+  Scoped compatibility overrides for the nopCommerce admin shell.
+  Keep this layer additive: do not remove nopCommerce/AdminLTE/DataTables classes.
+*/
+
+body.phoenix-nop-admin {
+  background: var(--phoenix-nop-bg);
+  color: var(--phoenix-nop-text);
+  font-size: 0.875rem;
+}
+
+.phoenix-nop-admin .wrapper {
+  background: var(--phoenix-nop-bg);
+}
+
+.phoenix-nop-admin .phoenix-nop-topbar {
+  min-height: var(--phoenix-nop-topbar-height);
+  border-bottom: 1px solid var(--phoenix-nop-border-soft);
+  box-shadow: 0 1px 8px rgba(20, 24, 36, 0.04);
+  z-index: 1038;
+}
+
+.phoenix-nop-admin .phoenix-nop-topbar .nav-link {
+  color: var(--phoenix-nop-muted);
+  border-radius: var(--phoenix-nop-radius-sm);
+}
+
+.phoenix-nop-admin .phoenix-nop-topbar .nav-link:hover,
+.phoenix-nop-admin .phoenix-nop-topbar .nav-link:focus {
+  color: var(--phoenix-nop-primary);
+  background: var(--phoenix-nop-primary-soft);
+}
+
+.phoenix-nop-admin .phoenix-nop-sidebar {
+  width: var(--phoenix-nop-sidebar-width);
+  background: var(--phoenix-nop-surface) !important;
+  border-right: 1px solid var(--phoenix-nop-border-soft);
+  box-shadow: none !important;
+}
+
+.phoenix-nop-admin .phoenix-nop-brand {
+  min-height: var(--phoenix-nop-topbar-height);
+  border-bottom: 1px solid var(--phoenix-nop-border-soft);
+  background: var(--phoenix-nop-surface);
+}
+
+.phoenix-nop-admin .phoenix-nop-sidebar-body {
+  padding: 0.75rem;
+}
+
+.phoenix-nop-admin .sidebar-form {
+  margin: 0 0 0.75rem;
+}
+
+.phoenix-nop-admin .phoenix-nop-search .form-control {
+  height: 2.35rem;
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface-soft);
+  border: 1px solid var(--phoenix-nop-border);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.phoenix-nop-admin .phoenix-nop-search .form-control:focus {
+  border-color: var(--phoenix-nop-primary);
+  box-shadow: 0 0 0 0.15rem rgba(56, 116, 255, 0.15);
+}
+
+.phoenix-nop-admin .phoenix-nop-nav {
+  gap: 0.125rem;
+}
+
+.phoenix-nop-admin .phoenix-nop-nav .nav-item > .nav-link {
+  min-height: 2.35rem;
+  color: var(--phoenix-nop-muted);
+  border-radius: var(--phoenix-nop-radius-sm);
+  margin-bottom: 0.125rem;
+}
+
+.phoenix-nop-admin .phoenix-nop-nav .nav-item > .nav-link:hover,
+.phoenix-nop-admin .phoenix-nop-nav .nav-item > .nav-link:focus {
+  color: var(--phoenix-nop-primary);
+  background: var(--phoenix-nop-primary-soft);
+}
+
+.phoenix-nop-admin .phoenix-nop-nav .nav-link.active {
+  color: var(--phoenix-nop-primary) !important;
+  background: var(--phoenix-nop-primary-soft) !important;
+  box-shadow: none;
+}
+
+.phoenix-nop-admin .phoenix-nop-nav .nav-icon {
+  color: inherit;
+  opacity: 0.85;
+}
+
+.phoenix-nop-admin .phoenix-nop-nav .nav-treeview {
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--phoenix-nop-border-soft);
+  margin-left: 1rem;
+}
+
+.phoenix-nop-admin .phoenix-nop-content {
+  background: var(--phoenix-nop-bg);
+  min-height: calc(100vh - var(--phoenix-nop-topbar-height));
+}
+
+.phoenix-nop-admin .content-wrapper,
+.phoenix-nop-admin .main-footer,
+.phoenix-nop-admin .main-header {
+  margin-left: var(--phoenix-nop-sidebar-width);
+}
+
+html[dir="rtl"] .phoenix-nop-admin .content-wrapper,
+html[dir="rtl"] .phoenix-nop-admin .main-footer,
+html[dir="rtl"] .phoenix-nop-admin .main-header {
+  margin-right: var(--phoenix-nop-sidebar-width);
+  margin-left: 0;
+}
+
+.phoenix-nop-admin.sidebar-collapse .content-wrapper,
+.phoenix-nop-admin.sidebar-collapse .main-footer,
+.phoenix-nop-admin.sidebar-collapse .main-header {
+  margin-left: 4.6rem;
+}
+
+html[dir="rtl"] .phoenix-nop-admin.sidebar-collapse .content-wrapper,
+html[dir="rtl"] .phoenix-nop-admin.sidebar-collapse .main-footer,
+html[dir="rtl"] .phoenix-nop-admin.sidebar-collapse .main-header {
+  margin-right: 4.6rem;
+  margin-left: 0;
+}
+
+.phoenix-nop-admin .content,
+.phoenix-nop-admin .content-wrapper > .content {
+  padding: 1rem 1.5rem 1.5rem;
+}
+
+.phoenix-nop-admin .content-header {
+  padding: 1.25rem 1.5rem 0.75rem;
+  background: transparent;
+}
+
+.phoenix-nop-admin .content-header > h1 {
+  color: var(--phoenix-nop-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.phoenix-nop-admin .card {
+  border: 1px solid var(--phoenix-nop-border-soft);
+  border-radius: var(--phoenix-nop-radius);
+  box-shadow: var(--phoenix-nop-shadow);
+}
+
+.phoenix-nop-admin .card.card-secondary > .card-header,
+.phoenix-nop-admin .card > .card-header {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface);
+  border-bottom: 1px solid var(--phoenix-nop-border-soft);
+  border-top-left-radius: var(--phoenix-nop-radius);
+  border-top-right-radius: var(--phoenix-nop-radius);
+}
+
+.phoenix-nop-admin .card-title {
+  color: var(--phoenix-nop-text);
+  font-weight: 700;
+}
+
+.phoenix-nop-admin .form-control,
+.phoenix-nop-admin .custom-select,
+.phoenix-nop-admin .select2-container--default .select2-selection--single,
+.phoenix-nop-admin .select2-container--default .select2-selection--multiple {
+  border-color: var(--phoenix-nop-border);
+  border-radius: var(--phoenix-nop-radius-sm);
+}
+
+.phoenix-nop-admin .form-control:focus,
+.phoenix-nop-admin .custom-select:focus {
+  border-color: var(--phoenix-nop-primary);
+  box-shadow: 0 0 0 0.15rem rgba(56, 116, 255, 0.15);
+}
+
+.phoenix-nop-admin .btn {
+  border-radius: var(--phoenix-nop-radius-sm);
+  font-weight: 600;
+}
+
+.phoenix-nop-admin .btn-primary,
+.phoenix-nop-admin .bg-blue {
+  border-color: var(--phoenix-nop-primary) !important;
+  background-color: var(--phoenix-nop-primary) !important;
+}
+
+.phoenix-nop-admin .table,
+.phoenix-nop-admin table.dataTable {
+  color: var(--phoenix-nop-text);
+}
+
+.phoenix-nop-admin .table thead th,
+.phoenix-nop-admin table.dataTable thead th {
+  color: var(--phoenix-nop-muted);
+  background: var(--phoenix-nop-surface-soft);
+  border-bottom-color: var(--phoenix-nop-border);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.phoenix-nop-admin .table td,
+.phoenix-nop-admin .table th {
+  border-top-color: var(--phoenix-nop-border-soft);
+}
+
+.phoenix-nop-admin .badge {
+  border-radius: 999px;
+  padding: 0.35em 0.65em;
+}
+
+.phoenix-nop-admin .badge-success,
+.phoenix-nop-admin .bg-green {
+  color: #1c6c09 !important;
+  background-color: var(--phoenix-nop-success-soft) !important;
+}
+
+.phoenix-nop-admin .badge-warning,
+.phoenix-nop-admin .bg-yellow {
+  color: #9d5c00 !important;
+  background-color: var(--phoenix-nop-warning-soft) !important;
+}
+
+.phoenix-nop-admin .badge-danger,
+.phoenix-nop-admin .bg-red {
+  color: #b81800 !important;
+  background-color: var(--phoenix-nop-danger-soft) !important;
+}
+
+.phoenix-nop-admin .card-search {
+  border-color: var(--phoenix-nop-border-soft);
+}
+
+.phoenix-nop-admin .phoenix-nop-footer {
+  color: var(--phoenix-nop-muted);
+  background: var(--phoenix-nop-surface);
+  border-top: 1px solid var(--phoenix-nop-border-soft);
+}
+
+@media (max-width: 767.98px) {
+  .phoenix-nop-admin .content-wrapper,
+  .phoenix-nop-admin .main-footer,
+  .phoenix-nop-admin .main-header {
+    margin-left: 0;
+  }
+
+  html[dir="rtl"] .phoenix-nop-admin .content-wrapper,
+  html[dir="rtl"] .phoenix-nop-admin .main-footer,
+  html[dir="rtl"] .phoenix-nop-admin .main-header {
+    margin-right: 0;
+  }
+
+  .phoenix-nop-admin .content,
+  .phoenix-nop-admin .content-wrapper > .content,
+  .phoenix-nop-admin .content-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Phoenix admin integration end */

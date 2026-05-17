@@ -2,7 +2,8 @@
 
 @inject IAdminMenu siteMap;
 
-<ul class="nav nav-pills nav-sidebar flex-column nav-legacy" data-widget="treeview" role="menu">
+@* Phoenix admin integration start: additional class for scoped sidebar styling; treeview remains AdminLTE. *@
+<ul class="nav nav-pills nav-sidebar flex-column nav-legacy phoenix-nop-nav" data-widget="treeview" role="menu">
     @{
         //display menu items
         foreach (var item in (await siteMap.GetRootNodeAsync()).ChildNodes.Where(n => n.Visible))
@@ -11,3 +12,4 @@
         }
     }
 </ul>
+@* Phoenix admin integration end *@

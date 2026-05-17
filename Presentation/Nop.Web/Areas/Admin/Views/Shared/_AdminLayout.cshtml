@@ -59,7 +59,7 @@
     <link rel="stylesheet" src="~/lib/magnific-popup/magnific-popup.css" />
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
+<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open phoenix-nop-admin">
 
     <div class="localizedMsgs" style="display:none;">
         <div class="multiSelectSearchMsg">@T("Admin.Multiselect.Search")</div>
@@ -102,14 +102,15 @@
         else
         {
             @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderBefore })
-            <nav class="main-header navbar navbar-expand-md navbar-dark bg-dark">
+            @* Phoenix admin integration start: retain AdminLTE behavior while restyling the shell. *@
+            <nav class="main-header navbar navbar-expand-md navbar-light bg-white phoenix-nop-topbar">
                 <ul class="navbar-nav pl-2 pl-md-0">
                     <li class="nav-item">
                         <a class="nav-link" id="nopSideBarPusher" data-widget="pushmenu" href="#"><i class="fa fa-bars"></i></a>
                     </li>
                     @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderToggleAfter })
                 </ul>
-                <a href="@Url.Content("~/Admin")" class="brand-link navbar-dark">
+                <a href="@Url.Content("~/Admin")" class="brand-link phoenix-nop-mobile-brand">
                     <img src="~/css/admin/images/logo.png" alt="logo.png" class="brand-image logo d-block d-md-none d-sm-block d-sm-none">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -175,6 +176,7 @@
                 </div>
                 @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderNavbarAfter })
             </nav>
+            @* Phoenix admin integration end *@
 
             @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.HeaderAfter })
         }
@@ -184,15 +186,16 @@
         }
         else
         {
-            <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            @* Phoenix admin integration start: visual sidebar layer; nopCommerce menu generation remains native. *@
+            <aside class="main-sidebar sidebar-dark-primary elevation-4 phoenix-nop-sidebar">
                 <!-- Brand Logo -->
-                <a href="@Url.Content("~/Admin")" class="brand-link navbar-dark logo-switch">
+                <a href="@Url.Content("~/Admin")" class="brand-link logo-switch phoenix-nop-brand">
                     <img src="~/css/admin/images/logo.png" alt="logo.png" class="brand-image-xl logo-xl">
                     <img src="~/css/admin/images/logo-mini.png" alt="logo.png" class="brand-image-xs logo-xs">
                 </a>
-                <div class="sidebar">
+                <div class="sidebar phoenix-nop-sidebar-body">
                     <div class="sidebar-form">
-                        <div id="search-box">
+                        <div id="search-box" class="phoenix-nop-search">
                             <input type="text" class="form-control admin-search-box typeahead" placeholder="@T("Admin.Menu.Search")">
                         </div>
                     </div>
@@ -209,13 +212,16 @@
                     </nav>
                 </div>
             </aside>
+            @* Phoenix admin integration end *@
         }
-        <div class="content-wrapper @(adminAreaSettings.UseStickyHeaderLayout ? "sticky-header-layout" : "")">
+        @* Phoenix admin integration start: content wrapper class only; RenderBody and page contracts remain unchanged. *@
+        <div class="content-wrapper phoenix-nop-content @(adminAreaSettings.UseStickyHeaderLayout ? "sticky-header-layout" : "")">
             @await Html.PartialAsync("Notifications")
             <nop-antiforgery-token />
             @RenderBody()
         </div>
-        <div class="main-footer">
+        @* Phoenix admin integration end *@
+        <div class="main-footer phoenix-nop-footer">
             <div class="container-fluid">
                 <div class="col-md-12">
                     <div class="row">

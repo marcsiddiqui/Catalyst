@@ -51,6 +51,10 @@ else
 }
 
 <link rel="stylesheet" href="~/lib_npm/admin-lte/plugins/select2/css/select2.min.css">
+@* Phoenix admin integration start: scoped visual layer only; keep nopCommerce/AdminLTE assets authoritative. *@
+<link rel="stylesheet" href="~/lib/phoenix/css/phoenix-nop-tokens.css" />
+<link rel="stylesheet" href="~/css/admin/phoenix-nop-overrides.css" />
+@* Phoenix admin integration end *@
 
 @NopHtml.GenerateCssFiles()
 
