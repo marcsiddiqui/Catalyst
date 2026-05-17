@@ -267,6 +267,323 @@ html[dir="rtl"] .phoenix-nop-admin.sidebar-collapse .main-header {
   background-color: var(--phoenix-nop-primary) !important;
 }
 
+[data-bs-theme="dark"] .phoenix-nop-admin .btn {
+  color: var(--nop-admin-btn-secondary-color);
+  border-color: var(--nop-admin-btn-border);
+  background-color: var(--nop-admin-btn-muted-bg);
+  box-shadow: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-group .btn:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-group .btn:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .dropdown-toggle:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .dropdown-toggle:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .show > .btn.dropdown-toggle {
+  color: var(--nop-admin-btn-secondary-color);
+  border-color: var(--phoenix-nop-primary);
+  background-color: var(--nop-admin-btn-muted-hover-bg);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn:focus-visible {
+  outline: 2px solid var(--phoenix-nop-primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 0.2rem var(--nop-admin-btn-focus-ring);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-primary,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-blue,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-primary:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-primary:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .show > .btn-primary.dropdown-toggle {
+  color: var(--nop-admin-btn-primary-color) !important;
+  border-color: var(--nop-admin-btn-primary-bg) !important;
+  background-color: var(--nop-admin-btn-primary-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-primary:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-primary:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-blue:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-blue:focus {
+  color: var(--nop-admin-btn-primary-color) !important;
+  border-color: var(--nop-admin-btn-primary-hover-bg) !important;
+  background-color: var(--nop-admin-btn-primary-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-secondary,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-default,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-light,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-dark,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-gray,
+[data-bs-theme="dark"] .phoenix-nop-admin .show > .btn-secondary.dropdown-toggle,
+[data-bs-theme="dark"] .phoenix-nop-admin .show > .btn-default.dropdown-toggle {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--nop-admin-btn-border) !important;
+  background-color: var(--nop-admin-btn-secondary-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-secondary:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-secondary:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-default:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-default:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-light:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-light:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-dark:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-dark:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-gray:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-gray:focus {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--phoenix-nop-primary) !important;
+  background-color: var(--nop-admin-btn-secondary-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-success,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-green,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-olive,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-success:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-success:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-success-bg) !important;
+  background-color: var(--nop-admin-btn-success-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-success:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-success:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-green:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-green:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-olive:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-olive:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-success-hover-bg) !important;
+  background-color: var(--nop-admin-btn-success-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-danger,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-red,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-danger:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-danger:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-danger-bg) !important;
+  background-color: var(--nop-admin-btn-danger-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-danger:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-danger:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-red:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-red:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-danger-hover-bg) !important;
+  background-color: var(--nop-admin-btn-danger-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-warning,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-yellow,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-warning:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-warning:focus {
+  color: var(--nop-admin-btn-warning-color) !important;
+  border-color: var(--nop-admin-btn-warning-bg) !important;
+  background-color: var(--nop-admin-btn-warning-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-warning:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-warning:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-yellow:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-yellow:focus {
+  color: var(--nop-admin-btn-warning-color) !important;
+  border-color: var(--nop-admin-btn-warning-hover-bg) !important;
+  background-color: var(--nop-admin-btn-warning-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-info,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-info,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-teal,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-info:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-info:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-info-bg) !important;
+  background-color: var(--nop-admin-btn-info-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-info:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-info:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-info:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-info:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-teal:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .bg-teal:focus {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-info-hover-bg) !important;
+  background-color: var(--nop-admin-btn-info-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-primary,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-secondary,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-success,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-danger,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-warning,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-info {
+  background-color: transparent !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-primary {
+  color: var(--phoenix-nop-primary) !important;
+  border-color: var(--phoenix-nop-primary) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-secondary {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--nop-admin-btn-border) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-secondary:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-secondary:focus {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--phoenix-nop-primary) !important;
+  background-color: var(--nop-admin-btn-secondary-hover-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-success {
+  color: #78d65d !important;
+  border-color: var(--nop-admin-btn-success-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-danger {
+  color: #ff8b84 !important;
+  border-color: var(--nop-admin-btn-danger-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-warning {
+  color: #ffc861 !important;
+  border-color: var(--nop-admin-btn-warning-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn-outline-info {
+  color: #62dbe6 !important;
+  border-color: var(--nop-admin-btn-info-bg) !important;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .dt-buttons .btn,
+[data-bs-theme="dark"] .phoenix-nop-admin .dataTables_wrapper .btn {
+  border-color: var(--nop-admin-btn-border);
+  box-shadow: none;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .btn.disabled,
+[data-bs-theme="dark"] .phoenix-nop-admin .btn:disabled,
+[data-bs-theme="dark"] .phoenix-nop-admin fieldset:disabled .btn {
+  color: var(--phoenix-nop-muted) !important;
+  background-color: var(--nop-admin-btn-muted-bg) !important;
+  border-color: var(--nop-admin-btn-border) !important;
+  opacity: 0.55;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn:not(.btn-link) {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--nop-admin-btn-border) !important;
+  background-color: var(--nop-admin-btn-muted-bg) !important;
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
+  box-shadow: var(--nop-admin-btn-shadow);
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn:not(.btn-link):hover,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn:not(.btn-link):focus,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-group .btn:not(.btn-link):hover,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-group .btn:not(.btn-link):focus,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .show > .btn.dropdown-toggle:not(.btn-link) {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--phoenix-nop-primary) !important;
+  background-color: var(--nop-admin-btn-muted-hover-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-primary,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-blue,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-blue,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .show > .btn-primary.dropdown-toggle {
+  color: var(--nop-admin-btn-primary-color) !important;
+  border-color: var(--nop-admin-btn-primary-bg) !important;
+  background-color: var(--nop-admin-btn-primary-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-primary:hover,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-primary:focus,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-blue:hover,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-blue:focus {
+  color: var(--nop-admin-btn-primary-color) !important;
+  border-color: var(--nop-admin-btn-primary-hover-bg) !important;
+  background-color: var(--nop-admin-btn-primary-hover-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-secondary,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-default,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-light,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-dark,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-gray,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-gray {
+  color: var(--nop-admin-btn-secondary-color) !important;
+  border-color: var(--nop-admin-btn-border) !important;
+  background-color: var(--nop-admin-btn-secondary-bg) !important;
+}
+
+/*html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-success,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-green,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-olive,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-green,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-olive {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-success-bg) !important;
+  background-color: var(--nop-admin-btn-success-bg) !important;
+}*/
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-danger,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-red,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-red {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-danger-bg) !important;
+  background-color: var(--nop-admin-btn-danger-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-warning,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-yellow,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-yellow {
+  color: var(--nop-admin-btn-warning-color) !important;
+  border-color: var(--nop-admin-btn-warning-bg) !important;
+  background-color: var(--nop-admin-btn-warning-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-info,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-info,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn.bg-teal,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-info,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .bg-teal {
+  color: #ffffff !important;
+  border-color: var(--nop-admin-btn-info-bg) !important;
+  background-color: var(--nop-admin-btn-info-bg) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-primary {
+  color: var(--nop-admin-btn-primary-hover-bg) !important;
+  border-color: var(--nop-admin-btn-primary-bg) !important;
+  background-color: transparent !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-secondary,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-success,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-danger,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-warning,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .btn-outline-info {
+  background-color: transparent !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .dt-buttons .btn,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .dataTables_wrapper .btn,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card .btn,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .form-horizontal .btn {
+  box-shadow: var(--nop-admin-btn-shadow);
+}
+
 .phoenix-nop-admin .table,
 .phoenix-nop-admin table.dataTable {
   color: var(--phoenix-nop-text);
@@ -432,6 +749,52 @@ html[dir="rtl"] .phoenix-nop-admin.sidebar-collapse .main-header {
 [data-bs-theme="dark"] body.phoenix-nop-admin .select2-container--default .select2-results__option--highlighted[aria-selected] {
   color: var(--phoenix-nop-primary);
   background: var(--phoenix-nop-primary-soft);
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .content-wrapper,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .content,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .content-header,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card-body,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card-footer,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .box,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .info-box {
+  color: var(--phoenix-nop-text) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin :is(h1, h2, h3, h4, h5, h6),
+html[data-bs-theme="dark"] body.phoenix-nop-admin .content-header small,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card-title,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .card-title i,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .description-header,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .description-text,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .info-box-text,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .info-box-number,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .nav-tabs-custom,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .tab-content,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .tab-pane {
+  color: var(--phoenix-nop-text) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .text-muted,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .content-header small,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .description-text {
+  color: var(--phoenix-nop-muted) !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box .inner,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box .inner h3,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box .inner p,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box .icon,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box .icon > i,
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box-footer {
+  color: #ffffff !important;
+}
+
+html[data-bs-theme="dark"] body.phoenix-nop-admin .small-box-footer {
+  background: rgba(0, 0, 0, 0.18);
 }
 
 @media (max-width: 767.98px) {

@@ -678,7 +678,7 @@ public partial class AdminMenu : IAdminMenu
                                     Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.GenericDropDownOptions"),
                                     PermissionNames = new List<string> { StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS },
                                     Url = GetMenuItemUrl("GenericDropDownOption", "List"),
-                                    IconClass = "far fa-dot-circle"
+                                    IconClass = "far fa-circle"
                                 },
                                 new()
                                 {

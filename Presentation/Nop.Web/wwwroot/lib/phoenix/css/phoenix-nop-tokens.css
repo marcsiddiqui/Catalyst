@@ -42,4 +42,24 @@
   --phoenix-nop-warning-soft: rgba(229, 146, 0, 0.22);
   --phoenix-nop-danger-soft: rgba(244, 80, 57, 0.2);
   --phoenix-nop-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.35);
+  --nop-admin-btn-border: #3d465b;
+  --nop-admin-btn-primary-bg: #5f8cff;
+  --nop-admin-btn-primary-hover-bg: #7aa2ff;
+  --nop-admin-btn-primary-color: #ffffff;
+  --nop-admin-btn-secondary-bg: #263142;
+  --nop-admin-btn-secondary-hover-bg: #313d52;
+  --nop-admin-btn-secondary-color: #eff2f6;
+  --nop-admin-btn-muted-bg: #1f2533;
+  --nop-admin-btn-muted-hover-bg: #2a3344;
+  --nop-admin-btn-danger-bg: #e5484d;
+  --nop-admin-btn-danger-hover-bg: #cf3d43;
+  --nop-admin-btn-success-bg: #25b003;
+  --nop-admin-btn-success-hover-bg: #209903;
+  --nop-admin-btn-warning-bg: #e5a100;
+  --nop-admin-btn-warning-hover-bg: #c98d00;
+  --nop-admin-btn-warning-color: #141824;
+  --nop-admin-btn-info-bg: #0097a7;
+  --nop-admin-btn-info-hover-bg: #008391;
+  --nop-admin-btn-focus-ring: rgba(133, 169, 255, 0.35);
+  --nop-admin-btn-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
