@@ -484,8 +484,8 @@ columns: [
                         <text>
                             render: function (data, type, row) {
                                 return data
-                                    ? '<i class="fas fa-check true-icon" nop-value="true"></i>'
-                                    : '<i class="fas fa-times false-icon" nop-value="false"></i>';
+                                    ? '<span class="boolean-icon boolean-icon-true" title="@T("Admin.Common.Yes").Text" aria-label="@T("Admin.Common.Yes").Text" nop-value="true"><i class="fas fa-check"></i></span>'
+                                    : '<span class="boolean-icon boolean-icon-false" title="@T("Admin.Common.No").Text" aria-label="@T("Admin.Common.No").Text" nop-value="false"><i class="fas fa-times"></i></span>';
                             },
                         </text>
                         break;

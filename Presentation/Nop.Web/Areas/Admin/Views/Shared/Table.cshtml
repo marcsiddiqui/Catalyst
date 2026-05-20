@@ -28,7 +28,7 @@
 
 <script src="~/js/admin.table.js" asp-location="Footer"></script>
 
-<table class="table table-bordered table-hover table-striped dataTable" width="100%" id="@Model.Name">
+<table class="table table-sm fs-9 mb-0 overflow-hidden phoenix-admin-table dataTable" width="100%" id="@Model.Name">
     @if (Model.FooterColumns > 0)
     {
         //You need to add the footer before you create the table
@@ -385,7 +385,7 @@
             <text>
             <script asp-location="Footer">
                 function getchild_@(tableName)(d) {
-                    return '<table id="child' + d.@(curModel.PrimaryKeyColumn) + '_@(tableName)' + '" class="table table-bordered table-hover dataTable" width="100%">@(Html.Raw(footerHtml))</table>';
+                    return '<table id="child' + d.@(curModel.PrimaryKeyColumn) + '_@(tableName)' + '" class="table table-sm fs-9 mb-0 overflow-hidden phoenix-admin-table dataTable" width="100%">@(Html.Raw(footerHtml))</table>';
                 }
                 $(function() {
                     // Add event listener for opening and closing childs
