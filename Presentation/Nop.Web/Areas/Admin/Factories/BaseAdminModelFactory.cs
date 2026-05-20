@@ -1079,7 +1079,12 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
             {
                 var selected = false;
                 selected = selectedValueLi.Where(x => x == staticDropDownValue.Value).Any();
-                items.Add(new SelectListItem() { Text = await _localizationService.GetResourceAsync($"Admin.Option.{staticDropDownValue.Text}"), Value = staticDropDownValue.Value.ToString(), Selected = selected });
+                var resourceKey = $"Admin.Option.{staticDropDownValue.Text}";
+                var text = await _localizationService.GetResourceAsync(resourceKey);
+                if (string.Equals(text, resourceKey.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase))
+                    text = staticDropDownValue.Text;
+
+                items.Add(new SelectListItem() { Text = text, Value = staticDropDownValue.Value.ToString(), Selected = selected });
             }
         }
 

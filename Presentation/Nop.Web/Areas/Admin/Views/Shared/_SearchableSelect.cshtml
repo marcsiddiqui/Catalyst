@@ -1,0 +1,80 @@
+@using Nop.Web.Areas.Admin.Models.Common
+@model SearchableSelectModel
+
+@{
+    var selectedItem = Model.Items?.FirstOrDefault(item => item.Value == Model.SelectedValue || item.Selected);
+    var triggerText = selectedItem?.Text ?? Model.Placeholder;
+    var saveUrl = !string.IsNullOrWhiteSpace(Model.SaveUrl)
+        ? Model.SaveUrl
+        : Url.Action("AddOptionAjax", "GenericDropDownOption");
+    var deleteUrl = !string.IsNullOrWhiteSpace(Model.DeleteUrl)
+        ? Model.DeleteUrl
+        : Url.Action("UndoOptionAjax", "GenericDropDownOption");
+    var canAddNew = Model.AllowAddNew ?? await permissionService.AuthorizeAsync(StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS);
+    var addText = !string.IsNullOrWhiteSpace(Model.AddText) ? Model.AddText : T("Admin.Common.AddNew").Text;
+}
+
+<div class="ss-wrapper"
+     data-field-name="@Model.FieldName"
+     data-field-id="@Model.FieldId"
+     data-save-url="@saveUrl"
+     data-delete-url="@deleteUrl"
+     data-category="@Model.Category"
+     data-placeholder="@Model.Placeholder">
+    <input type="hidden"
+           id="@Model.FieldId"
+           name="@Model.FieldName"
+           value="@Model.SelectedValue"
+           class="ss-hidden-input" />
+
+    <div class="ss-trigger" tabindex="0" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+        <span class="ss-trigger-text">@triggerText</span>
+        <i class="fas fa-chevron-down ss-chevron" aria-hidden="true"></i>
+    </div>
+
+    <div class="ss-panel" role="listbox" hidden>
+        <div class="ss-search-wrap">
+            <i class="fas fa-search ss-search-icon" aria-hidden="true"></i>
+            <input type="text" class="ss-search" placeholder="@Model.Placeholder" autocomplete="off" />
+        </div>
+
+        <ul class="ss-list">
+            @if (Model.Items != null)
+            {
+                foreach (var item in Model.Items.Where(item => !string.IsNullOrWhiteSpace(item.Value)))
+                {
+                    var selected = item.Value == Model.SelectedValue || item.Selected;
+                    <li class="ss-option @(selected ? "ss-selected" : "")"
+                        data-value="@item.Value"
+                        role="option"
+                        aria-selected="@(selected ? "true" : "false")">
+                        <span class="ss-option-text">@item.Text</span>
+                        <i class="fas fa-check ss-check" aria-hidden="true"></i>
+                    </li>
+                }
+            }
+        </ul>
+
+        <div class="ss-empty" hidden>@Model.NoMatchesText</div>
+
+        @if (canAddNew)
+        {
+            <div class="ss-footer">
+                <button type="button" class="ss-add-trigger">
+                    <i class="fas fa-plus" aria-hidden="true"></i>
+                    <span>@addText</span>
+                </button>
+                <div class="ss-add-form" hidden>
+                    <input type="text" class="ss-add-input" placeholder="@addText" maxlength="150" />
+                    <button type="button" class="ss-add-save" title="@T("Admin.Common.Save")">
+                        <i class="fas fa-check" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="ss-add-cancel" title="@T("Admin.Common.Cancel")">
+                        <i class="fas fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+                <span class="ss-saving-indicator" hidden>@T("Admin.Common.Wait")</span>
+            </div>
+        }
+    </div>
+</div>

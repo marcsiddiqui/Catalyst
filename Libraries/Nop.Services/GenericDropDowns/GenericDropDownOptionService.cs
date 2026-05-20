@@ -1,7 +1,11 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
+
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Data;
+
+using System.Net.NetworkInformation;
 
 namespace Nop.Services.GenericDropDowns;
 
@@ -119,6 +123,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.InsertAsync(genericDropDownOption);
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOption.Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
     public virtual async Task InsertGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions)
@@ -127,6 +135,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.InsertAsync(genericDropDownOptions.ToList());
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOptions.FirstOrDefault().Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
     public virtual async Task UpdateGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption)
@@ -135,6 +147,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.UpdateAsync(genericDropDownOption);
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOption.Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
     public virtual async Task UpdateGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions)
@@ -143,6 +159,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.UpdateAsync(genericDropDownOptions.ToList());
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOptions.FirstOrDefault().Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
     public virtual async Task DeleteGenericDropDownOptionAsync(GenericDropDownOption genericDropDownOption)
@@ -151,6 +171,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.DeleteAsync(genericDropDownOption);
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOption.Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
     public virtual async Task DeleteGenericDropDownOptionAsync(IEnumerable<GenericDropDownOption> genericDropDownOptions)
@@ -159,6 +183,10 @@ public partial class GenericDropDownOptionService : IGenericDropDownOptionServic
             return;
 
         await _genericDropDownOptionRepository.DeleteAsync(genericDropDownOptions.ToList());
+
+        var cacheKey = _staticCacheManager.PrepareKeyForDefaultCache(NopGenericDropdownDefaults.GenericDropdownByEntity, genericDropDownOptions.FirstOrDefault().Entity);
+
+        await _staticCacheManager.RemoveAsync(cacheKey);
     }
 
 

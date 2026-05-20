@@ -49,7 +49,15 @@ public partial class FeeModelFactory : IFeeModelFactory
 
     #region Utilities
 
-    
+    protected virtual async Task<string> GetGenericDropDownOptionTextAsync(string text)
+    {
+        var resourceKey = $"Admin.Option.{text}";
+        var localizedText = await _localizationService.GetResourceAsync(resourceKey);
+
+        return string.Equals(localizedText, resourceKey.ToLowerInvariant(), StringComparison.OrdinalIgnoreCase)
+            ? text
+            : localizedText;
+    }
 
     #endregion
 
@@ -87,9 +95,9 @@ public partial class FeeModelFactory : IFeeModelFactory
                 if (student != null)
                     feeModel.StudentName = await _customerService.GetCustomerFullNameAsync(student);
 
-                var feeType = feeTypes.FirstOrDefault(x => x.Id == fee.FeeTypeId);
+                var feeType = feeTypes.FirstOrDefault(x => x.Value == fee.FeeTypeId || x.Id == fee.FeeTypeId);
                 if (feeType != null)
-                    feeModel.FeeType = await _localizationService.GetResourceAsync($"Admin.Option.{feeType.Text}");
+                    feeModel.FeeType = await GetGenericDropDownOptionTextAsync(feeType.Text);
 
                 feeModel.FormattedFeeDate = fee.FeeDate.ToLocalTime().ToString("MMMM yyyy");
 

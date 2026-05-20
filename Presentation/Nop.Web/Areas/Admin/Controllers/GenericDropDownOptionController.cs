@@ -216,7 +216,106 @@ public partial class GenericDropDownOptionController : BaseAdminController
         }
     }
 
-    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [CheckPermission(StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS)]
+    public virtual async Task<IActionResult> AddOptionAjax([FromBody] GenericDropDownOptionAjaxAddRequest request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.Name))
+            return Json(new { success = false, message = "Name is required." });
+
+        if (!TryGetGenericDropdownEntity(request.Category, out var entity))
+            return Json(new { success = false, message = "Invalid dropdown category." });
+
+        var name = request.Name.Trim();
+        var options = await _genericDropDownOptionService.GetGenericDropDownOptionsByEntityAsync(entity);
+        var existingOption = options.FirstOrDefault(option =>
+            string.Equals(option.Text?.Trim(), name, StringComparison.InvariantCultureIgnoreCase));
+
+        if (existingOption != null)
+        {
+            return Json(new
+            {
+                success = true,
+                value = existingOption.Value,
+                optionId = existingOption.Id,
+                name = existingOption.Text,
+                created = false
+            });
+        }
+
+        var nextValue = options.Any() ? options.Max(option => option.Value) + 1 : 1;
+        var nextOrder = options.Any() ? options.Max(option => option.OrderBy) + 1 : 1;
+        var genericDropDownOption = new GenericDropDownOption
+        {
+            Entity = entity,
+            Text = name,
+            Value = nextValue,
+            OrderBy = nextOrder,
+            Color = string.Empty,
+            IsSystemOption = false,
+            CreatedOnUtc = DateTime.UtcNow
+        };
+
+        await _genericDropDownOptionService.InsertGenericDropDownOptionAsync(genericDropDownOption);
+
+        await _customerActivityService.InsertActivityAsync("AddNewGenericDropDownOption",
+            string.Format(await _localizationService.GetResourceAsync("ActivityLog.AddNewGenericDropDownOption"), genericDropDownOption.Id), genericDropDownOption);
+
+        return Json(new
+        {
+            success = true,
+            value = genericDropDownOption.Value,
+            optionId = genericDropDownOption.Id,
+            name = genericDropDownOption.Text,
+            created = true
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [CheckPermission(StandardPermission.GenericDropDowns.MANAGE_GENERICDROPDOWNOPTIONS)]
+    public virtual async Task<IActionResult> UndoOptionAjax([FromBody] GenericDropDownOptionAjaxUndoRequest request)
+    {
+        if (request == null || request.Id <= 0)
+            return Json(new { success = false, message = "Invalid dropdown option." });
+
+        if (!TryGetGenericDropdownEntity(request.Category, out var entity))
+            return Json(new { success = false, message = "Invalid dropdown category." });
+
+        var genericDropDownOption = await _genericDropDownOptionService.GetGenericDropDownOptionByIdAsync(request.Id);
+        if (genericDropDownOption == null || genericDropDownOption.Entity != entity)
+            return Json(new { success = false, message = "Dropdown option was not found." });
+
+        if (genericDropDownOption.IsSystemOption)
+            return Json(new { success = false, message = "System options cannot be removed here." });
+
+        await _genericDropDownOptionService.DeleteGenericDropDownOptionAsync(genericDropDownOption);
+
+        await _customerActivityService.InsertActivityAsync("DeleteGenericDropDownOption",
+            string.Format(await _localizationService.GetResourceAsync("ActivityLog.DeleteGenericDropDownOption"), genericDropDownOption.Id), genericDropDownOption);
+
+        return Json(new { success = true });
+    }
+
+    protected virtual bool TryGetGenericDropdownEntity(string category, out GenericDropdownEntity entity)
+    {
+        entity = default;
+
+        if (string.IsNullOrWhiteSpace(category))
+            return false;
+
+        if (Enum.TryParse(category, true, out entity))
+            return true;
+
+        return int.TryParse(category, out var entityId) && Enum.IsDefined(typeof(GenericDropdownEntity), entityId) &&
+               Enum.TryParse(entityId.ToString(), out entity);
+    }
+
 
     #endregion
 }
+
+public partial record GenericDropDownOptionAjaxAddRequest(string Category, string Name);
+
+public partial record GenericDropDownOptionAjaxUndoRequest(string Category, int Id);

@@ -1,0 +1,254 @@
+.ss-wrapper {
+  position: relative;
+  width: 100%;
+  color: #31374a;
+  font-size: .875rem;
+}
+
+.ss-trigger {
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+  padding: .375rem .75rem;
+  color: #31374a;
+  background: #fff;
+  border: 1px solid #cbd0dd;
+  border-radius: .375rem;
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.ss-trigger:hover,
+.ss-trigger:focus,
+.ss-wrapper.ss-open .ss-trigger {
+  border-color: #3874ff;
+  box-shadow: 0 0 0 .25rem rgba(56, 116, 255, .25);
+  outline: 0;
+}
+
+.ss-trigger-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ss-trigger-text.ss-placeholder,
+.ss-chevron {
+  color: #8a94ad;
+}
+
+.ss-wrapper.ss-open .ss-chevron {
+  transform: rotate(180deg);
+}
+
+.ss-panel {
+  position: absolute;
+  z-index: 1055;
+  top: calc(100% + .25rem);
+  right: 0;
+  left: 0;
+  display: flex;
+  max-height: 20rem;
+  flex-direction: column;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #cbd0dd;
+  border-radius: .5rem;
+  box-shadow: 0 .5rem 1rem rgba(34, 40, 52, .12);
+}
+
+.ss-panel[hidden],
+.ss-empty[hidden],
+.ss-add-form[hidden],
+.ss-saving-indicator[hidden] {
+  display: none;
+}
+
+.ss-search-wrap {
+  position: relative;
+  flex-shrink: 0;
+  padding: .625rem .625rem .375rem;
+}
+
+.ss-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 1.25rem;
+  color: #8a94ad;
+  transform: translateY(-42%);
+}
+
+.ss-search {
+  width: 100%;
+  min-height: 2.1rem;
+  padding: .35rem .625rem .35rem 2rem;
+  color: #31374a;
+  background: #fff;
+  border: 1px solid #cbd0dd;
+  border-radius: .375rem;
+  outline: 0;
+}
+
+.ss-search:focus,
+.ss-add-input:focus {
+  border-color: #3874ff;
+  box-shadow: 0 0 0 .2rem rgba(56, 116, 255, .2);
+}
+
+.ss-list {
+  flex: 1 1 auto;
+  min-height: 2.5rem;
+  max-height: 14rem;
+  margin: .25rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd0dd transparent;
+}
+
+.ss-option {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .55rem .75rem;
+  cursor: pointer;
+}
+
+.ss-option:hover {
+  background: #eff2f6;
+}
+
+.ss-option.ss-selected {
+  color: #3874ff;
+  background: #e5edff;
+  font-weight: 800;
+}
+
+.ss-option.ss-hidden {
+  display: none;
+}
+
+.ss-option-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ss-check {
+  color: #3874ff;
+  opacity: 0;
+}
+
+.ss-option.ss-selected .ss-check {
+  opacity: 1;
+}
+
+.ss-undo-btn {
+  display: inline-flex;
+  width: 1.625rem;
+  height: 1.625rem;
+  align-items: center;
+  justify-content: center;
+  color: #bc560a;
+  background: #ffefca;
+  border: 1px solid #ffcc85;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.ss-undo-btn:hover {
+  color: #fff;
+  background: #e5780b;
+}
+
+.ss-empty {
+  padding: .875rem;
+  color: #6e7891;
+  text-align: center;
+}
+
+.ss-footer {
+  flex-shrink: 0;
+  padding: .5rem;
+  background: #f9fbfd;
+  border-top: 1px solid #e3e6ed;
+}
+
+.ss-add-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: .5rem;
+  padding: .45rem .5rem;
+  color: #3874ff;
+  background: transparent;
+  border: 0;
+  border-radius: .375rem;
+  font-weight: 800;
+  text-align: left;
+}
+
+.ss-add-trigger:hover {
+  background: #e5edff;
+}
+
+.ss-add-form {
+  display: flex;
+  align-items: center;
+  gap: .375rem;
+}
+
+.ss-add-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2rem;
+  padding: .35rem .5rem;
+  color: #31374a;
+  border: 1px solid #cbd0dd;
+  border-radius: .375rem;
+  outline: 0;
+}
+
+.ss-add-save,
+.ss-add-cancel {
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: .375rem;
+}
+
+.ss-add-save {
+  color: #fff;
+  background: #3874ff;
+  border-color: #3874ff;
+}
+
+.ss-add-cancel {
+  color: #6e7891;
+  background: #fff;
+  border-color: #cbd0dd;
+}
+
+.ss-saving-indicator,
+.ss-error-msg {
+  display: block;
+  padding: .35rem .5rem;
+  font-size: .8125rem;
+}
+
+.ss-saving-indicator {
+  color: #6e7891;
+}
+
+.ss-error-msg {
+  color: #ec1f00;
+}
