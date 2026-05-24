@@ -15,4 +15,5 @@ public enum GenericDropdownEntity
     Qualification = 7,
     PlaceOfBirth = 8,
     FeesType = 9,
+    AdmissionStatus = 10
 }
