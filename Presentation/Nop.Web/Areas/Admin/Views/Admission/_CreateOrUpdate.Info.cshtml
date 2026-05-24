@@ -1,0 +1,627 @@
+@using Nop.Web.Areas.Admin.Models.Admissions
+@model AdmissionModel
+
+<div class="card-body">
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FormNo"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FormNo"/>
+            <span asp-validation-for="FormNo"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="StatusId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="StatusId"/>
+            <span asp-validation-for="StatusId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FirstName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FirstName"/>
+            <span asp-validation-for="FirstName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MiddleName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MiddleName"/>
+            <span asp-validation-for="MiddleName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="LastName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="LastName"/>
+            <span asp-validation-for="LastName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CNIC"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CNIC"/>
+            <span asp-validation-for="CNIC"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="PreviousSchoolId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="PreviousSchoolId"/>
+            <span asp-validation-for="PreviousSchoolId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IdentificationMark"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IdentificationMark"/>
+            <span asp-validation-for="IdentificationMark"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="DateOfBirth"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DateOfBirth"/>
+            <span asp-validation-for="DateOfBirth"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="BirthCity"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="BirthCity"/>
+            <span asp-validation-for="BirthCity"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Allergies"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Allergies"/>
+            <span asp-validation-for="Allergies"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MedicalNotes"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MedicalNotes"/>
+            <span asp-validation-for="MedicalNotes"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MontherTongue"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MontherTongue"/>
+            <span asp-validation-for="MontherTongue"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Nationality"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Nationality"/>
+            <span asp-validation-for="Nationality"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Religion"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Religion"/>
+            <span asp-validation-for="Religion"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="BloodGroup"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="BloodGroup"/>
+            <span asp-validation-for="BloodGroup"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Caste"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Caste"/>
+            <span asp-validation-for="Caste"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianTypeId"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianTypeId"/>
+            <span asp-validation-for="GuardianTypeId"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherFullName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherFullName"/>
+            <span asp-validation-for="FatherFullName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherCNIC"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherCNIC"/>
+            <span asp-validation-for="FatherCNIC"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherDateOfBirth"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherDateOfBirth"/>
+            <span asp-validation-for="FatherDateOfBirth"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherIsDeceased"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherIsDeceased"/>
+            <span asp-validation-for="FatherIsDeceased"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherQaulification"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherQaulification"/>
+            <span asp-validation-for="FatherQaulification"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherPhoneNo"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherPhoneNo"/>
+            <span asp-validation-for="FatherPhoneNo"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherProfession"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherProfession"/>
+            <span asp-validation-for="FatherProfession"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherMonthlyIncome"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherMonthlyIncome"/>
+            <span asp-validation-for="FatherMonthlyIncome"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Father_MontherTongue"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Father_MontherTongue"/>
+            <span asp-validation-for="Father_MontherTongue"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherNationality"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherNationality"/>
+            <span asp-validation-for="FatherNationality"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherReligion"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherReligion"/>
+            <span asp-validation-for="FatherReligion"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherBloodGroup"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherBloodGroup"/>
+            <span asp-validation-for="FatherBloodGroup"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FatherCaste"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FatherCaste"/>
+            <span asp-validation-for="FatherCaste"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherFullName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherFullName"/>
+            <span asp-validation-for="MotherFullName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherCNIC"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherCNIC"/>
+            <span asp-validation-for="MotherCNIC"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherDateOfBirth"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherDateOfBirth"/>
+            <span asp-validation-for="MotherDateOfBirth"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherIsDeceased"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherIsDeceased"/>
+            <span asp-validation-for="MotherIsDeceased"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherQaulification"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherQaulification"/>
+            <span asp-validation-for="MotherQaulification"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherPhoneNo"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherPhoneNo"/>
+            <span asp-validation-for="MotherPhoneNo"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherProfession"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherProfession"/>
+            <span asp-validation-for="MotherProfession"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherMonthlyIncome"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherMonthlyIncome"/>
+            <span asp-validation-for="MotherMonthlyIncome"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Mother_MontherTongue"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Mother_MontherTongue"/>
+            <span asp-validation-for="Mother_MontherTongue"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherNationality"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherNationality"/>
+            <span asp-validation-for="MotherNationality"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherReligion"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherReligion"/>
+            <span asp-validation-for="MotherReligion"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherBloodGroup"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherBloodGroup"/>
+            <span asp-validation-for="MotherBloodGroup"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MotherCaste"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MotherCaste"/>
+            <span asp-validation-for="MotherCaste"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianFullName"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianFullName"/>
+            <span asp-validation-for="GuardianFullName"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianCNIC"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianCNIC"/>
+            <span asp-validation-for="GuardianCNIC"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianDateOfBirth"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianDateOfBirth"/>
+            <span asp-validation-for="GuardianDateOfBirth"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianIsDeceased"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianIsDeceased"/>
+            <span asp-validation-for="GuardianIsDeceased"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianQaulification"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianQaulification"/>
+            <span asp-validation-for="GuardianQaulification"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianPhoneNo"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianPhoneNo"/>
+            <span asp-validation-for="GuardianPhoneNo"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianProfession"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianProfession"/>
+            <span asp-validation-for="GuardianProfession"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianMonthlyIncome"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianMonthlyIncome"/>
+            <span asp-validation-for="GuardianMonthlyIncome"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Guardian_MontherTongue"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Guardian_MontherTongue"/>
+            <span asp-validation-for="Guardian_MontherTongue"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianNationality"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianNationality"/>
+            <span asp-validation-for="GuardianNationality"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianReligion"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianReligion"/>
+            <span asp-validation-for="GuardianReligion"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianBloodGroup"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianBloodGroup"/>
+            <span asp-validation-for="GuardianBloodGroup"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianCaste"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GuardianCaste"/>
+            <span asp-validation-for="GuardianCaste"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Createdby"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Createdby"/>
+            <span asp-validation-for="Createdby"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CreatedOnUtc"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="CreatedOnUtc"/>
+            <span asp-validation-for="CreatedOnUtc"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="UpdatedBy"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="UpdatedBy"/>
+            <span asp-validation-for="UpdatedBy"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="UpdatedOnUtc"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="UpdatedOnUtc"/>
+            <span asp-validation-for="UpdatedOnUtc"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Deleted"/>
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Deleted"/>
+            <span asp-validation-for="Deleted"></span>
+        </div>
+    </div>
+
+
+</div>

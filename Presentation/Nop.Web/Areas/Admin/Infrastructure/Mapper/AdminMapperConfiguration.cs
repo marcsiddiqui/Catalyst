@@ -84,7 +84,10 @@ using Nop.Web.Areas.Admin.Models.Subjects;
 using Nop.Core.Domain.Subjects;
 using Nop.Core;
 using Nop.Services.Customers;
+using Nop.Web.Areas.Admin.Models.Admissions;
+using Nop.Core.Domain.Admissions;
 //{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+
 
 
 
@@ -2016,7 +2019,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(model => model.UpdatedBy, options => options.Ignore())
             .ForMember(model => model.UpdatedOnUtc, options => options.Ignore());
 
-        //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+                CreateMap<Admission, AdmissionModel>();
+        CreateMap<AdmissionModel, Admission>();
+//{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
     }
 

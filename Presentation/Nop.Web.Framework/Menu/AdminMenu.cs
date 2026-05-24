@@ -1149,7 +1149,16 @@ public partial class AdminMenu : IAdminMenu
                     IconClass = "fas fa-bars"
                 },
                 
+                new()
+                {
+                    SystemName = "Admissions",
+                    Title = await _localizationService.GetResourceAsync("Admin.ContentManagement.Admissions"),
+                    PermissionNames = new List<string> { StandardPermission.Admissions.MANAGE_ADMISSIONS },
+                    Url = GetMenuItemUrl("Admission", "List"),
+                    IconClass = "far fa-dot-circle"
+                },
 //{{NextMenuItemFromCodeGen}}
+
 
 
 

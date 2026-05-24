@@ -1,0 +1,503 @@
+@using Nop.Web.Areas.Admin.Models.Admissions
+@model AdmissionSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Admissions.Admissions").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Admissions");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Admissions.Admissions")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+@*PublishActiveHelperButtons*@
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "admissions-grid",
+                        UrlRead = new DataUrl("AdmissionList", "Admission", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(AdmissionModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_admissions"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(AdmissionModel.FormNo))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FormNo").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.StatusId))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.StatusId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FirstName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FirstName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MiddleName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MiddleName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.LastName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.LastName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.CNIC))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.CNIC").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.PreviousSchoolId))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.PreviousSchoolId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.IdentificationMark))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.IdentificationMark").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.DateOfBirth))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.DateOfBirth").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.BirthCity))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.BirthCity").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Allergies))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Allergies").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MedicalNotes))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MedicalNotes").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MontherTongue))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MontherTongue").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Nationality))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Nationality").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Religion))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Religion").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.BloodGroup))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.BloodGroup").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Caste))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Caste").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianTypeId))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianTypeId").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherFullName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherFullName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherCNIC))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherCNIC").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherDateOfBirth))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherDateOfBirth").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherIsDeceased))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherIsDeceased").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherQaulification))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherQaulification").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherPhoneNo))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherPhoneNo").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherProfession))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherProfession").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherMonthlyIncome))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherMonthlyIncome").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Father_MontherTongue))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Father_MontherTongue").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherNationality))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherNationality").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherReligion))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherReligion").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherBloodGroup))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherBloodGroup").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.FatherCaste))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.FatherCaste").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherFullName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherFullName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherCNIC))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherCNIC").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherDateOfBirth))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherDateOfBirth").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherIsDeceased))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherIsDeceased").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherQaulification))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherQaulification").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherPhoneNo))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherPhoneNo").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherProfession))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherProfession").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherMonthlyIncome))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherMonthlyIncome").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Mother_MontherTongue))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Mother_MontherTongue").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherNationality))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherNationality").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherReligion))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherReligion").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherBloodGroup))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherBloodGroup").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.MotherCaste))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.MotherCaste").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianFullName))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianFullName").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianCNIC))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianCNIC").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianDateOfBirth))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianDateOfBirth").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianIsDeceased))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianIsDeceased").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianQaulification))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianQaulification").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianPhoneNo))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianPhoneNo").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianProfession))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianProfession").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianMonthlyIncome))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianMonthlyIncome").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Guardian_MontherTongue))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Guardian_MontherTongue").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianNationality))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianNationality").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianReligion))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianReligion").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianBloodGroup))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianBloodGroup").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.GuardianCaste))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.GuardianCaste").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Createdby))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Createdby").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.CreatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.UpdatedBy))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.UpdatedBy").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.UpdatedOnUtc))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.UpdatedOnUtc").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(AdmissionModel.Deleted))
+                            {
+                                Title = T("Admin.Admissions.Admissions.Fields.Deleted").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+
+                            new ColumnProperty(nameof(AdmissionModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Admission/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"{{CamelCaseTrueAction}} selected" button
+                            $('#{{TrueActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{TrueActionName}}", "Admission"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#admissions-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseTrueAction}}SelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"{{CamelCaseFalseAction}} selected" button
+                            $('#{{FalseActionId}}').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("{{FalseActionName}}", "Admission"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('{{CamelCaseFalseAction}}SelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#admissions-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+@*PublishActiveHelperAlerts*@

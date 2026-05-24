@@ -1,0 +1,37 @@
+@using Nop.Web.Areas.Admin.Models.Admissions
+@model AdmissionModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Admissions.Admissions.EditAdmissionDetails").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Admissions");
+}
+
+<form asp-controller="Admission" asp-action="Edit" method="post" id="admission-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Admissions.Admissions.EditAdmissionDetails") - @Model.Id
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T("Admin.Admissions.Admissions.BackToList")</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-floppy-disk"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            <span id="admission-delete" class="btn btn-danger">
+                <i class="far fa-trash-can"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="admission-delete" />

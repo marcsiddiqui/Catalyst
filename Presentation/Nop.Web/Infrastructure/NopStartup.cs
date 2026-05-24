@@ -127,7 +127,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<Areas.Admin.Factories.IGradeModelFactory, Areas.Admin.Factories.GradeModelFactory>();
         services.AddScoped<Areas.Admin.Factories.ISubjectModelFactory, Areas.Admin.Factories.SubjectModelFactory>();
         services.AddScoped<Areas.Admin.Factories.ISectionModelFactory, Areas.Admin.Factories.SectionModelFactory>();
+        services.AddScoped<Areas.Admin.Factories.IAdmissionModelFactory, Areas.Admin.Factories.AdmissionModelFactory>();
 //{{AddNewModelFactoriesScopeHereWithNopCCodeGenerator}}
+
 
 
 
