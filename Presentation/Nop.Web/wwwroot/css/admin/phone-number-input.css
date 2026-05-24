@@ -1,0 +1,39 @@
+.phone-number-group {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.phone-number-digit {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  color: #495057;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1;
+  text-align: center;
+  width: 28px;
+}
+
+.phone-number-digit:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: 0;
+}
+
+.phone-number-input.phone-number-invalid .phone-number-digit {
+  border-color: #dc3545;
+}
+
+.phone-number-separator {
+  color: #6c757d;
+  font-weight: 600;
+  line-height: 34px;
+}
+
+.phone-number-error {
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+}

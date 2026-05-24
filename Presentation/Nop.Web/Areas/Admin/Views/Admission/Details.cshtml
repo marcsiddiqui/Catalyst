@@ -1,0 +1,126 @@
+@using Nop.Web.Areas.Admin.Models.Admissions
+@using Microsoft.AspNetCore.Mvc.Rendering
+@model AdmissionModel
+
+@{
+    ViewBag.PageTitle = T("Admin.Admissions.Admissions.EditAdmissionDetails").Text;
+    NopHtml.SetActiveMenuItemSystemName("Admissions");
+}
+
+@functions {
+    private static string SelectedText(IEnumerable<SelectListItem> items, int value)
+    {
+        return items?.FirstOrDefault(item => item.Value == value.ToString())?.Text ?? value.ToString();
+    }
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Common.View") - @Model.FormNo
+        <small>
+            <i class="fas fa-arrow-circle-left"></i>
+            <a asp-action="List">@T("Admin.Admissions.Admissions.BackToList")</a>
+        </small>
+    </h1>
+    <div class="float-right">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
+            <i class="far fa-pen-to-square"></i>
+            @T("Admin.Common.Edit")
+        </a>
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <div class="card card-default">
+                    <div class="card-header"><h3 class="card-title">Student Information</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FormNo")</dt><dd class="col-sm-9">@Model.FormNo</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.StatusId")</dt><dd class="col-sm-9">@Model.Status</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FirstName")</dt><dd class="col-sm-9">@Model.FirstName @Model.MiddleName @Model.LastName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.CNIC")</dt><dd class="col-sm-9">@Model.CNIC</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.PreviousSchoolId")</dt><dd class="col-sm-9">@Model.PreviousSchool</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.DateOfBirth")</dt><dd class="col-sm-9">@Model.DateOfBirth</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.BirthCity")</dt><dd class="col-sm-9">@Model.BirthCityName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MontherTongue")</dt><dd class="col-sm-9">@Model.MontherTongueName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Nationality")</dt><dd class="col-sm-9">@Model.NationalityName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Religion")</dt><dd class="col-sm-9">@Model.ReligionName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.BloodGroup")</dt><dd class="col-sm-9">@Model.BloodGroupName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Caste")</dt><dd class="col-sm-9">@Model.CasteName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianTypeId")</dt><dd class="col-sm-9">@Model.GuardianType</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.IdentificationMark")</dt><dd class="col-sm-9">@Model.IdentificationMark</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Allergies")</dt><dd class="col-sm-9">@Model.Allergies</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MedicalNotes")</dt><dd class="col-sm-9">@Model.MedicalNotes</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-header"><h3 class="card-title">Father Information</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherFullName")</dt><dd class="col-sm-9">@Model.FatherFullName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherCNIC")</dt><dd class="col-sm-9">@Model.FatherCNIC</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherDateOfBirth")</dt><dd class="col-sm-9">@Model.FatherDateOfBirth</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherIsDeceased")</dt><dd class="col-sm-9">@Model.FatherIsDeceased</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.FatherQaulification)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherPhoneNo")</dt><dd class="col-sm-9">@Model.FatherPhoneNo</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.FatherProfession)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherMonthlyIncome")</dt><dd class="col-sm-9">@Model.FatherMonthlyIncome</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Father_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Father_MontherTongue)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.FatherNationality)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.FatherReligion)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.FatherBloodGroup)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.FatherCaste)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-header"><h3 class="card-title">Mother Information</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherFullName")</dt><dd class="col-sm-9">@Model.MotherFullName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherCNIC")</dt><dd class="col-sm-9">@Model.MotherCNIC</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherDateOfBirth")</dt><dd class="col-sm-9">@Model.MotherDateOfBirth</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherIsDeceased")</dt><dd class="col-sm-9">@Model.MotherIsDeceased</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.MotherQaulification)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherPhoneNo")</dt><dd class="col-sm-9">@Model.MotherPhoneNo</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.MotherProfession)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherMonthlyIncome")</dt><dd class="col-sm-9">@Model.MotherMonthlyIncome</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Mother_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Mother_MontherTongue)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.MotherNationality)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.MotherReligion)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.MotherBloodGroup)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.MotherCaste)</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card card-default">
+                    <div class="card-header"><h3 class="card-title">Guardian Information</h3></div>
+                    <div class="card-body">
+                        <dl class="row">
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianFullName")</dt><dd class="col-sm-9">@Model.GuardianFullName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianCNIC")</dt><dd class="col-sm-9">@Model.GuardianCNIC</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianDateOfBirth")</dt><dd class="col-sm-9">@Model.GuardianDateOfBirth</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianIsDeceased")</dt><dd class="col-sm-9">@Model.GuardianIsDeceased</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.GuardianQaulification)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianPhoneNo")</dt><dd class="col-sm-9">@Model.GuardianPhoneNo</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.GuardianProfession)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianMonthlyIncome")</dt><dd class="col-sm-9">@Model.GuardianMonthlyIncome</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Guardian_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Guardian_MontherTongue)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.GuardianNationality)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.GuardianReligion)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.GuardianBloodGroup)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.GuardianCaste)</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

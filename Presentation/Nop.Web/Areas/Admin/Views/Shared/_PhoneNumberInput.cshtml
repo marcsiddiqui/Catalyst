@@ -1,0 +1,35 @@
+@using Nop.Web.Areas.Admin.Models.Common
+@model PhoneNumberInputModel
+
+@{
+    var digits = new string((Model.Value ?? string.Empty).Where(char.IsDigit).Take(11).ToArray()).PadRight(11);
+}
+
+<div class="phone-number-input" data-field-id="@Model.FieldId">
+    <input type="hidden"
+           id="@Model.FieldId"
+           name="@Model.FieldName"
+           value="@Model.Value"
+           class="phone-number-hidden-input" />
+
+    <div class="phone-number-group" aria-label="Phone number">
+        @for (var i = 0; i < 11; i++)
+        {
+            if (i == 4)
+            {
+                <span class="phone-number-separator" aria-hidden="true">-</span>
+            }
+
+            <input type="text"
+                   class="phone-number-digit"
+                   value="@(digits[i] == ' ' ? string.Empty : digits[i].ToString())"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   autocomplete="off"
+                   maxlength="1"
+                   aria-label="Phone number digit @(i + 1)"
+                   data-phone-number-index="@i" />
+        }
+    </div>
+    <div class="phone-number-error" hidden>Complete phone number or leave it empty.</div>
+</div>

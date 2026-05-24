@@ -1,627 +1,259 @@
+@using Nop.Core.Domain.GenericDropDowns
 @using Nop.Web.Areas.Admin.Models.Admissions
+@using Nop.Web.Areas.Admin.Models.Common
 @model AdmissionModel
 
+<input asp-for="Id" type="hidden" />
+<input asp-for="Createdby" type="hidden" />
+<input asp-for="CreatedOnUtc" type="hidden" />
+<input asp-for="UpdatedBy" type="hidden" />
+<input asp-for="UpdatedOnUtc" type="hidden" />
+<input asp-for="Deleted" type="hidden" />
+
 <div class="card-body">
-
-    <div class="form-group row">
+    <div id="admission-step-alert" class="alert alert-danger" style="display:none"></div>
+    <div class="row">
         <div class="col-md-3">
-            <nop-label asp-for="FormNo"/>
+            <div class="list-group admission-step-list">
+                <button type="button" class="list-group-item list-group-item-action active" data-admission-step="1">@T("Admin.Configuration.Admissions.Fields.FormNo")</button>
+                <button type="button" class="list-group-item list-group-item-action" data-admission-step="2">Student Information</button>
+                <button type="button" class="list-group-item list-group-item-action" data-admission-step="3">Father Information</button>
+                <button type="button" class="list-group-item list-group-item-action" data-admission-step="4">Mother Information</button>
+                <button type="button" class="list-group-item list-group-item-action" data-admission-step="5" id="guardian-step-link">Guardian Information</button>
+            </div>
         </div>
         <div class="col-md-9">
-            <nop-editor asp-for="FormNo"/>
-            <span asp-validation-for="FormNo"></span>
+            <div class="admission-step-panel" data-admission-panel="1">
+                <div class="form-group row">
+                    <div class="col-md-3"><nop-label asp-for="FormNo" /></div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="FormNo" />
+                        <span asp-validation-for="FormNo"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3"><nop-label asp-for="StatusId" /></div>
+                    <div class="col-md-9">
+                        @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.StatusId), FieldId = Html.IdFor(model => model.StatusId), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableAdmissionStatuses, SelectedValue = Model.StatusId.ToString(), Category = GenericDropdownEntity.AdmissionStatus.ToString() })
+                        <span asp-validation-for="StatusId"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admission-step-panel" data-admission-panel="2" style="display:none">
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FirstName" /></div><div class="col-md-9"><nop-editor asp-for="FirstName" /><span asp-validation-for="FirstName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MiddleName" /></div><div class="col-md-9"><nop-editor asp-for="MiddleName" /><span asp-validation-for="MiddleName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="LastName" /></div><div class="col-md-9"><nop-editor asp-for="LastName" /><span asp-validation-for="LastName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="CNIC" /></div><div class="col-md-9">@await Html.PartialAsync("_CnicInput", new CnicInputModel { FieldName = nameof(Model.CNIC), FieldId = Html.IdFor(model => model.CNIC), Value = Model.CNIC })<span asp-validation-for="CNIC"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="PreviousSchoolId" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.PreviousSchoolId), FieldId = Html.IdFor(model => model.PreviousSchoolId), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailablePreviousSchools, SelectedValue = Model.PreviousSchoolId.ToString(), Category = GenericDropdownEntity.PreviousSchoolName.ToString() })<span asp-validation-for="PreviousSchoolId"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="IdentificationMark" /></div><div class="col-md-9"><nop-editor asp-for="IdentificationMark" /><span asp-validation-for="IdentificationMark"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="DateOfBirth" /></div><div class="col-md-9"><nop-editor asp-for="DateOfBirth" /><span asp-validation-for="DateOfBirth"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="BirthCity" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.BirthCity), FieldId = Html.IdFor(model => model.BirthCity), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBirthCities, SelectedValue = Model.BirthCity.ToString(), Category = GenericDropdownEntity.BirthCity.ToString() })<span asp-validation-for="BirthCity"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Allergies" /></div><div class="col-md-9"><nop-editor asp-for="Allergies" /><span asp-validation-for="Allergies"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MedicalNotes" /></div><div class="col-md-9"><nop-editor asp-for="MedicalNotes" /><span asp-validation-for="MedicalNotes"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MontherTongue), FieldId = Html.IdFor(model => model.MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="MontherTongue"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Nationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Nationality), FieldId = Html.IdFor(model => model.Nationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.Nationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="Nationality"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Religion" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Religion), FieldId = Html.IdFor(model => model.Religion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.Religion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })<span asp-validation-for="Religion"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="BloodGroup" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.BloodGroup), FieldId = Html.IdFor(model => model.BloodGroup), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBloodGroups, SelectedValue = Model.BloodGroup.ToString(), Category = GenericDropdownEntity.BloodGroup.ToString() })<span asp-validation-for="BloodGroup"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Caste" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Caste), FieldId = Html.IdFor(model => model.Caste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.Caste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })<span asp-validation-for="Caste"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianTypeId" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianTypeId), FieldId = Html.IdFor(model => model.GuardianTypeId), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableGuardianTypes, SelectedValue = Model.GuardianTypeId.ToString(), Category = GenericDropdownEntity.GuardianType.ToString() })<span asp-validation-for="GuardianTypeId"></span></div></div>
+            </div>
+
+            <div class="admission-step-panel" data-admission-panel="3" style="display:none">
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherFullName" /></div><div class="col-md-9"><nop-editor asp-for="FatherFullName" /><span asp-validation-for="FatherFullName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherCNIC" /></div><div class="col-md-9">@await Html.PartialAsync("_CnicInput", new CnicInputModel { FieldName = nameof(Model.FatherCNIC), FieldId = Html.IdFor(model => model.FatherCNIC), Value = Model.FatherCNIC })<span asp-validation-for="FatherCNIC"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherDateOfBirth" /></div><div class="col-md-9"><nop-editor asp-for="FatherDateOfBirth" /><span asp-validation-for="FatherDateOfBirth"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherIsDeceased" /></div><div class="col-md-9"><nop-editor asp-for="FatherIsDeceased" /><span asp-validation-for="FatherIsDeceased"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherQaulification" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherQaulification), FieldId = Html.IdFor(model => model.FatherQaulification), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableQualifications, SelectedValue = Model.FatherQaulification.ToString(), Category = GenericDropdownEntity.Qualification.ToString() })<span asp-validation-for="FatherQaulification"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherPhoneNo" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.FatherPhoneNo), FieldId = Html.IdFor(model => model.FatherPhoneNo), Value = Model.FatherPhoneNo })<span asp-validation-for="FatherPhoneNo"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherProfession" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherProfession), FieldId = Html.IdFor(model => model.FatherProfession), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableProfessions, SelectedValue = Model.FatherProfession.ToString(), Category = GenericDropdownEntity.Profession.ToString() })<span asp-validation-for="FatherProfession"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherMonthlyIncome" /></div><div class="col-md-9"><nop-editor asp-for="FatherMonthlyIncome" /><span asp-validation-for="FatherMonthlyIncome"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Father_MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Father_MontherTongue), FieldId = Html.IdFor(model => model.Father_MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.Father_MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="Father_MontherTongue"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherNationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherNationality), FieldId = Html.IdFor(model => model.FatherNationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.FatherNationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="FatherNationality"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherReligion" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherReligion), FieldId = Html.IdFor(model => model.FatherReligion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.FatherReligion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })<span asp-validation-for="FatherReligion"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherBloodGroup" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherBloodGroup), FieldId = Html.IdFor(model => model.FatherBloodGroup), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBloodGroups, SelectedValue = Model.FatherBloodGroup.ToString(), Category = GenericDropdownEntity.BloodGroup.ToString() })<span asp-validation-for="FatherBloodGroup"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherCaste" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherCaste), FieldId = Html.IdFor(model => model.FatherCaste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.FatherCaste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })<span asp-validation-for="FatherCaste"></span></div></div>
+            </div>
+
+            <div class="admission-step-panel" data-admission-panel="4" style="display:none">
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherFullName" /></div><div class="col-md-9"><nop-editor asp-for="MotherFullName" /><span asp-validation-for="MotherFullName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherCNIC" /></div><div class="col-md-9">@await Html.PartialAsync("_CnicInput", new CnicInputModel { FieldName = nameof(Model.MotherCNIC), FieldId = Html.IdFor(model => model.MotherCNIC), Value = Model.MotherCNIC })<span asp-validation-for="MotherCNIC"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherDateOfBirth" /></div><div class="col-md-9"><nop-editor asp-for="MotherDateOfBirth" /><span asp-validation-for="MotherDateOfBirth"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherIsDeceased" /></div><div class="col-md-9"><nop-editor asp-for="MotherIsDeceased" /><span asp-validation-for="MotherIsDeceased"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherQaulification" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherQaulification), FieldId = Html.IdFor(model => model.MotherQaulification), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableQualifications, SelectedValue = Model.MotherQaulification.ToString(), Category = GenericDropdownEntity.Qualification.ToString() })<span asp-validation-for="MotherQaulification"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherPhoneNo" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.MotherPhoneNo), FieldId = Html.IdFor(model => model.MotherPhoneNo), Value = Model.MotherPhoneNo })<span asp-validation-for="MotherPhoneNo"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherProfession" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherProfession), FieldId = Html.IdFor(model => model.MotherProfession), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableProfessions, SelectedValue = Model.MotherProfession.ToString(), Category = GenericDropdownEntity.Profession.ToString() })<span asp-validation-for="MotherProfession"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherMonthlyIncome" /></div><div class="col-md-9"><nop-editor asp-for="MotherMonthlyIncome" /><span asp-validation-for="MotherMonthlyIncome"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Mother_MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Mother_MontherTongue), FieldId = Html.IdFor(model => model.Mother_MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.Mother_MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="Mother_MontherTongue"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherNationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherNationality), FieldId = Html.IdFor(model => model.MotherNationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.MotherNationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="MotherNationality"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherReligion" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherReligion), FieldId = Html.IdFor(model => model.MotherReligion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.MotherReligion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })<span asp-validation-for="MotherReligion"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherBloodGroup" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherBloodGroup), FieldId = Html.IdFor(model => model.MotherBloodGroup), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBloodGroups, SelectedValue = Model.MotherBloodGroup.ToString(), Category = GenericDropdownEntity.BloodGroup.ToString() })<span asp-validation-for="MotherBloodGroup"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherCaste" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherCaste), FieldId = Html.IdFor(model => model.MotherCaste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.MotherCaste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })<span asp-validation-for="MotherCaste"></span></div></div>
+            </div>
+
+            <div class="admission-step-panel" data-admission-panel="5" style="display:none">
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianFullName" /></div><div class="col-md-9"><nop-editor asp-for="GuardianFullName" /><span asp-validation-for="GuardianFullName"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianCNIC" /></div><div class="col-md-9">@await Html.PartialAsync("_CnicInput", new CnicInputModel { FieldName = nameof(Model.GuardianCNIC), FieldId = Html.IdFor(model => model.GuardianCNIC), Value = Model.GuardianCNIC })<span asp-validation-for="GuardianCNIC"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianDateOfBirth" /></div><div class="col-md-9"><nop-editor asp-for="GuardianDateOfBirth" /><span asp-validation-for="GuardianDateOfBirth"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianIsDeceased" /></div><div class="col-md-9"><nop-editor asp-for="GuardianIsDeceased" /><span asp-validation-for="GuardianIsDeceased"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianQaulification" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianQaulification), FieldId = Html.IdFor(model => model.GuardianQaulification), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableQualifications, SelectedValue = Model.GuardianQaulification.ToString(), Category = GenericDropdownEntity.Qualification.ToString() })<span asp-validation-for="GuardianQaulification"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianPhoneNo" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.GuardianPhoneNo), FieldId = Html.IdFor(model => model.GuardianPhoneNo), Value = Model.GuardianPhoneNo })<span asp-validation-for="GuardianPhoneNo"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianProfession" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianProfession), FieldId = Html.IdFor(model => model.GuardianProfession), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableProfessions, SelectedValue = Model.GuardianProfession.ToString(), Category = GenericDropdownEntity.Profession.ToString() })<span asp-validation-for="GuardianProfession"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianMonthlyIncome" /></div><div class="col-md-9"><nop-editor asp-for="GuardianMonthlyIncome" /><span asp-validation-for="GuardianMonthlyIncome"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Guardian_MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Guardian_MontherTongue), FieldId = Html.IdFor(model => model.Guardian_MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.Guardian_MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="Guardian_MontherTongue"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianNationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianNationality), FieldId = Html.IdFor(model => model.GuardianNationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.GuardianNationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="GuardianNationality"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianReligion" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianReligion), FieldId = Html.IdFor(model => model.GuardianReligion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.GuardianReligion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })<span asp-validation-for="GuardianReligion"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianBloodGroup" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianBloodGroup), FieldId = Html.IdFor(model => model.GuardianBloodGroup), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBloodGroups, SelectedValue = Model.GuardianBloodGroup.ToString(), Category = GenericDropdownEntity.BloodGroup.ToString() })<span asp-validation-for="GuardianBloodGroup"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianCaste" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianCaste), FieldId = Html.IdFor(model => model.GuardianCaste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.GuardianCaste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })<span asp-validation-for="GuardianCaste"></span></div></div>
+            </div>
+
+            <div class="text-right mt-3">
+                <button type="button" class="btn btn-primary" id="admission-save-step">
+                    <i class="far fa-floppy-disk"></i>
+                    Save and Continue
+                </button>
+            </div>
         </div>
     </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="StatusId"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="StatusId"/>
-            <span asp-validation-for="StatusId"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FirstName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FirstName"/>
-            <span asp-validation-for="FirstName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MiddleName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MiddleName"/>
-            <span asp-validation-for="MiddleName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="LastName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="LastName"/>
-            <span asp-validation-for="LastName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="CNIC"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="CNIC"/>
-            <span asp-validation-for="CNIC"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="PreviousSchoolId"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="PreviousSchoolId"/>
-            <span asp-validation-for="PreviousSchoolId"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="IdentificationMark"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="IdentificationMark"/>
-            <span asp-validation-for="IdentificationMark"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="DateOfBirth"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="DateOfBirth"/>
-            <span asp-validation-for="DateOfBirth"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="BirthCity"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="BirthCity"/>
-            <span asp-validation-for="BirthCity"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Allergies"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Allergies"/>
-            <span asp-validation-for="Allergies"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MedicalNotes"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MedicalNotes"/>
-            <span asp-validation-for="MedicalNotes"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MontherTongue"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MontherTongue"/>
-            <span asp-validation-for="MontherTongue"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Nationality"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Nationality"/>
-            <span asp-validation-for="Nationality"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Religion"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Religion"/>
-            <span asp-validation-for="Religion"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="BloodGroup"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="BloodGroup"/>
-            <span asp-validation-for="BloodGroup"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Caste"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Caste"/>
-            <span asp-validation-for="Caste"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianTypeId"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianTypeId"/>
-            <span asp-validation-for="GuardianTypeId"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherFullName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherFullName"/>
-            <span asp-validation-for="FatherFullName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherCNIC"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherCNIC"/>
-            <span asp-validation-for="FatherCNIC"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherDateOfBirth"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherDateOfBirth"/>
-            <span asp-validation-for="FatherDateOfBirth"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherIsDeceased"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherIsDeceased"/>
-            <span asp-validation-for="FatherIsDeceased"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherQaulification"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherQaulification"/>
-            <span asp-validation-for="FatherQaulification"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherPhoneNo"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherPhoneNo"/>
-            <span asp-validation-for="FatherPhoneNo"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherProfession"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherProfession"/>
-            <span asp-validation-for="FatherProfession"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherMonthlyIncome"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherMonthlyIncome"/>
-            <span asp-validation-for="FatherMonthlyIncome"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Father_MontherTongue"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Father_MontherTongue"/>
-            <span asp-validation-for="Father_MontherTongue"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherNationality"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherNationality"/>
-            <span asp-validation-for="FatherNationality"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherReligion"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherReligion"/>
-            <span asp-validation-for="FatherReligion"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherBloodGroup"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherBloodGroup"/>
-            <span asp-validation-for="FatherBloodGroup"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FatherCaste"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FatherCaste"/>
-            <span asp-validation-for="FatherCaste"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherFullName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherFullName"/>
-            <span asp-validation-for="MotherFullName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherCNIC"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherCNIC"/>
-            <span asp-validation-for="MotherCNIC"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherDateOfBirth"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherDateOfBirth"/>
-            <span asp-validation-for="MotherDateOfBirth"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherIsDeceased"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherIsDeceased"/>
-            <span asp-validation-for="MotherIsDeceased"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherQaulification"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherQaulification"/>
-            <span asp-validation-for="MotherQaulification"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherPhoneNo"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherPhoneNo"/>
-            <span asp-validation-for="MotherPhoneNo"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherProfession"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherProfession"/>
-            <span asp-validation-for="MotherProfession"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherMonthlyIncome"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherMonthlyIncome"/>
-            <span asp-validation-for="MotherMonthlyIncome"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Mother_MontherTongue"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Mother_MontherTongue"/>
-            <span asp-validation-for="Mother_MontherTongue"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherNationality"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherNationality"/>
-            <span asp-validation-for="MotherNationality"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherReligion"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherReligion"/>
-            <span asp-validation-for="MotherReligion"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherBloodGroup"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherBloodGroup"/>
-            <span asp-validation-for="MotherBloodGroup"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="MotherCaste"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="MotherCaste"/>
-            <span asp-validation-for="MotherCaste"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianFullName"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianFullName"/>
-            <span asp-validation-for="GuardianFullName"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianCNIC"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianCNIC"/>
-            <span asp-validation-for="GuardianCNIC"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianDateOfBirth"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianDateOfBirth"/>
-            <span asp-validation-for="GuardianDateOfBirth"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianIsDeceased"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianIsDeceased"/>
-            <span asp-validation-for="GuardianIsDeceased"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianQaulification"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianQaulification"/>
-            <span asp-validation-for="GuardianQaulification"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianPhoneNo"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianPhoneNo"/>
-            <span asp-validation-for="GuardianPhoneNo"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianProfession"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianProfession"/>
-            <span asp-validation-for="GuardianProfession"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianMonthlyIncome"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianMonthlyIncome"/>
-            <span asp-validation-for="GuardianMonthlyIncome"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Guardian_MontherTongue"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Guardian_MontherTongue"/>
-            <span asp-validation-for="Guardian_MontherTongue"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianNationality"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianNationality"/>
-            <span asp-validation-for="GuardianNationality"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianReligion"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianReligion"/>
-            <span asp-validation-for="GuardianReligion"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianBloodGroup"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianBloodGroup"/>
-            <span asp-validation-for="GuardianBloodGroup"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="GuardianCaste"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="GuardianCaste"/>
-            <span asp-validation-for="GuardianCaste"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Createdby"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Createdby"/>
-            <span asp-validation-for="Createdby"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="CreatedOnUtc"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="CreatedOnUtc"/>
-            <span asp-validation-for="CreatedOnUtc"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="UpdatedBy"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="UpdatedBy"/>
-            <span asp-validation-for="UpdatedBy"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="UpdatedOnUtc"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="UpdatedOnUtc"/>
-            <span asp-validation-for="UpdatedOnUtc"></span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Deleted"/>
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Deleted"/>
-            <span asp-validation-for="Deleted"></span>
-        </div>
-    </div>
-
-
 </div>
+
+<script>
+    $(function () {
+        var currentStep = 1;
+        var loadingFormNo = false;
+        var $alert = $('#admission-step-alert');
+
+        function showError(message) {
+            $alert.text(message).show();
+        }
+
+        function clearError() {
+            $alert.hide().text('');
+        }
+
+        function selectedGuardianText() {
+            var $wrapper = $('#@Html.IdFor(model => model.GuardianTypeId)').closest('.ss-wrapper');
+            return $.trim($wrapper.find('.ss-trigger-text').text()).toLowerCase();
+        }
+
+        function guardianIsOther() {
+            return selectedGuardianText() === 'other';
+        }
+
+        function refreshGuardianStep() {
+            $('#guardian-step-link').toggle(guardianIsOther());
+            if (!guardianIsOther() && currentStep === 5) {
+                showStep(4);
+            }
+        }
+
+        function showStep(step) {
+            currentStep = step;
+            $('.admission-step-panel').hide();
+            $('[data-admission-panel="' + step + '"]').show();
+            $('.admission-step-list button').removeClass('active');
+            $('[data-admission-step="' + step + '"]').addClass('active');
+            $('#admission-save-step').toggle(step > 0);
+            refreshGuardianStep();
+            clearError();
+        }
+
+        function saveStep(step) {
+            var postData = $('#admission-form').serializeArray();
+            postData.push({ name: 'step', value: step });
+
+            return $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("SaveStep", "Admission")',
+                data: postData
+            });
+        }
+
+        function loadByFormNo(nextStep) {
+            var formNo = $('#@Html.IdFor(model => model.FormNo)').val();
+            if (!formNo || loadingFormNo) {
+                return;
+            }
+
+            loadingFormNo = true;
+            var postData = { formNo: formNo };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("LoadByFormNo", "Admission")',
+                data: postData,
+                success: function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    if ($('#@Html.IdFor(model => model.Id)').val() !== data.id.toString()) {
+                        window.location.href = data.editUrl + '#step-' + (nextStep || 2);
+                        return;
+                    }
+
+                    showStep(nextStep || 2);
+                },
+                error: function () {
+                    showError('Could not load admission form.');
+                },
+                complete: function () {
+                    loadingFormNo = false;
+                }
+            });
+        }
+
+        $('.admission-step-list button').on('click', function () {
+            var step = Number($(this).data('admission-step'));
+            if (step === 5 && !guardianIsOther()) {
+                return;
+            }
+            showStep(step);
+        });
+
+        $('#@Html.IdFor(model => model.FormNo)').on('change blur', function () {
+            loadByFormNo(2);
+        });
+
+        $('#@Html.IdFor(model => model.GuardianTypeId)').on('change', refreshGuardianStep);
+
+        $('#admission-save-step').on('click', function () {
+            if (currentStep === 1) {
+                loadByFormNo(2);
+                return;
+            }
+
+            saveStep(currentStep).done(function (data) {
+                if (!data.success) {
+                    showError(data.message);
+                    return;
+                }
+
+                $('#@Html.IdFor(model => model.Id)').val(data.id);
+
+                var nextStep = currentStep + 1;
+                if (currentStep === 4 && !guardianIsOther()) {
+                    showStep(4);
+                    return;
+                }
+
+                if (nextStep <= 5) {
+                    showStep(nextStep);
+                }
+            }).fail(function () {
+                showError('Could not save admission step.');
+            });
+        });
+
+        $('#admission-form').on('submit', function (event) {
+            event.preventDefault();
+        });
+
+        var hashStep = Number((window.location.hash || '').replace('#step-', ''));
+        showStep(hashStep > 0 ? hashStep : 1);
+    });
+</script>

@@ -218,17 +218,12 @@ var SearchableSelect = (function () {
             throw new Error(data.message || 'Could not undo');
           }
 
-          if (hiddenInput.value === option.getAttribute('data-value')) {
-            hiddenInput.value = '';
-            triggerText.textContent = placeholder;
-            triggerText.classList.add('ss-placeholder');
-            hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-
-          if (option.parentNode) {
-            option.parentNode.removeChild(option);
-          }
-          filterOptions(searchInput.value);
+          document.dispatchEvent(new CustomEvent('searchableSelect:optionRemoved', {
+            detail: {
+              category: category,
+              value: option.getAttribute('data-value')
+            }
+          }));
         }).catch(function (error) {
           button.disabled = false;
           showError(error.message);
@@ -264,6 +259,40 @@ var SearchableSelect = (function () {
       return option;
     }
 
+    function ensureOption(value, text, optionId, createdInSession) {
+      var existingOption = qsa(list, '.ss-option').filter(function (item) {
+        return item.getAttribute('data-value') === String(value);
+      })[0];
+      var option = existingOption || buildOption(value, text, optionId, createdInSession);
+
+      if (!existingOption) {
+        list.appendChild(option);
+      }
+
+      return option;
+    }
+
+    function removeOption(value) {
+      qsa(list, '.ss-option').forEach(function (option) {
+        if (option.getAttribute('data-value') !== String(value)) {
+          return;
+        }
+
+        if (hiddenInput.value === String(value)) {
+          hiddenInput.value = '';
+          triggerText.textContent = placeholder;
+          triggerText.classList.add('ss-placeholder');
+          hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        if (option.parentNode) {
+          option.parentNode.removeChild(option);
+        }
+      });
+
+      filterOptions(searchInput.value);
+    }
+
     function saveNew() {
       var name = addInput ? addInput.value.replace(/^\s+|\s+$/g, '') : '';
 
@@ -279,23 +308,23 @@ var SearchableSelect = (function () {
       removeError();
 
       postJson(saveUrl, { name: name, category: category }).then(function (data) {
-        var existingOption;
         var option;
 
         if (!data.success) {
           throw new Error(data.message || 'Server error');
         }
 
-        existingOption = qsa(list, '.ss-option').filter(function (item) {
-          return item.getAttribute('data-value') === String(data.value);
-        })[0];
+        document.dispatchEvent(new CustomEvent('searchableSelect:optionAdded', {
+          detail: {
+            category: category,
+            value: data.value,
+            name: data.name,
+            optionId: data.optionId,
+            created: data.created
+          }
+        }));
 
-        option = existingOption || buildOption(data.value, data.name, data.optionId, data.created);
-
-        if (!existingOption) {
-          list.appendChild(option);
-        }
-
+        option = ensureOption(data.value, data.name, data.optionId, data.created);
         selectOption(option);
       }).catch(function (error) {
         show(addForm);
@@ -333,6 +362,27 @@ var SearchableSelect = (function () {
       option.addEventListener('click', function () {
         selectOption(option);
       });
+    });
+
+    document.addEventListener('searchableSelect:optionAdded', function (event) {
+      var detail = event.detail || {};
+
+      if (detail.category !== category) {
+        return;
+      }
+
+      ensureOption(detail.value, detail.name, detail.optionId, detail.created);
+      filterOptions(searchInput.value);
+    });
+
+    document.addEventListener('searchableSelect:optionRemoved', function (event) {
+      var detail = event.detail || {};
+
+      if (detail.category !== category) {
+        return;
+      }
+
+      removeOption(detail.value);
     });
 
     if (addTrigger) {

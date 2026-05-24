@@ -423,6 +423,13 @@
 
                             new ColumnProperty(nameof(AdmissionModel.Id))
                             {
+                                Title = T("Admin.Common.View").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonView(new DataUrl("~/Admin/Admission/Details"))
+                            },
+                            new ColumnProperty(nameof(AdmissionModel.Id))
+                            {
                                 Title = T("Admin.Common.Edit").Text,
                                 Width = "50",
                                 ClassName =  NopColumnClassDefaults.Button,

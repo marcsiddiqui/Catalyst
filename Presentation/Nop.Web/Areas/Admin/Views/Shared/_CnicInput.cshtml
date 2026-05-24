@@ -1,0 +1,35 @@
+@using Nop.Web.Areas.Admin.Models.Common
+@model CnicInputModel
+
+@{
+    var digits = new string((Model.Value ?? string.Empty).Where(char.IsDigit).Take(13).ToArray()).PadRight(13);
+}
+
+<div class="cnic-input" data-field-id="@Model.FieldId">
+    <input type="hidden"
+           id="@Model.FieldId"
+           name="@Model.FieldName"
+           value="@Model.Value"
+           class="cnic-hidden-input" />
+
+    <div class="cnic-group" aria-label="CNIC number">
+        @for (var i = 0; i < 13; i++)
+        {
+            if (i == 5 || i == 12)
+            {
+                <span class="cnic-separator" aria-hidden="true">-</span>
+            }
+
+            <input type="text"
+                   class="cnic-digit"
+                   value="@(digits[i] == ' ' ? string.Empty : digits[i].ToString())"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   autocomplete="off"
+                   maxlength="1"
+                   aria-label="CNIC digit @(i + 1)"
+                   data-cnic-index="@i" />
+        }
+    </div>
+    <div class="cnic-error" hidden>Complete CNIC or leave it empty.</div>
+</div>

@@ -1,4 +1,5 @@
 using Nop.Core.Domain.Admissions;
+using Nop.Core.Domain.GenericDropDowns;
 using Nop.Services.Admissions;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
@@ -16,6 +17,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
+    protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
 
     #endregion
 
@@ -24,14 +26,47 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     public AdmissionModelFactory(IAdmissionService admissionService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
-        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory)
+        IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
+        IBaseAdminModelFactory baseAdminModelFactory)
     {
         _admissionService = admissionService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
+        _baseAdminModelFactory = baseAdminModelFactory;
+    }
+    protected virtual string GetSelectedText(IList<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> items, int selectedValue)
+    {
+        return items?.FirstOrDefault(item => item.Value == selectedValue.ToString())?.Text;
     }
 
+    protected virtual async Task PrepareAdmissionDropDownsAsync(AdmissionModel model)
+    {
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableAdmissionStatuses, GenericDropdownEntity.AdmissionStatus);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailablePreviousSchools, GenericDropdownEntity.PreviousSchoolName);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableBirthCities, GenericDropdownEntity.BirthCity);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableMotherTongues, GenericDropdownEntity.MotherTounge);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableNationalities, GenericDropdownEntity.Nationality);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableReligions, GenericDropdownEntity.Religion);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableBloodGroups, GenericDropdownEntity.BloodGroup);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableCastes, GenericDropdownEntity.Caste);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableGuardianTypes, GenericDropdownEntity.GuardianType);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableQualifications, GenericDropdownEntity.Qualification);
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableProfessions, GenericDropdownEntity.Profession);
+    }
+
+    protected virtual void PrepareAdmissionDisplayNames(AdmissionModel model)
+    {
+        model.Status = GetSelectedText(model.AvailableAdmissionStatuses, model.StatusId);
+        model.PreviousSchool = GetSelectedText(model.AvailablePreviousSchools, model.PreviousSchoolId);
+        model.BirthCityName = GetSelectedText(model.AvailableBirthCities, model.BirthCity);
+        model.MontherTongueName = GetSelectedText(model.AvailableMotherTongues, model.MontherTongue);
+        model.NationalityName = GetSelectedText(model.AvailableNationalities, model.Nationality);
+        model.ReligionName = GetSelectedText(model.AvailableReligions, model.Religion);
+        model.BloodGroupName = GetSelectedText(model.AvailableBloodGroups, model.BloodGroup);
+        model.CasteName = GetSelectedText(model.AvailableCastes, model.Caste);
+        model.GuardianType = GetSelectedText(model.AvailableGuardianTypes, model.GuardianTypeId);
+    }
     #endregion
 
     #region Utilities
@@ -66,6 +101,8 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
             return admissions.SelectAwait(async admission =>
             {
                 var admissionModel = admission.ToModel<AdmissionModel>();
+                await PrepareAdmissionDropDownsAsync(admissionModel);
+                PrepareAdmissionDisplayNames(admissionModel);
 
                 return admissionModel;
             });
@@ -92,8 +129,15 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         //set default values for the new model
         if (admission == null)
         {
-            
+            model.DateOfBirth = DateTime.UtcNow;
+            model.FatherDateOfBirth = DateTime.UtcNow;
+            model.MotherDateOfBirth = DateTime.UtcNow;
+            model.GuardianDateOfBirth = DateTime.UtcNow;
+            model.CreatedOnUtc = DateTime.UtcNow;
         }
+
+        await PrepareAdmissionDropDownsAsync(model);
+        PrepareAdmissionDisplayNames(model);
 
 //{{Locales}}
 

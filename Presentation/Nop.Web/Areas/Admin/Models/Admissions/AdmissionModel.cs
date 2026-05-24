@@ -10,7 +10,17 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     public AdmissionModel()
     {
-
+        AvailableAdmissionStatuses = new List<SelectListItem>();
+        AvailablePreviousSchools = new List<SelectListItem>();
+        AvailableBirthCities = new List<SelectListItem>();
+        AvailableMotherTongues = new List<SelectListItem>();
+        AvailableNationalities = new List<SelectListItem>();
+        AvailableReligions = new List<SelectListItem>();
+        AvailableBloodGroups = new List<SelectListItem>();
+        AvailableCastes = new List<SelectListItem>();
+        AvailableGuardianTypes = new List<SelectListItem>();
+        AvailableQualifications = new List<SelectListItem>();
+        AvailableProfessions = new List<SelectListItem>();
     }
 
     #endregion
@@ -202,6 +212,46 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Deleted")]
     public bool Deleted { get; set; }
+
+    public string Status { get; set; }
+
+    public string PreviousSchool { get; set; }
+
+    public string BirthCityName { get; set; }
+
+    public string MontherTongueName { get; set; }
+
+    public string NationalityName { get; set; }
+
+    public string ReligionName { get; set; }
+
+    public string BloodGroupName { get; set; }
+
+    public string CasteName { get; set; }
+
+    public string GuardianType { get; set; }
+
+    public IList<SelectListItem> AvailableAdmissionStatuses { get; set; }
+
+    public IList<SelectListItem> AvailablePreviousSchools { get; set; }
+
+    public IList<SelectListItem> AvailableBirthCities { get; set; }
+
+    public IList<SelectListItem> AvailableMotherTongues { get; set; }
+
+    public IList<SelectListItem> AvailableNationalities { get; set; }
+
+    public IList<SelectListItem> AvailableReligions { get; set; }
+
+    public IList<SelectListItem> AvailableBloodGroups { get; set; }
+
+    public IList<SelectListItem> AvailableCastes { get; set; }
+
+    public IList<SelectListItem> AvailableGuardianTypes { get; set; }
+
+    public IList<SelectListItem> AvailableQualifications { get; set; }
+
+    public IList<SelectListItem> AvailableProfessions { get; set; }
 
 
 
