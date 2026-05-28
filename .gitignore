@@ -596,6 +596,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Presentation/Nop.Web/App_Data/DataProtectionKeys
+/Presentation/Nop.Web/Attachments/
 !/Build/ClearPluginAssemblies.dll
 /Presentation/Nop.Web/Themes/**/*.rar
 /Presentation/Nop.Web/Areas/Admin/**/*.rar
