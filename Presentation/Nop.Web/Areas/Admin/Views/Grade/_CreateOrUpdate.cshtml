@@ -8,6 +8,9 @@
 
     const string hideGradeSubjectMappingBlockAttributeName = "GradePage.GradeSubjectMappingBlock";
     var hideGradeSubjectMappingBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideGradeSubjectMappingBlockAttributeName);
+
+    const string hideAdmissionDocumentRequirementBlockAttributeName = "GradePage.AdmissionDocumentRequirementBlock";
+    var hideAdmissionDocumentRequirementBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideAdmissionDocumentRequirementBlockAttributeName);
 }
 
 <div asp-validation-summary="All"></div>
@@ -21,6 +24,9 @@
             </nop-cards>
             <nop-cards id="grade-cards">
                 <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Subject.Mapping")" asp-hide-block-attribute-name="@hideGradeSubjectMappingBlockAttributeName" asp-hide="@hideGradeSubjectMappingBlock" asp-advanced="false">@await Html.PartialAsync("_GradeSubjectMappngScreen", Model)</nop-card>
+            </nop-cards>
+            <nop-cards id="grade-cards">
+                <nop-card asp-name="grade-admission-document-requirements" asp-icon="fas fa-file-alt" asp-title="@T("Admin.Grade.Admission.Document.Requirements")" asp-hide-block-attribute-name="@hideAdmissionDocumentRequirementBlockAttributeName" asp-hide="@hideAdmissionDocumentRequirementBlock" asp-advanced="false">@await Html.PartialAsync("_AdmissionGradeDocumentRequirementScreen", Model)</nop-card>
             </nop-cards>
         </div>
     </div>

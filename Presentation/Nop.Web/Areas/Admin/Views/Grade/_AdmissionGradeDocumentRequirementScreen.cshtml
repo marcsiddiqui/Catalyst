@@ -1,0 +1,73 @@
+@using Nop.Web.Areas.Admin.Models.Admissions
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@model GradeModel
+
+<div class="card card-default">
+    <div class="card-header">
+        @T("Admin.Grade.Admission.Document.Requirements")
+    </div>
+    @if (Model.Id > 0)
+    {
+        <div class="card-body">
+            @await Html.PartialAsync("Table", new DataTablesModel
+            {
+                Name = "admissionGradeDocumentRequirement-grid",
+                UrlRead = new DataUrl("AdmissionGradeDocumentRequirementGrid", "Grade", new RouteValueDictionary { [nameof(Model.AdmissionGradeDocumentRequirementSearchModel.GradeId)] = Model.AdmissionGradeDocumentRequirementSearchModel.GradeId }),
+                UrlDelete = new DataUrl("AdmissionGradeDocumentRequirementDelete", "Grade", null),
+                Length = Model.AdmissionGradeDocumentRequirementSearchModel.PageSize,
+                LengthMenu = Model.AdmissionGradeDocumentRequirementSearchModel.AvailablePageSizes,
+                ColumnCollection = new List<ColumnProperty>
+                {
+                    new ColumnProperty(nameof(AdmissionGradeDocumentRequirementModel.AdmissionDocumentTypeName))
+                    {
+                        Title = T("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.AdmissionDocumentTypeId").Text
+                    },
+                    new ColumnProperty(nameof(AdmissionGradeDocumentRequirementModel.IsRequired))
+                    {
+                        Title = T("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.IsRequired").Text,
+                        ClassName = NopColumnClassDefaults.CenterAll
+                    },
+                    new ColumnProperty(nameof(AdmissionGradeDocumentRequirementModel.Id))
+                    {
+                        Title = T("Admin.Common.Edit").Text,
+                        Width = "100",
+                        ClassName = NopColumnClassDefaults.Button,
+                        Render = new RenderCustom("renderAdmissionDocumentRequirementEditColumn")
+                    },
+                    new ColumnProperty(nameof(AdmissionGradeDocumentRequirementModel.Id))
+                    {
+                        Title = T("Admin.Common.Delete").Text,
+                        Width = "100",
+                        Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+                        ClassName = NopColumnClassDefaults.Button
+                    }
+                }
+            })
+            <script>
+                function renderAdmissionDocumentRequirementEditColumn(data, type, row, meta) {
+                    return '<button onclick=\"javascript:OpenWindow(\'@Url.Content("~/Admin/Grade/AddOrEditAdmissionGradeDocumentRequirementPopup/")' + data + '?gradeId=' + @Model.Id + '&requirementId=' + row.Id + '\', 800, 600, true); return false;\" class="btn btn-default"><i class="fas fa-pencil"></i>@T("Admin.Common.Edit").Text</button>';
+                }
+            </script>
+        </div>
+        <div class="card-footer">
+            <button type="submit" id="btnAddNewAdmissionDocumentRequirement" onclick="javascript:OpenWindow('@(Url.Action("AddOrEditAdmissionGradeDocumentRequirementPopup", "Grade", new { gradeId = Model.Id, requirementId = 0 }))', 800, 600, true); return false;" class="btn btn-primary">
+                @T("Admin.Common.AddNew")
+            </button>
+            <button type="submit" id="btnRefreshAdmissionDocumentRequirement" style="display: none"></button>
+            <script>
+                $(function() {
+                    $('#btnRefreshAdmissionDocumentRequirement').click(function () {
+                        updateTable('#admissionGradeDocumentRequirement-grid');
+                        return false;
+                    });
+                });
+            </script>
+        </div>
+    }
+    else
+    {
+        <div class="card-body">
+            @T("Admin.Grade.Subject.Mapping.TierPrices.SaveBeforeEdit")
+        </div>
+    }
+</div>

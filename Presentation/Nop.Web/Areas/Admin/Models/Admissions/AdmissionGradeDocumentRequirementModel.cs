@@ -10,7 +10,8 @@ public partial record AdmissionGradeDocumentRequirementModel : BaseNopEntityMode
 
     public AdmissionGradeDocumentRequirementModel()
     {
-
+        AvailableAdmissionDocumentTypes = new List<SelectListItem>();
+        SelectedAdmissionDocumentTypeIds = new List<int>();
     }
 
     #endregion
@@ -22,6 +23,8 @@ public partial record AdmissionGradeDocumentRequirementModel : BaseNopEntityMode
 
     [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.AdmissionDocumentTypeId")]
     public int AdmissionDocumentTypeId { get; set; }
+
+    public string AdmissionDocumentTypeName { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.IsRequired")]
     public bool IsRequired { get; set; }
@@ -41,6 +44,10 @@ public partial record AdmissionGradeDocumentRequirementModel : BaseNopEntityMode
     [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.UpdatedOnUtc")]
     public DateTime? UpdatedOnUtc { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.AdmissionDocumentTypeId")]
+    public IList<int> SelectedAdmissionDocumentTypeIds { get; set; }
+
+    public IList<SelectListItem> AvailableAdmissionDocumentTypes { get; set; }
 
 
     #endregion

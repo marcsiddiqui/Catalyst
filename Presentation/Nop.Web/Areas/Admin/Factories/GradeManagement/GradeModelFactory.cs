@@ -138,6 +138,8 @@ public partial class GradeModelFactory : IGradeModelFactory
         //prepare available stores
         await _storeMappingSupportedModelFactory.PrepareModelStoresAsync(model, grade, excludeProperties);
 
+        model.GradeSubjectSearchModel.GradeId = model.Id;
+        model.AdmissionGradeDocumentRequirementSearchModel.GradeId = model.Id;
 
         return model;
     }

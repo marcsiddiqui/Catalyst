@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 using Nop.Core;
+using Nop.Core.Domain.Admissions;
 using Nop.Core.Domain.GradeManagement;
+using Nop.Services.Admissions;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
@@ -14,6 +16,7 @@ using Nop.Services.Security;
 using Nop.Services.Stores;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
+using Nop.Web.Areas.Admin.Models.Admissions;
 using Nop.Web.Areas.Admin.Models.GradeManagement;
 using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
@@ -36,6 +39,8 @@ public partial class GradeController : BaseAdminController
     protected readonly ISectionModelFactory _sectionModelFactory;
     protected readonly ISectionService _sectionService;
     protected readonly IWorkContext _workContext;
+    protected readonly IAdmissionService _admissionService;
+    protected readonly IAdmissionModelFactory _admissionModelFactory;
 
     #endregion
 
@@ -51,7 +56,9 @@ public partial class GradeController : BaseAdminController
         IStoreMappingService storeMappingService,
         ISectionModelFactory sectionModelFactory,
         ISectionService sectionService,
-        IWorkContext workContext
+        IWorkContext workContext,
+        IAdmissionService admissionService,
+        IAdmissionModelFactory admissionModelFactory
         )
     {
         _gradeModelFactory = gradeModelFactory;
@@ -64,6 +71,8 @@ public partial class GradeController : BaseAdminController
         _sectionModelFactory = sectionModelFactory;
         _sectionService = sectionService;
         _workContext = workContext;
+        _admissionService = admissionService;
+        _admissionModelFactory = admissionModelFactory;
     }
 
     #endregion
@@ -396,6 +405,116 @@ public partial class GradeController : BaseAdminController
             ?? throw new ArgumentException("No grade found with the specified id");
 
         await _gradeService.DeleteGradeSubjectMappingAsync(gradeSubjectMapping);
+
+        return new NullJsonResult();
+    }
+
+    #endregion
+
+    #region AdmissionGradeDocumentRequirement
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> AddOrEditAdmissionGradeDocumentRequirementPopup(int gradeId, int requirementId = 0)
+    {
+        var requirement = requirementId > 0
+            ? await _admissionService.GetAdmissionGradeDocumentRequirementByIdAsync(requirementId)
+            : null;
+
+        var model = await _admissionModelFactory.PrepareAdmissionGradeDocumentRequirementModelAsync(
+            requirement == null ? new AdmissionGradeDocumentRequirementModel { GradeId = gradeId } : null,
+            requirement);
+
+        model.GradeId = gradeId;
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> AdmissionGradeDocumentRequirementGrid(AdmissionGradeDocumentRequirementSearchModel searchModel)
+    {
+        var model = await _admissionModelFactory.PrepareAdmissionGradeDocumentRequirementListModelAsync(searchModel);
+
+        return Json(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> AdmissionGradeDocumentRequirementSave(AdmissionGradeDocumentRequirementModel model)
+    {
+        if (model.Id > 0)
+        {
+            var requirement = await _admissionService.GetAdmissionGradeDocumentRequirementByIdAsync(model.Id);
+            if (requirement == null || requirement.Deleted)
+                return Json(new { Result = "error", Errors = new[] { "Document requirement not found." } });
+
+            if (requirement.AdmissionDocumentTypeId != model.AdmissionDocumentTypeId)
+            {
+                var duplicateRequirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(
+                    gradeId: requirement.GradeId,
+                    admissionDocumentTypeId: model.AdmissionDocumentTypeId);
+
+                if (duplicateRequirements != null && duplicateRequirements.Any(duplicate => duplicate.Id != requirement.Id))
+                    return Json(new { Result = "error", Errors = new[] { "This document requirement already exists for the grade." } });
+            }
+
+            requirement.AdmissionDocumentTypeId = model.AdmissionDocumentTypeId;
+            requirement.IsRequired = model.IsRequired;
+
+            await _admissionService.UpdateAdmissionGradeDocumentRequirementAsync(requirement);
+
+            return Json(new { Result = "success" });
+        }
+
+        if (model.SelectedAdmissionDocumentTypeIds == null || !model.SelectedAdmissionDocumentTypeIds.Any())
+            return Json(new { Result = "error", Errors = new[] { "Please select at least one document type." } });
+
+        var errors = new List<string>();
+
+        foreach (var documentTypeId in model.SelectedAdmissionDocumentTypeIds.Distinct())
+        {
+            var duplicateRequirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(
+                gradeId: model.GradeId,
+                admissionDocumentTypeId: documentTypeId);
+
+            if (duplicateRequirements != null && duplicateRequirements.Any())
+            {
+                errors.Add($"Document type {documentTypeId} already exists for this grade.");
+                continue;
+            }
+
+            var requirement = new AdmissionGradeDocumentRequirement
+            {
+                GradeId = model.GradeId,
+                AdmissionDocumentTypeId = documentTypeId,
+                IsRequired = model.IsRequired,
+                Deleted = false
+            };
+
+            await _admissionService.InsertAdmissionGradeDocumentRequirementAsync(requirement);
+        }
+
+        if (errors.Any() && errors.Count < model.SelectedAdmissionDocumentTypeIds.Distinct().Count())
+            return Json(new { Result = "success", Warnings = errors });
+
+        if (errors.Any())
+            return Json(new { Result = "error", Errors = errors });
+
+        return Json(new { Result = "success" });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> AdmissionGradeDocumentRequirementDelete(int id)
+    {
+        var requirement = await _admissionService.GetAdmissionGradeDocumentRequirementByIdAsync(id)
+            ?? throw new ArgumentException("No admission document requirement found with the specified id");
+
+        var grade = await _gradeService.GetGradeByIdAsync(requirement.GradeId)
+            ?? throw new ArgumentException("No grade found with the specified id");
+
+        await _admissionService.DeleteAdmissionGradeDocumentRequirementAsync(requirement);
 
         return new NullJsonResult();
     }

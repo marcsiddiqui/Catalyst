@@ -35,6 +35,11 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
         _baseAdminModelFactory = baseAdminModelFactory;
     }
+
+    #endregion
+
+    #region Utilities
+
     protected virtual string GetSelectedText(IList<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> items, int selectedValue)
     {
         return items?.FirstOrDefault(item => item.Value == selectedValue.ToString())?.Text;
@@ -67,11 +72,11 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         model.CasteName = GetSelectedText(model.AvailableCastes, model.Caste);
         model.GuardianType = GetSelectedText(model.AvailableGuardianTypes, model.GuardianTypeId);
     }
-    #endregion
 
-    #region Utilities
-
-    
+    protected virtual async Task PrepareAdmissionDocumentTypesAsync(AdmissionGradeDocumentRequirementModel model)
+    {
+        await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableAdmissionDocumentTypes, GenericDropdownEntity.AdmissionDocumentType, isMultiSelect: true);
+    }
 
     #endregion
 
@@ -142,6 +147,45 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
 //{{Locales}}
 
 //{{PrepareStoreCode}}
+
+        return model;
+    }
+
+    public virtual async Task<AdmissionGradeDocumentRequirementListModel> PrepareAdmissionGradeDocumentRequirementListModelAsync(AdmissionGradeDocumentRequirementSearchModel searchModel)
+    {
+        ArgumentNullException.ThrowIfNull(searchModel);
+
+        var requirements = (await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(gradeId: searchModel.GradeId)).ToPagedList(searchModel);
+
+        var documentTypeLookupModel = new AdmissionGradeDocumentRequirementModel();
+        await PrepareAdmissionDocumentTypesAsync(documentTypeLookupModel);
+
+        var model = await new AdmissionGradeDocumentRequirementListModel().PrepareToGridAsync(searchModel, requirements, () =>
+        {
+            return requirements.SelectAwait(async requirement =>
+            {
+                var requirementModel = requirement.ToModel<AdmissionGradeDocumentRequirementModel>();
+                requirementModel.AdmissionDocumentTypeName = GetSelectedText(documentTypeLookupModel.AvailableAdmissionDocumentTypes, requirement.AdmissionDocumentTypeId)
+                    ?? requirement.AdmissionDocumentTypeId.ToString();
+
+                return requirementModel;
+            });
+        });
+
+        return model;
+    }
+
+    public virtual async Task<AdmissionGradeDocumentRequirementModel> PrepareAdmissionGradeDocumentRequirementModelAsync(
+        AdmissionGradeDocumentRequirementModel model,
+        AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement,
+        bool excludeProperties = false)
+    {
+        if (admissionGradeDocumentRequirement != null && model == null)
+            model = admissionGradeDocumentRequirement.ToModel<AdmissionGradeDocumentRequirementModel>();
+
+        model ??= new AdmissionGradeDocumentRequirementModel();
+
+        await PrepareAdmissionDocumentTypesAsync(model);
 
         return model;
     }

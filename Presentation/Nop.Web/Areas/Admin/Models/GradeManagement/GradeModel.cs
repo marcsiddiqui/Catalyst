@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Web.Areas.Admin.Models.Admissions;
 using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
@@ -16,6 +17,7 @@ public partial record GradeModel : BaseNopEntityModel, ILocalizedModel<GradeLoca
         SelectedStoreIds = new List<int>();
         AvailableStores = new List<SelectListItem>();
         GradeSubjectSearchModel = new GradeSubjectSearchModel();
+        AdmissionGradeDocumentRequirementSearchModel = new AdmissionGradeDocumentRequirementSearchModel();
 
     }
 
@@ -49,6 +51,8 @@ public partial record GradeModel : BaseNopEntityModel, ILocalizedModel<GradeLoca
     public IList<SelectListItem> AvailableStores { get; set; }
 
     public GradeSubjectSearchModel GradeSubjectSearchModel { get; set; }
+
+    public AdmissionGradeDocumentRequirementSearchModel AdmissionGradeDocumentRequirementSearchModel { get; set; }
 
     #endregion
 }

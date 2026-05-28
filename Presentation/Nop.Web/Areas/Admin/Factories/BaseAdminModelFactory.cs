@@ -1055,7 +1055,8 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         string selectedValuesStr = "",
         List<int> selectedValueLi = null,
         string separaterChar = "",
-        IList<int> modelSelectedItemIds = null)
+        IList<int> modelSelectedItemIds = null,
+        bool isMultiSelect = false)
     {
         selectedValueLi = selectedValueLi == null || !selectedValueLi.Any() ? new List<int>() : selectedValueLi;
 
@@ -1088,8 +1089,9 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
             }
         }
 
-        if (string.IsNullOrWhiteSpace(defaultItemText))
-            defaultItemText = await _localizationService.GetResourceAsync("Admin.Common.Select");
+        if (!isMultiSelect)
+            if (string.IsNullOrWhiteSpace(defaultItemText))
+                defaultItemText = await _localizationService.GetResourceAsync("Admin.Common.Select");
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);

@@ -2,4 +2,7 @@ using Nop.Web.Framework.Models;
 
 namespace Nop.Web.Areas.Admin.Models.Admissions;
 
-public partial record AdmissionGradeDocumentRequirementSearchModel : BaseSearchModel;
+public partial record AdmissionGradeDocumentRequirementSearchModel : BaseSearchModel
+{
+    public int GradeId { get; set; }
+}
