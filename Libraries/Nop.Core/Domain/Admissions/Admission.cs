@@ -10,6 +10,8 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 
     public int StatusId { get; set; }
 
+    public int GradeId { get; set; }
+
     public string FirstName { get; set; }
 
     public string MiddleName { get; set; }
