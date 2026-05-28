@@ -84,7 +84,7 @@ public partial class AdmissionController : BaseAdminController
             FatherDateOfBirth = now,
             MotherDateOfBirth = now,
             GuardianDateOfBirth = now,
-            Createdby = customer?.Id ?? 0,
+            CreatedBy = customer?.Id ?? 0,
             CreatedOnUtc = now,
             UpdatedBy = customer?.Id ?? 0,
             UpdatedOnUtc = now

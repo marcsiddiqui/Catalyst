@@ -1,9 +1,10 @@
 using Nop.Core;
 using Nop.Core.Domain.Common;
+using Nop.Core.Domain.LogInfo;
 
 namespace Nop.Core.Domain.Admissions;
 
-public partial class Admission : BaseEntity, ISoftDeletedEntity
+public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 {
     public string FormNo { get; set; }
 
@@ -119,15 +120,5 @@ public partial class Admission : BaseEntity, ISoftDeletedEntity
 
     public int GuardianCaste { get; set; }
 
-    public int Createdby { get; set; }
-
-    public DateTime CreatedOnUtc { get; set; }
-
-    public int UpdatedBy { get; set; }
-
-    public DateTime? UpdatedOnUtc { get; set; }
-
     public bool Deleted { get; set; }
-
-
 }

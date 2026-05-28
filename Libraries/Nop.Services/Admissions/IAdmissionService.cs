@@ -79,4 +79,35 @@ public partial interface IAdmissionService
     Task DeleteAdmissionAsync(Admission admission);
 
     Task DeleteAdmissionAsync(IEnumerable<Admission> admissions);
+
+    #region AdmissionGradeDocumentRequirement
+
+    Task<IPagedList<AdmissionGradeDocumentRequirement>> GetAllAdmissionGradeDocumentRequirementsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int gradeId = 0, IEnumerable<int> gradeIds = null,
+        int admissionDocumentTypeId = 0, IEnumerable<int> admissionDocumentTypeIds = null,
+        BooleanFilter isRequired = BooleanFilter.Both,
+        BooleanFilter deleted = BooleanFilter.False,
+
+
+
+        int pageIndex = 0, int pageSize = int.MaxValue);
+
+    Task<AdmissionGradeDocumentRequirement> GetAdmissionGradeDocumentRequirementByIdAsync(int id);
+
+    Task<IList<AdmissionGradeDocumentRequirement>> GetAdmissionGradeDocumentRequirementsByIdsAsync(IEnumerable<int> ids);
+
+    Task InsertAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement);
+
+    Task InsertAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements);
+
+    Task UpdateAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement);
+
+    Task UpdateAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements);
+
+    Task DeleteAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement);
+
+    Task DeleteAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements);
+
+    #endregion
 }

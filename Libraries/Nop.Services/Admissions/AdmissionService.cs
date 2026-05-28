@@ -9,16 +9,19 @@ public partial class AdmissionService : IAdmissionService
     #region Fields
 
     protected readonly IRepository<Admission> _admissionRepository;
+    protected readonly IRepository<AdmissionGradeDocumentRequirement> _admissionGradeDocumentRequirementRepository;
 
     #endregion
 
     #region Ctor
 
     public AdmissionService(
-        IRepository<Admission> admissionRepository
+        IRepository<Admission> admissionRepository,
+        IRepository<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirementRepository
         )
     {
         _admissionRepository = admissionRepository;
+        _admissionGradeDocumentRequirementRepository = admissionGradeDocumentRequirementRepository;
     }
 
     #endregion
@@ -319,6 +322,120 @@ public partial class AdmissionService : IAdmissionService
             return;
 
         await _admissionRepository.DeleteAsync(admissions.ToList());
+    }
+
+    #endregion
+
+    #region AdmissionGradeDocumentRequirement
+
+    public virtual async Task<IPagedList<AdmissionGradeDocumentRequirement>> GetAllAdmissionGradeDocumentRequirementsAsync(
+        int id = 0, IEnumerable<int> ids = null,
+        int gradeId = 0, IEnumerable<int> gradeIds = null,
+        int admissionDocumentTypeId = 0, IEnumerable<int> admissionDocumentTypeIds = null,
+        BooleanFilter isRequired = BooleanFilter.Both,
+        BooleanFilter deleted = BooleanFilter.False,
+
+
+
+        int pageIndex = 0, int pageSize = int.MaxValue)
+    {
+        var productReviews = await _admissionGradeDocumentRequirementRepository.GetAllPagedAsync(async query =>
+        {
+            if (id > 0)
+                query = query.Where(x => x.Id == id);
+
+            if (ids != null && ids.Any())
+                query = query.Where(x => ids.Contains(x.Id));
+
+            if (gradeId > 0)
+                query = query.Where(x => gradeId == x.GradeId);
+
+            if (gradeIds != null && gradeIds.Any())
+                query = query.Where(x => gradeIds.Contains(x.GradeId));
+
+            if (admissionDocumentTypeId > 0)
+                query = query.Where(x => admissionDocumentTypeId == x.AdmissionDocumentTypeId);
+
+            if (admissionDocumentTypeIds != null && admissionDocumentTypeIds.Any())
+                query = query.Where(x => admissionDocumentTypeIds.Contains(x.AdmissionDocumentTypeId));
+
+            query = query.WhereBoolean(x => x.IsRequired, isRequired);
+
+            query = query.WhereBoolean(x => x.Deleted, deleted);
+
+
+
+
+
+            return query;
+
+        }, pageIndex, pageSize);
+
+        return productReviews;
+    }
+
+    public virtual async Task<AdmissionGradeDocumentRequirement> GetAdmissionGradeDocumentRequirementByIdAsync(int id)
+    {
+        if (id <= 0)
+            return null;
+
+        return await _admissionGradeDocumentRequirementRepository.GetByIdAsync(id);
+    }
+
+    public virtual async Task<IList<AdmissionGradeDocumentRequirement>> GetAdmissionGradeDocumentRequirementsByIdsAsync(IEnumerable<int> ids)
+    {
+        if (ids == null || !ids.Any())
+            return null;
+
+        return await _admissionGradeDocumentRequirementRepository.GetByIdsAsync(ids.ToList());
+    }
+
+    public virtual async Task InsertAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement)
+    {
+        if (admissionGradeDocumentRequirement == null)
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.InsertAsync(admissionGradeDocumentRequirement);
+    }
+
+    public virtual async Task InsertAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements)
+    {
+        if (admissionGradeDocumentRequirements == null || !admissionGradeDocumentRequirements.Any())
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.InsertAsync(admissionGradeDocumentRequirements.ToList());
+    }
+
+    public virtual async Task UpdateAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement)
+    {
+        if (admissionGradeDocumentRequirement == null)
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.UpdateAsync(admissionGradeDocumentRequirement);
+    }
+
+    public virtual async Task UpdateAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements)
+    {
+        if (admissionGradeDocumentRequirements == null || !admissionGradeDocumentRequirements.Any())
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.UpdateAsync(admissionGradeDocumentRequirements.ToList());
+    }
+
+    public virtual async Task DeleteAdmissionGradeDocumentRequirementAsync(AdmissionGradeDocumentRequirement admissionGradeDocumentRequirement)
+    {
+        if (admissionGradeDocumentRequirement == null)
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.DeleteAsync(admissionGradeDocumentRequirement);
+    }
+
+    public virtual async Task DeleteAdmissionGradeDocumentRequirementAsync(IEnumerable<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirements)
+    {
+        if (admissionGradeDocumentRequirements == null || !admissionGradeDocumentRequirements.Any())
+            return;
+
+        await _admissionGradeDocumentRequirementRepository.DeleteAsync(admissionGradeDocumentRequirements.ToList());
     }
 
     #endregion

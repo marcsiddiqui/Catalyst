@@ -86,7 +86,10 @@ using Nop.Core;
 using Nop.Services.Customers;
 using Nop.Web.Areas.Admin.Models.Admissions;
 using Nop.Core.Domain.Admissions;
+using Nop.Web.Areas.Admin.Models.Admissions;
+using Nop.Core.Domain.Admissions;
 //{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
+
 
 
 
@@ -2021,7 +2024,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
                 CreateMap<Admission, AdmissionModel>();
         CreateMap<AdmissionModel, Admission>();
+        CreateMap<AdmissionGradeDocumentRequirement, AdmissionGradeDocumentRequirementModel>();
+        CreateMap<AdmissionGradeDocumentRequirementModel, AdmissionGradeDocumentRequirement>();
 //{{AddNewModelMappingsHereWithNopCCodeGenerator}}
+
 
 
     }
