@@ -282,6 +282,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IAcademicYearGradeSectionStudentMappingService, AcademicYearGradeSectionStudentMappingService>();
         services.AddScoped<IAdmissionService, AdmissionService>();
         services.AddScoped<IAdmissionDocumentService, AdmissionDocumentService>();
+        services.AddScoped<IAttachmentFileService, AttachmentFileService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
 
 

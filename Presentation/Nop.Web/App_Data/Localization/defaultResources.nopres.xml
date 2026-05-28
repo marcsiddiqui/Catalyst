@@ -21458,4 +21458,7 @@
   <LocaleResource Name="Admin.Grade.CopySetup.Fields.CopyAdmissionDocumentRequirements">
     <Value>Copy admission document requirements</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.GradeId">
+    <Value>Grade</Value>
+  </LocaleResource>
 </Language>

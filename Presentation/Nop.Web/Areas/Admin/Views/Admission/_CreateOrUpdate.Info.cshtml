@@ -3,6 +3,9 @@
 @using Nop.Web.Areas.Admin.Models.Common
 @model AdmissionModel
 
+<link rel="stylesheet" href="~/lib_npm/filepond/filepond.min.css" />
+<script asp-exclude-from-bundle="true" src="~/lib_npm/filepond/filepond.min.js" asp-location="Footer"></script>
+
 <input asp-for="Id" type="hidden" />
 <input asp-for="Createdby" type="hidden" />
 <input asp-for="CreatedOnUtc" type="hidden" />
@@ -20,6 +23,7 @@
                 <button type="button" class="list-group-item list-group-item-action" data-admission-step="3">Father Information</button>
                 <button type="button" class="list-group-item list-group-item-action" data-admission-step="4">Mother Information</button>
                 <button type="button" class="list-group-item list-group-item-action" data-admission-step="5" id="guardian-step-link">Guardian Information</button>
+                <button type="button" class="list-group-item list-group-item-action" data-admission-step="6">Documents</button>
             </div>
         </div>
         <div class="col-md-9">
@@ -29,6 +33,13 @@
                     <div class="col-md-9">
                         <nop-editor asp-for="FormNo" />
                         <span asp-validation-for="FormNo"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3"><nop-label asp-for="GradeId" /></div>
+                    <div class="col-md-9">
+                        <nop-select asp-for="GradeId" asp-items="Model.AvailableGrades" />
+                        <span asp-validation-for="GradeId"></span>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -107,6 +118,12 @@
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="GuardianCaste" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianCaste), FieldId = Html.IdFor(model => model.GuardianCaste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.GuardianCaste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })<span asp-validation-for="GuardianCaste"></span></div></div>
             </div>
 
+            <div class="admission-step-panel" data-admission-panel="6" style="display:none">
+                <div id="admission-documents-empty" class="alert alert-info" style="display:none">No documents are configured for the selected grade.</div>
+                <div id="admission-documents-loading" class="text-muted" style="display:none">Loading documents...</div>
+                <div id="admission-documents-list"></div>
+            </div>
+
             <div class="text-right mt-3">
                 <button type="button" class="btn btn-primary" id="admission-save-step">
                     <i class="far fa-floppy-disk"></i>
@@ -121,6 +138,8 @@
     $(function () {
         var currentStep = 1;
         var loadingFormNo = false;
+        var documentsLoadedForAdmissionId = 0;
+        var documentPonds = {};
         var $alert = $('#admission-step-alert');
 
         function showError(message) {
@@ -155,6 +174,9 @@
             $('[data-admission-step="' + step + '"]').addClass('active');
             $('#admission-save-step').toggle(step > 0);
             refreshGuardianStep();
+            if (step === 6) {
+                loadAdmissionDocuments();
+            }
             clearError();
         }
 
@@ -207,6 +229,161 @@
             });
         }
 
+        function clearDocumentPonds() {
+            Object.keys(documentPonds).forEach(function (key) {
+                documentPonds[key].destroy();
+            });
+            documentPonds = {};
+        }
+
+        function getAdmissionDocumentValue(admissionDocument, camelCaseName, pascalCaseName) {
+            return admissionDocument[camelCaseName] !== undefined
+                ? admissionDocument[camelCaseName]
+                : admissionDocument[pascalCaseName];
+        }
+
+        function normalizeAdmissionDocument(admissionDocument) {
+            return {
+                admissionDocumentTypeId: getAdmissionDocumentValue(admissionDocument, 'admissionDocumentTypeId', 'AdmissionDocumentTypeId'),
+                admissionDocumentTypeName: getAdmissionDocumentValue(admissionDocument, 'admissionDocumentTypeName', 'AdmissionDocumentTypeName'),
+                isRequired: getAdmissionDocumentValue(admissionDocument, 'isRequired', 'IsRequired') === true,
+                admissionDocumentId: getAdmissionDocumentValue(admissionDocument, 'admissionDocumentId', 'AdmissionDocumentId') || 0,
+                fileName: getAdmissionDocumentValue(admissionDocument, 'fileName', 'FileName') || '',
+                previewUrl: getAdmissionDocumentValue(admissionDocument, 'previewUrl', 'PreviewUrl') || ''
+            };
+        }
+
+        function renderDocumentRow(admissionDocument) {
+            admissionDocument = normalizeAdmissionDocument(admissionDocument);
+
+            var rowId = 'admission-document-row-' + admissionDocument.admissionDocumentTypeId;
+            var inputId = 'admission-document-upload-' + admissionDocument.admissionDocumentTypeId;
+            var requiredBadge = admissionDocument.isRequired
+                ? '<span class="badge badge-danger ml-2">Required</span>'
+                : '<span class="badge badge-secondary ml-2">Optional</span>';
+            var fileName = admissionDocument.fileName || '';
+            var hasDocument = admissionDocument.admissionDocumentId > 0;
+            var previewStyle = hasDocument ? '' : 'display:none';
+            var removeStyle = hasDocument ? '' : 'display:none';
+
+            var $row = $('<div class="card card-default mb-3 admission-document-row" />').attr('id', rowId);
+            var $header = $('<div class="card-header d-flex align-items-center justify-content-between" />');
+            var $title = $('<div />').text(admissionDocument.admissionDocumentTypeName).append(requiredBadge);
+            var $actions = $('<div />');
+            var $preview = $('<a class="btn btn-default btn-sm admission-document-preview" target="_blank" title="Preview"><i class="far fa-eye"></i></a>')
+                .attr('href', admissionDocument.previewUrl || '#')
+                .attr('style', previewStyle);
+            var $remove = $('<button type="button" class="btn btn-danger btn-sm admission-document-remove ml-2" title="Remove"><i class="far fa-trash-can"></i></button>')
+                .attr('style', removeStyle)
+                .attr('data-document-id', admissionDocument.admissionDocumentId);
+            var $body = $('<div class="card-body" />');
+            var $fileName = $('<div class="text-muted mb-2 admission-document-file-name" />').text(fileName);
+            var $input = $('<input type="file" />')
+                .attr('id', inputId)
+                .attr('name', inputId)
+                .attr('accept', 'image/*,.pdf,application/pdf');
+
+            $actions.append($preview).append($remove);
+            $header.append($title).append($actions);
+            $body.append($fileName).append($input);
+            $row.append($header).append($body);
+
+            $('#admission-documents-list').append($row);
+
+            var pond = FilePond.create(document.querySelector('#' + inputId), {
+                credits: false,
+                allowMultiple: false,
+                maxFiles: 1,
+                acceptedFileTypes: ['image/*', 'application/pdf'],
+                server: {
+                    process: function (fieldName, file, metadata, load, error, progress, abort) {
+                        var formData = new FormData();
+                        formData.append('admissionId', $('#@Html.IdFor(model => model.Id)').val());
+                        formData.append('admissionDocumentTypeId', admissionDocument.admissionDocumentTypeId);
+                        formData.append('file', file, file.name);
+                        formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+                        var request = new XMLHttpRequest();
+                        request.open('POST', '@Url.Action("UploadDocument", "Admission")');
+                        request.upload.onprogress = function (event) {
+                            progress(event.lengthComputable, event.loaded, event.total);
+                        };
+                        request.onload = function () {
+                            var response = JSON.parse(request.responseText || '{}');
+                            if (request.status >= 200 && request.status < 300 && response.success) {
+                                var $row = $('#' + rowId);
+                                $row.find('.admission-document-file-name').text(response.fileName);
+                                $row.find('.admission-document-preview').attr('href', response.previewUrl).show();
+                                $row.find('.admission-document-remove').attr('data-document-id', response.documentId).show();
+                                load(response.documentId);
+                            } else {
+                                error(response.message || 'Could not upload document.');
+                            }
+                        };
+                        request.onerror = function () {
+                            error('Could not upload document.');
+                        };
+                        request.send(formData);
+
+                        return {
+                            abort: function () {
+                                request.abort();
+                                abort();
+                            }
+                        };
+                    }
+                },
+                labelIdle: '@T("Common.FileUploader.DropFiles") / <span class="filepond--label-action">@T("Common.FileUploader.Browse")</span>',
+                labelFileProcessing: '@T("Common.FileUploader.Processing")'
+            });
+
+            documentPonds[admissionDocument.admissionDocumentTypeId] = pond;
+        }
+
+        function loadAdmissionDocuments(force) {
+            var admissionId = Number($('#@Html.IdFor(model => model.Id)').val());
+            if (!admissionId) {
+                showError('Please save the form no. and grade first.');
+                return;
+            }
+
+            if (!force && documentsLoadedForAdmissionId === admissionId) {
+                return;
+            }
+
+            $('#admission-documents-loading').show();
+            $('#admission-documents-empty').hide();
+            $('#admission-documents-list').empty();
+            clearDocumentPonds();
+
+            var postData = { admissionId: admissionId };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("RequiredDocuments", "Admission")',
+                data: postData,
+                success: function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    documentsLoadedForAdmissionId = admissionId;
+                    var documents = data.documents || [];
+                    $('#admission-documents-empty').toggle(documents.length === 0);
+                    documents.forEach(renderDocumentRow);
+                },
+                error: function () {
+                    showError('Could not load admission documents.');
+                },
+                complete: function () {
+                    $('#admission-documents-loading').hide();
+                }
+            });
+        }
+
         $('.admission-step-list button').on('click', function () {
             var step = Number($(this).data('admission-step'));
             if (step === 5 && !guardianIsOther()) {
@@ -216,14 +393,29 @@
         });
 
         $('#@Html.IdFor(model => model.FormNo)').on('change blur', function () {
-            loadByFormNo(2);
+            loadByFormNo(1);
+        });
+
+        $('#@Html.IdFor(model => model.GradeId)').on('change', function () {
+            documentsLoadedForAdmissionId = 0;
         });
 
         $('#@Html.IdFor(model => model.GuardianTypeId)').on('change', refreshGuardianStep);
 
         $('#admission-save-step').on('click', function () {
             if (currentStep === 1) {
-                loadByFormNo(2);
+                saveStep(1).done(function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    $('#@Html.IdFor(model => model.Id)').val(data.id);
+                    showStep(2);
+                }).fail(function () {
+                    showError('Could not save admission step.');
+                });
+
                 return;
             }
 
@@ -237,11 +429,11 @@
 
                 var nextStep = currentStep + 1;
                 if (currentStep === 4 && !guardianIsOther()) {
-                    showStep(4);
+                    showStep(6);
                     return;
                 }
 
-                if (nextStep <= 5) {
+                if (nextStep <= 6) {
                     showStep(nextStep);
                 }
             }).fail(function () {
@@ -251,6 +443,35 @@
 
         $('#admission-form').on('submit', function (event) {
             event.preventDefault();
+        });
+
+        $('#admission-documents-list').on('click', '.admission-document-remove', function () {
+            var $button = $(this);
+            var documentId = Number($button.attr('data-document-id'));
+            if (!documentId) {
+                return;
+            }
+
+            var postData = { id: documentId };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("DeleteDocument", "Admission")',
+                data: postData,
+                success: function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    loadAdmissionDocuments(true);
+                },
+                error: function () {
+                    showError('Could not remove document.');
+                }
+            });
         });
 
         var hashStep = Number((window.location.hash || '').replace('#step-', ''));

@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using Nop.Core;
 using Nop.Core.Domain.Admissions;
+using Nop.Core.Domain.GenericDropDowns;
 using Nop.Services.Admissions;
+using Nop.Services.Common;
+using Nop.Services.GenericDropDowns;
 using Nop.Services.Localization;
 using Nop.Services.Logging;
 using Nop.Services.Messages;
@@ -19,8 +23,11 @@ public partial class AdmissionController : BaseAdminController
     #region Fields
 
     protected readonly IAdmissionModelFactory _admissionModelFactory;
+    protected readonly IAdmissionDocumentService _admissionDocumentService;
     protected readonly IAdmissionService _admissionService;
+    protected readonly IAttachmentFileService _attachmentFileService;
     protected readonly ICustomerActivityService _customerActivityService;
+    protected readonly IGenericDropDownOptionService _genericDropDownOptionService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedEntityService _localizedEntityService;
     protected readonly INotificationService _notificationService;
@@ -33,8 +40,11 @@ public partial class AdmissionController : BaseAdminController
 
     public AdmissionController(
         IAdmissionModelFactory admissionModelFactory,
+        IAdmissionDocumentService admissionDocumentService,
         IAdmissionService admissionService,
+        IAttachmentFileService attachmentFileService,
         ICustomerActivityService customerActivityService,
+        IGenericDropDownOptionService genericDropDownOptionService,
         ILocalizationService localizationService,
         ILocalizedEntityService localizedEntityService,
         INotificationService notificationService,
@@ -42,8 +52,11 @@ public partial class AdmissionController : BaseAdminController
         IWorkContext workContext)
     {
         _admissionModelFactory = admissionModelFactory;
+        _admissionDocumentService = admissionDocumentService;
         _admissionService = admissionService;
+        _attachmentFileService = attachmentFileService;
         _customerActivityService = customerActivityService;
+        _genericDropDownOptionService = genericDropDownOptionService;
         _localizationService = localizationService;
         _localizedEntityService = localizedEntityService;
         _notificationService = notificationService;
@@ -110,6 +123,7 @@ public partial class AdmissionController : BaseAdminController
 
         return step switch
         {
+            1 when model.GradeId <= 0 => "Grade is required.",
             2 when string.IsNullOrWhiteSpace(model.FirstName) => "First name is required.",
             2 when string.IsNullOrWhiteSpace(model.LastName) => "Last name is required.",
             3 when string.IsNullOrWhiteSpace(model.FatherFullName) => "Father full name is required.",
@@ -122,6 +136,78 @@ public partial class AdmissionController : BaseAdminController
         };
     }
 
+    protected virtual bool IsAllowedAdmissionDocument(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return false;
+
+        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        var contentType = file.ContentType?.ToLowerInvariant();
+
+        return extension == ".pdf" ||
+            contentType?.StartsWith("image/") == true ||
+            new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tif", ".tiff" }.Contains(extension);
+    }
+
+    protected virtual async Task<IList<AdmissionRequiredDocumentModel>> PrepareAdmissionRequiredDocumentsAsync(Admission admission)
+    {
+        if (admission == null || admission.GradeId <= 0)
+            return new List<AdmissionRequiredDocumentModel>();
+
+        var requirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(gradeId: admission.GradeId);
+        var documents = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(admissionId: admission.Id);
+        var documentTypes = await _genericDropDownOptionService.GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity.AdmissionDocumentType);
+        var documentTypeNames = documentTypes.ToDictionary(option => option.Value, option => option.Text);
+
+        return requirements.Select(requirement =>
+        {
+            var document = documents.FirstOrDefault(item => item.AdmissionDocumentTypeId == requirement.AdmissionDocumentTypeId);
+
+            return new AdmissionRequiredDocumentModel
+            {
+                AdmissionDocumentTypeId = requirement.AdmissionDocumentTypeId,
+                AdmissionDocumentTypeName = documentTypeNames.TryGetValue(requirement.AdmissionDocumentTypeId, out var name)
+                    ? name
+                    : requirement.AdmissionDocumentTypeId.ToString(),
+                IsRequired = requirement.IsRequired,
+                AdmissionDocumentId = document?.Id ?? 0,
+                FileName = document?.FileName,
+                PreviewUrl = document != null ? Url.Action("PreviewDocument", "Admission", new { id = document.Id }) : null
+            };
+        }).ToList();
+    }
+
+    protected virtual async Task<string> ValidateAdmissionDocumentsAsync(Admission admission)
+    {
+        var requirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(gradeId: admission.GradeId);
+        var requiredDocumentTypeIds = requirements.Where(requirement => requirement.IsRequired).Select(requirement => requirement.AdmissionDocumentTypeId).ToList();
+
+        if (!requiredDocumentTypeIds.Any())
+            return string.Empty;
+
+        var documents = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(
+            admissionId: admission.Id,
+            admissionDocumentTypeIds: requiredDocumentTypeIds);
+
+        var uploadedDocumentTypeIds = documents.Select(document => document.AdmissionDocumentTypeId).Distinct().ToList();
+        var missingDocumentTypeIds = requiredDocumentTypeIds.Except(uploadedDocumentTypeIds).ToList();
+
+        if (!missingDocumentTypeIds.Any())
+            return string.Empty;
+
+        var documentTypes = await _genericDropDownOptionService.GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity.AdmissionDocumentType);
+        var missingDocumentNames = documentTypes
+            .Where(option => missingDocumentTypeIds.Contains(option.Value))
+            .Select(option => option.Text)
+            .ToList();
+
+        var missingDocuments = missingDocumentNames.Any()
+            ? missingDocumentNames
+            : missingDocumentTypeIds.Select(id => id.ToString()).ToList();
+
+        return $"Please upload required document(s): {string.Join(", ", missingDocuments)}.";
+    }
+
     protected virtual void ApplyAdmissionStep(Admission admission, AdmissionModel model, int step)
     {
         admission.FormNo = model.FormNo?.Trim();
@@ -130,6 +216,7 @@ public partial class AdmissionController : BaseAdminController
         {
             case 1:
                 admission.StatusId = model.StatusId;
+                admission.GradeId = model.GradeId;
                 break;
             case 2:
                 admission.StatusId = model.StatusId;
@@ -262,6 +349,13 @@ public partial class AdmissionController : BaseAdminController
         if (duplicateAdmission != null && duplicateAdmission.Id != admission.Id)
             return Json(new { success = false, message = "Another admission already exists with this form no." });
 
+        if (step == 6)
+        {
+            var documentError = await ValidateAdmissionDocumentsAsync(admission);
+            if (!string.IsNullOrWhiteSpace(documentError))
+                return Json(new { success = false, message = documentError });
+        }
+
         ApplyAdmissionStep(admission, model, step);
         await TouchAdmissionAsync(admission);
         await _admissionService.UpdateAdmissionAsync(admission);
@@ -272,6 +366,106 @@ public partial class AdmissionController : BaseAdminController
             id = admission.Id,
             editUrl = Url.Action("Edit", new { id = admission.Id })
         });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> RequiredDocuments(int admissionId)
+    {
+        var admission = await _admissionService.GetAdmissionByIdAsync(admissionId);
+        if (admission == null)
+            return Json(new { success = false, message = "Admission not found." });
+
+        return Json(new
+        {
+            success = true,
+            documents = await PrepareAdmissionRequiredDocumentsAsync(admission)
+        });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> UploadDocument(int admissionId, int admissionDocumentTypeId, IFormFile file)
+    {
+        var admission = await _admissionService.GetAdmissionByIdAsync(admissionId);
+        if (admission == null)
+            return Json(new { success = false, message = "Admission not found." });
+
+        if (!IsAllowedAdmissionDocument(file))
+            return Json(new { success = false, message = "Only image files and PDF documents are allowed." });
+
+        var requirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(
+            gradeId: admission.GradeId,
+            admissionDocumentTypeId: admissionDocumentTypeId);
+
+        if (!requirements.Any())
+            return Json(new { success = false, message = "Document type is not required for the selected grade." });
+
+        var existingDocuments = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(
+            admissionId: admission.Id,
+            admissionDocumentTypeId: admissionDocumentTypeId);
+
+        foreach (var existingDocument in existingDocuments)
+        {
+            await _attachmentFileService.DeleteAttachmentAsync(existingDocument.FilePath);
+            await _admissionDocumentService.DeleteAdmissionDocumentAsync(existingDocument);
+        }
+
+        var documentTypes = await _genericDropDownOptionService.GetGenericDropDownOptionsByEntityAsync(GenericDropdownEntity.AdmissionDocumentType);
+        var documentTypeName = documentTypes.FirstOrDefault(option => option.Value == admissionDocumentTypeId)?.Text
+            ?? admissionDocumentTypeId.ToString();
+
+        var savedFile = await _attachmentFileService.SaveAttachmentAsync(file, "Admission", admission.Id, documentTypeName);
+        var admissionDocument = new AdmissionDocument
+        {
+            AdmissionId = admission.Id,
+            AdmissionDocumentTypeId = admissionDocumentTypeId,
+            FileName = savedFile.FileName,
+            FilePath = savedFile.FilePath,
+            Deleted = false
+        };
+
+        await _admissionDocumentService.InsertAdmissionDocumentAsync(admissionDocument);
+
+        return Json(new
+        {
+            success = true,
+            documentId = admissionDocument.Id,
+            fileName = admissionDocument.FileName,
+            previewUrl = Url.Action("PreviewDocument", "Admission", new { id = admissionDocument.Id })
+        });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> DeleteDocument(int id)
+    {
+        var admissionDocument = await _admissionDocumentService.GetAdmissionDocumentByIdAsync(id);
+        if (admissionDocument == null)
+            return Json(new { success = false, message = "Document not found." });
+
+        await _attachmentFileService.DeleteAttachmentAsync(admissionDocument.FilePath);
+        await _admissionDocumentService.DeleteAdmissionDocumentAsync(admissionDocument);
+
+        return Json(new { success = true });
+    }
+
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> PreviewDocument(int id)
+    {
+        var admissionDocument = await _admissionDocumentService.GetAdmissionDocumentByIdAsync(id);
+        if (admissionDocument == null)
+            return RedirectToAction("List");
+
+        var physicalPath = _attachmentFileService.GetAttachmentPhysicalPath(admissionDocument.FilePath);
+        if (!System.IO.File.Exists(physicalPath))
+            return NotFound();
+
+        var contentTypeProvider = new Microsoft.AspNetCore.StaticFiles.FileExtensionContentTypeProvider();
+        if (!contentTypeProvider.TryGetContentType(physicalPath, out var contentType))
+            contentType = "application/octet-stream";
+
+        return PhysicalFile(physicalPath, contentType);
     }
 
     [HttpPost]

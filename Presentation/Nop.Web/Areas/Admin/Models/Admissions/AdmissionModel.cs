@@ -21,6 +21,8 @@ public partial record AdmissionModel : BaseNopEntityModel
         AvailableGuardianTypes = new List<SelectListItem>();
         AvailableQualifications = new List<SelectListItem>();
         AvailableProfessions = new List<SelectListItem>();
+        AvailableGrades = new List<SelectListItem>();
+        RequiredDocuments = new List<AdmissionRequiredDocumentModel>();
     }
 
     #endregion
@@ -32,6 +34,9 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.StatusId")]
     public int StatusId { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.GradeId")]
+    public int GradeId { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FirstName")]
     public string FirstName { get; set; }
@@ -253,7 +258,9 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     public IList<SelectListItem> AvailableProfessions { get; set; }
 
+    public IList<SelectListItem> AvailableGrades { get; set; }
 
+    public IList<AdmissionRequiredDocumentModel> RequiredDocuments { get; set; }
 
     #endregion
 }

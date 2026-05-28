@@ -1,6 +1,7 @@
 using Nop.Core.Domain.Admissions;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Services.Admissions;
+using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Admissions;
@@ -14,6 +15,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     #region Fields
 
     protected readonly IAdmissionService _admissionService;
+    protected readonly IGradeService _gradeService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
     protected readonly IStoreMappingSupportedModelFactory _storeMappingSupportedModelFactory;
@@ -24,12 +26,14 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     #region Ctor
 
     public AdmissionModelFactory(IAdmissionService admissionService,
+        IGradeService gradeService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
         IStoreMappingSupportedModelFactory storeMappingSupportedModelFactory,
         IBaseAdminModelFactory baseAdminModelFactory)
     {
         _admissionService = admissionService;
+        _gradeService = gradeService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
         _storeMappingSupportedModelFactory = storeMappingSupportedModelFactory;
@@ -58,6 +62,24 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableGuardianTypes, GenericDropdownEntity.GuardianType);
         await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableQualifications, GenericDropdownEntity.Qualification);
         await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableProfessions, GenericDropdownEntity.Profession);
+
+        model.AvailableGrades.Clear();
+        model.AvailableGrades.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+        {
+            Text = await _localizationService.GetResourceAsync("Admin.Common.Select"),
+            Value = "0"
+        });
+
+        var grades = (await _gradeService.GetAllGradesAsync()).OrderBy(grade => grade.Name);
+        foreach (var grade in grades)
+        {
+            model.AvailableGrades.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Text = grade.Name,
+                Value = grade.Id.ToString(),
+                Selected = grade.Id == model.GradeId
+            });
+        }
     }
 
     protected virtual void PrepareAdmissionDisplayNames(AdmissionModel model)
