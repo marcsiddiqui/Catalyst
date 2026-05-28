@@ -18,6 +18,10 @@
             </small>
         </h1>
         <div class="float-right">
+            <button type="button" class="btn btn-default" onclick="javascript:OpenWindow('@(Url.Action("CopyGradeSetupPopup", "Grade", new { gradeId = Model.Id }))', 800, 520, true); return false;">
+                <i class="fas fa-copy"></i>
+                @T("Admin.Grade.CopySetup.Button")
+            </button>
             <button type="submit" name="save" class="btn btn-primary">
                 <i class="far fa-floppy-disk"></i>
                 @T("Admin.Common.Save")

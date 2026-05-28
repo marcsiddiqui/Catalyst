@@ -18,6 +18,7 @@ public partial record GradeModel : BaseNopEntityModel, ILocalizedModel<GradeLoca
         AvailableStores = new List<SelectListItem>();
         GradeSubjectSearchModel = new GradeSubjectSearchModel();
         AdmissionGradeDocumentRequirementSearchModel = new AdmissionGradeDocumentRequirementSearchModel();
+        GradeCopySetupModel = new GradeCopySetupModel();
 
     }
 
@@ -53,6 +54,8 @@ public partial record GradeModel : BaseNopEntityModel, ILocalizedModel<GradeLoca
     public GradeSubjectSearchModel GradeSubjectSearchModel { get; set; }
 
     public AdmissionGradeDocumentRequirementSearchModel AdmissionGradeDocumentRequirementSearchModel { get; set; }
+
+    public GradeCopySetupModel GradeCopySetupModel { get; set; }
 
     #endregion
 }

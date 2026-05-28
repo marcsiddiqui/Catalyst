@@ -21440,4 +21440,22 @@
   <LocaleResource Name="Wishlist.YourWishlistURL">
     <Value>Your wishlist URL for sharing</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup">
+    <Value>Copy grade setup</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup.Button">
+    <Value>Copy from other grade</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup.EditModeWarning">
+    <Value>You are updating an existing grade. Copying will first delete the selected setup data on this grade, then copy it from the selected grade.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup.Fields.FromGradeId">
+    <Value>Copy from grade</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup.Fields.CopyGradeSubjectMapping">
+    <Value>Copy grade subject mapping</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Grade.CopySetup.Fields.CopyAdmissionDocumentRequirements">
+    <Value>Copy admission document requirements</Value>
+  </LocaleResource>
 </Language>

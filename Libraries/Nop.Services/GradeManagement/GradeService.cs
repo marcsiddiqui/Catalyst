@@ -162,22 +162,22 @@ public partial class GradeService : IGradeService
                 query = query.Where(x => ids.Contains(x.Id));
 
             if (gradeId > 0)
-                query = query.Where(x => x.Id == gradeId);
+                query = query.Where(x => x.GradeId == gradeId);
 
             if (gradeIds != null && gradeIds.Any())
-                query = query.Where(x => ids.Contains(x.GradeId));
+                query = query.Where(x => gradeIds.Contains(x.GradeId));
 
             if (subjectId > 0)
-                query = query.Where(x => x.Id == subjectId);
+                query = query.Where(x => x.SubjectId == subjectId);
 
             if (subjectIds != null && subjectIds.Any())
-                query = query.Where(x => ids.Contains(x.SubjectId));
+                query = query.Where(x => subjectIds.Contains(x.SubjectId));
             
             if (sectionId > 0)
-                query = query.Where(x => x.Id == sectionId);
+                query = query.Where(x => x.SectionId == sectionId);
 
             if (sectionIds != null && sectionIds.Any())
-                query = query.Where(x => ids.Contains(x.SectionId.Value));
+                query = query.Where(x => x.SectionId.HasValue && sectionIds.Contains(x.SectionId.Value));
 
             query = query.WhereBoolean(x => x.Deleted, deleted);
 

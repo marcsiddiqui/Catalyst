@@ -1,0 +1,55 @@
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@model GradeCopySetupModel
+
+@{
+    Layout = "_AdminPopupLayout";
+    ViewBag.PageTitle = T("Admin.Grade.CopySetup").Text;
+}
+
+<form id="copy-grade-setup-form">
+    @Html.AntiForgeryToken()
+    <section class="content">
+        <div class="container-fluid">
+            <div class="content-header clearfix">
+                <h1 class="float-left">
+                    @T("Admin.Grade.CopySetup")
+                </h1>
+                <div class="float-right">
+                    <button type="button" name="save" class="btn btn-primary" onclick="saveCopyGradeSetup()">
+                        <i class="far fa-floppy-disk"></i>
+                        @T("Admin.Common.Save")
+                    </button>
+                </div>
+            </div>
+            @await Html.PartialAsync("_CopyGradeSetup", Model)
+        </div>
+    </section>
+</form>
+
+<script>
+    function saveCopyGradeSetup() {
+        $.ajax({
+            url: '@Url.Action("CopyGradeSetup", "Grade")',
+            type: 'POST',
+            data: $('#copy-grade-setup-form').serialize(),
+            success: function (response) {
+                var result = response.Result || response.result;
+                if (result === 'success' || result === true) {
+                    if (window.opener && !window.opener.closed) {
+                        window.opener.location.reload();
+                    }
+
+                    setTimeout(function () {
+                        window.close();
+                    }, 100);
+                } else {
+                    var errors = response.Errors || response.errors || ['An error occurred.'];
+                    alert(errors.join('\n'));
+                }
+            },
+            error: function (xhr) {
+                alert('Request failed: ' + xhr.statusText);
+            }
+        });
+    }
+</script>

@@ -67,6 +67,33 @@ public partial class GradeModelFactory : IGradeModelFactory
             items.Add(item);
     }
 
+    public virtual async Task<GradeCopySetupModel> PrepareGradeCopySetupModelAsync(GradeCopySetupModel model, int toGradeId = 0, bool isEditMode = false)
+    {
+        ArgumentNullException.ThrowIfNull(model);
+
+        model.ToGradeId = toGradeId;
+        model.IsEditMode = isEditMode;
+        model.AvailableGrades.Clear();
+        model.AvailableGrades.Add(new SelectListItem
+        {
+            Text = await _localizationService.GetResourceAsync("Admin.Common.Select"),
+            Value = "0"
+        });
+
+        var grades = (await _gradeService.GetAllGradesAsync()).Where(grade => grade.Id != toGradeId).OrderBy(grade => grade.Name);
+        foreach (var grade in grades)
+        {
+            model.AvailableGrades.Add(new SelectListItem
+            {
+                Text = grade.Name,
+                Value = grade.Id.ToString(),
+                Selected = grade.Id == model.FromGradeId
+            });
+        }
+
+        return model;
+    }
+
     #endregion
 
     #region Methods
@@ -140,6 +167,7 @@ public partial class GradeModelFactory : IGradeModelFactory
 
         model.GradeSubjectSearchModel.GradeId = model.Id;
         model.AdmissionGradeDocumentRequirementSearchModel.GradeId = model.Id;
+        await PrepareGradeCopySetupModelAsync(model.GradeCopySetupModel, model.Id, model.Id > 0);
 
         return model;
     }
@@ -153,7 +181,7 @@ public partial class GradeModelFactory : IGradeModelFactory
         ArgumentNullException.ThrowIfNull(searchModel);
 
         //get grades
-        var gradeSubjectMappings = (await _gradeService.GetAllGradeSubjectMappingsAsync()).ToPagedList(searchModel);
+        var gradeSubjectMappings = (await _gradeService.GetAllGradeSubjectMappingsAsync(gradeId: searchModel.GradeId)).ToPagedList(searchModel);
         var sujects = (await _subjectService.GetAllSubjectsAsync(ids: gradeSubjectMappings.Select(gsm => gsm.SubjectId))).ToList();
         var sections = (await _sectionService.GetAllSectionsAsync(ids: gradeSubjectMappings.Select(gsm => gsm.SectionId ?? 0))).ToList();
 

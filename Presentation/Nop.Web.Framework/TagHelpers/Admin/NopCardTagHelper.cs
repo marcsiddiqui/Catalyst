@@ -77,11 +77,25 @@ public partial class NopCardTagHelper : TagHelper
         {
             card.AddCssClass("advanced-setting");
         }
-        card.Attributes.Add("data-hideAttribute", context.AllAttributes[HIDE_BLOCK_ATTRIBUTE_NAME_ATTRIBUTE_NAME].Value.ToString());
 
-        if (context.AllAttributes[IS_HIDE_ATTRIBUTE_NAME].Value.Equals(true))
+        if (context.AllAttributes.ContainsName(HIDE_BLOCK_ATTRIBUTE_NAME_ATTRIBUTE_NAME))
         {
-            card.AddCssClass("collapsed-card");
+            var hideAttributeValue = context.AllAttributes[HIDE_BLOCK_ATTRIBUTE_NAME_ATTRIBUTE_NAME]?.Value;
+
+            if (hideAttributeValue != null)
+            {
+                card.Attributes.Add("data-hideAttribute", hideAttributeValue.ToString());
+            }
+        }
+
+        if (context.AllAttributes.ContainsName(IS_HIDE_ATTRIBUTE_NAME))
+        {
+            var isHideValue = context.AllAttributes[IS_HIDE_ATTRIBUTE_NAME]?.Value;
+
+            if (isHideValue is bool isHide && isHide)
+            {
+                card.AddCssClass("collapsed-card");
+            }
         }
 
         //create card heading and append title and icon to it

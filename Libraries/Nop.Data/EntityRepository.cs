@@ -461,7 +461,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity)
         {
             var _workContext = EngineContext.Current.Resolve<IWorkContext>();
             var customer = await _workContext.GetCurrentCustomerAsync();
@@ -469,6 +469,9 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
             foreach (var entity in entities)
             {
+                if (entity is not LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                    continue;
+
                 logInfoSupportedBaseEntity.CreatedOnUtc = now;
                 logInfoSupportedBaseEntity.CreatedBy = customer.Id;
             }
@@ -496,7 +499,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
         using var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
 
-        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity)
         {
             var _workContext = EngineContext.Current.Resolve<IWorkContext>();
             var customer = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult();
@@ -504,6 +507,9 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
             foreach (var entity in entities)
             {
+                if (entity is not LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                    continue;
+
                 logInfoSupportedBaseEntity.CreatedOnUtc = now;
                 logInfoSupportedBaseEntity.CreatedBy = customer.Id;
             }
@@ -594,7 +600,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         if (!entities.Any())
             return;
 
-        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity)
         {
             var _workContext = EngineContext.Current.Resolve<IWorkContext>();
             var customer = await _workContext.GetCurrentCustomerAsync();
@@ -602,6 +608,9 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
             foreach (var entity in entities)
             {
+                if (entity is not LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                    continue;
+
                 logInfoSupportedBaseEntity.UpdatedOnUtc = now;
                 logInfoSupportedBaseEntity.UpdatedBy = customer.Id;
             }
@@ -629,7 +638,7 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         if (!entities.Any())
             return;
 
-        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+        if (entities.FirstOrDefault() is LogInfoSupportedBaseEntity)
         {
             var _workContext = EngineContext.Current.Resolve<IWorkContext>();
             var customer = _workContext.GetCurrentCustomerAsync().GetAwaiter().GetResult();
@@ -637,6 +646,9 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
 
             foreach (var entity in entities)
             {
+                if (entity is not LogInfoSupportedBaseEntity logInfoSupportedBaseEntity)
+                    continue;
+
                 logInfoSupportedBaseEntity.UpdatedOnUtc = now;
                 logInfoSupportedBaseEntity.UpdatedBy = customer.Id;
             }

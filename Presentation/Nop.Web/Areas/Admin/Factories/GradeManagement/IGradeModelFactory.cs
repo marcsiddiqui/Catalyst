@@ -18,4 +18,6 @@ public partial interface IGradeModelFactory
     Task<GradeSubjectMappingModel> PrepareGradeSubjectMappingModelAsync(GradeSubjectMappingModel model, GradeSubjectMapping grade, bool excludeProperties = false);
 
     #endregion
+
+    Task<GradeCopySetupModel> PrepareGradeCopySetupModelAsync(GradeCopySetupModel model, int toGradeId = 0, bool isEditMode = false);
 }

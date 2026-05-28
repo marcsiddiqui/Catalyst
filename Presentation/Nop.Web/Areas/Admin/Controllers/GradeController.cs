@@ -27,6 +27,12 @@ namespace Nop.Web.Areas.Admin.Controllers;
 
 public partial class GradeController : BaseAdminController
 {
+    protected static partial class GradeCopySetupItems
+    {
+        public const string GradeSubjectMapping = "GradeSubjectMapping";
+        public const string AdmissionDocumentRequirements = "AdmissionDocumentRequirements";
+    }
+
     #region Fields
 
     protected readonly IGradeModelFactory _gradeModelFactory;
@@ -105,6 +111,98 @@ public partial class GradeController : BaseAdminController
         }
     }
 
+    protected virtual IList<string> GetSelectedGradeCopySetupItems(GradeCopySetupModel model)
+    {
+        var items = new List<string>();
+
+        if (model.CopyGradeSubjectMapping)
+            items.Add(GradeCopySetupItems.GradeSubjectMapping);
+
+        if (model.CopyAdmissionDocumentRequirements)
+            items.Add(GradeCopySetupItems.AdmissionDocumentRequirements);
+
+        return items;
+    }
+
+    protected virtual async Task<IList<string>> CopyGradeSetupAsync(int fromGradeId, int toGradeId, IList<string> itemsToCopy, bool replaceExisting)
+    {
+        var errors = new List<string>();
+
+        if (fromGradeId <= 0)
+            errors.Add("Please select a grade to copy from.");
+
+        if (toGradeId <= 0)
+            errors.Add("Destination grade is required.");
+
+        if (fromGradeId == toGradeId)
+            errors.Add("Source and destination grades must be different.");
+
+        if (itemsToCopy == null || !itemsToCopy.Any())
+            errors.Add("Please select at least one item to copy.");
+
+        if (errors.Any())
+            return errors;
+
+        var fromGrade = await _gradeService.GetGradeByIdAsync(fromGradeId);
+        var toGrade = await _gradeService.GetGradeByIdAsync(toGradeId);
+
+        if (fromGrade == null)
+            errors.Add("Source grade not found.");
+
+        if (toGrade == null)
+            errors.Add("Destination grade not found.");
+
+        if (errors.Any())
+            return errors;
+
+        if (itemsToCopy.Contains(GradeCopySetupItems.GradeSubjectMapping))
+        {
+            if (replaceExisting)
+            {
+                var existingMappings = await _gradeService.GetAllGradeSubjectMappingsAsync(gradeId: toGradeId);
+                if (existingMappings.Any())
+                    await _gradeService.DeleteGradeSubjectMappingAsync(existingMappings);
+            }
+
+            var sourceMappings = await _gradeService.GetAllGradeSubjectMappingsAsync(gradeId: fromGradeId);
+            var copiedMappings = sourceMappings.Select(mapping => new GradeSubjectMapping
+            {
+                GradeId = toGradeId,
+                SubjectId = mapping.SubjectId,
+                SectionId = mapping.SectionId,
+                LabFee = mapping.LabFee,
+                Deleted = false
+            }).ToList();
+
+            if (copiedMappings.Any())
+                await _gradeService.InsertGradeSubjectMappingAsync(copiedMappings);
+        }
+
+        if (itemsToCopy.Contains(GradeCopySetupItems.AdmissionDocumentRequirements))
+        {
+            if (replaceExisting)
+            {
+                var existingRequirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(gradeId: toGradeId);
+                if (existingRequirements.Any())
+                    await _admissionService.DeleteAdmissionGradeDocumentRequirementAsync(existingRequirements);
+            }
+
+            var sourceRequirements = await _admissionService.GetAllAdmissionGradeDocumentRequirementsAsync(gradeId: fromGradeId);
+            var copiedRequirements = sourceRequirements.Select(requirement => new AdmissionGradeDocumentRequirement
+            {
+                GradeId = toGradeId,
+                AdmissionDocumentTypeId = requirement.AdmissionDocumentTypeId,
+                IsRequired = requirement.IsRequired,
+                Deleted = false
+            }).ToList();
+
+            if (copiedRequirements.Any())
+                await _admissionService.InsertAdmissionGradeDocumentRequirementAsync(copiedRequirements);
+        }
+
+        return errors;
+    }
+
     #endregion
 
     #region Grades
@@ -161,6 +259,14 @@ public partial class GradeController : BaseAdminController
 
             //Stores
             await _storeMappingService.SaveStoreMappingsAsync(grade, model.SelectedStoreIds);
+
+            var copyItems = GetSelectedGradeCopySetupItems(model.GradeCopySetupModel);
+            if (model.GradeCopySetupModel.FromGradeId > 0 || copyItems.Any())
+            {
+                var copyErrors = await CopyGradeSetupAsync(model.GradeCopySetupModel.FromGradeId, grade.Id, copyItems, false);
+                foreach (var copyError in copyErrors)
+                    _notificationService.WarningNotification(copyError);
+            }
 
             _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.GradeManagement.Grades.Added"));
 
@@ -293,6 +399,35 @@ public partial class GradeController : BaseAdminController
         }
 
         return Json(new { Result = true });
+    }
+
+    #endregion
+
+    #region GradeCopySetup
+
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> CopyGradeSetupPopup(int gradeId)
+    {
+        var grade = await _gradeService.GetGradeByIdAsync(gradeId);
+        if (grade == null)
+            return RedirectToAction("List");
+
+        var model = await _gradeModelFactory.PrepareGradeCopySetupModelAsync(new GradeCopySetupModel(), gradeId, true);
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [CheckPermission(StandardPermission.GradeManagement.MANAGE_GRADES)]
+    public virtual async Task<IActionResult> CopyGradeSetup(GradeCopySetupModel model)
+    {
+        var errors = await CopyGradeSetupAsync(model.FromGradeId, model.ToGradeId, GetSelectedGradeCopySetupItems(model), true);
+
+        if (errors.Any())
+            return Json(new { Result = "error", Errors = errors });
+
+        return Json(new { Result = "success" });
     }
 
     #endregion

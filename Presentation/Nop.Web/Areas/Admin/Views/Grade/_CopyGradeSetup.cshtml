@@ -1,0 +1,65 @@
+@using Nop.Web.Areas.Admin.Models.GradeManagement
+@model GradeCopySetupModel
+
+@{
+    var fieldPrefix = Model.IsEditMode ? string.Empty : $"{nameof(GradeModel.GradeCopySetupModel)}.";
+    var idPrefix = Model.IsEditMode ? string.Empty : $"{nameof(GradeModel.GradeCopySetupModel)}_";
+
+    var fromGradeIdName = $"{fieldPrefix}{nameof(Model.FromGradeId)}";
+    var fromGradeIdId = $"{idPrefix}{nameof(Model.FromGradeId)}";
+    var toGradeIdName = $"{fieldPrefix}{nameof(Model.ToGradeId)}";
+    var isEditModeName = $"{fieldPrefix}{nameof(Model.IsEditMode)}";
+    var copyGradeSubjectMappingName = $"{fieldPrefix}{nameof(Model.CopyGradeSubjectMapping)}";
+    var copyGradeSubjectMappingId = $"{idPrefix}{nameof(Model.CopyGradeSubjectMapping)}";
+    var copyAdmissionDocumentRequirementsName = $"{fieldPrefix}{nameof(Model.CopyAdmissionDocumentRequirements)}";
+    var copyAdmissionDocumentRequirementsId = $"{idPrefix}{nameof(Model.CopyAdmissionDocumentRequirements)}";
+}
+
+<div class="card card-default">
+    <div class="card-header">
+        @T("Admin.Grade.CopySetup")
+    </div>
+    <div class="card-body">
+        @if (Model.IsEditMode)
+        {
+            <div class="alert alert-warning">
+                @T("Admin.Grade.CopySetup.EditModeWarning")
+            </div>
+        }
+
+        <input name="@toGradeIdName" value="@Model.ToGradeId" type="hidden" />
+        <input name="@isEditModeName" value="@Model.IsEditMode.ToString().ToLowerInvariant()" type="hidden" />
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="FromGradeId" />
+            </div>
+            <div class="col-md-9">
+                <select class="form-control" id="@fromGradeIdId" name="@fromGradeIdName" asp-items="Model.AvailableGrades"></select>
+                <span asp-validation-for="FromGradeId"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="CopyGradeSubjectMapping" />
+            </div>
+            <div class="col-md-9">
+                <input id="@copyGradeSubjectMappingId" name="@copyGradeSubjectMappingName" type="checkbox" value="true" checked="@Model.CopyGradeSubjectMapping" />
+                <input name="@copyGradeSubjectMappingName" type="hidden" value="false" />
+                <span asp-validation-for="CopyGradeSubjectMapping"></span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-3">
+                <nop-label asp-for="CopyAdmissionDocumentRequirements" />
+            </div>
+            <div class="col-md-9">
+                <input id="@copyAdmissionDocumentRequirementsId" name="@copyAdmissionDocumentRequirementsName" type="checkbox" value="true" checked="@Model.CopyAdmissionDocumentRequirements" />
+                <input name="@copyAdmissionDocumentRequirementsName" type="hidden" value="false" />
+                <span asp-validation-for="CopyAdmissionDocumentRequirements"></span>
+            </div>
+        </div>
+    </div>
+</div>

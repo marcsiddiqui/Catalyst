@@ -1,16 +1,20 @@
 @using Nop.Web.Areas.Admin.Models.GradeManagement
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @model GradeModel
 
 @{
     var customer = await workContext.GetCurrentCustomerAsync();
     const string hideInfoBlockAttributeName = "GradePage.HideInfoBlock";
-    var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+    var hideInfoBlock = false; //await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
 
     const string hideGradeSubjectMappingBlockAttributeName = "GradePage.GradeSubjectMappingBlock";
-    var hideGradeSubjectMappingBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideGradeSubjectMappingBlockAttributeName);
+    var hideGradeSubjectMappingBlock = false; //await genericAttributeService.GetAttributeAsync<bool>(customer, hideGradeSubjectMappingBlockAttributeName);
 
     const string hideAdmissionDocumentRequirementBlockAttributeName = "GradePage.AdmissionDocumentRequirementBlock";
-    var hideAdmissionDocumentRequirementBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideAdmissionDocumentRequirementBlockAttributeName);
+    var hideAdmissionDocumentRequirementBlock = false; // await genericAttributeService.GetAttributeAsync<bool>(customer, hideAdmissionDocumentRequirementBlockAttributeName);
+
+    const string hideCopyFromOtherGradeBlockAttributeName = "GradePage.CopyFromOtherGrade";
+    var hideCopyFromOtherGradeBlock = false; // await genericAttributeService.GetAttributeAsync<bool>(customer, hideAdmissionDocumentRequirementBlockAttributeName);
 }
 
 <div asp-validation-summary="All"></div>
@@ -22,6 +26,12 @@
             <nop-cards id="grade-cards">
                 <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Info")" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfoBlock" asp-advanced="false">@await Html.PartialAsync("_CreateOrUpdate.Info", Model)</nop-card>
             </nop-cards>
+            @if (Model.Id == 0)
+            {
+                <nop-cards id="grade-cards">
+                    <nop-card asp-name="grade-copy-setup" asp-icon="fas fa-copy" asp-title="@T("Admin.Grade.CopySetup")" asp-hide-block-attribute-name="@hideCopyFromOtherGradeBlockAttributeName" asp-hide="@hideCopyFromOtherGradeBlock" asp-advanced="false">@await Html.PartialAsync("_CopyGradeSetup", Model.GradeCopySetupModel)</nop-card>
+                </nop-cards>
+            }
             <nop-cards id="grade-cards">
                 <nop-card asp-name="grade-info" asp-icon="fas fa-info" asp-title="@T("Admin.GradeManagement.Grades.Subject.Mapping")" asp-hide-block-attribute-name="@hideGradeSubjectMappingBlockAttributeName" asp-hide="@hideGradeSubjectMappingBlock" asp-advanced="false">@await Html.PartialAsync("_GradeSubjectMappngScreen", Model)</nop-card>
             </nop-cards>
