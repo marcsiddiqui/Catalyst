@@ -19,4 +19,5 @@ public enum GenericDropdownEntity
     BirthCity = 11,
     GuardianType = 12,
     Profession = 13,
+    AdmissionDocumentType = 14,
 }
