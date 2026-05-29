@@ -10,6 +10,8 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 
     public int SRN { get; set; }
 
+    public int AcademicYearId { get; set; }
+
     public int StatusId { get; set; }
 
     public int GradeId { get; set; }

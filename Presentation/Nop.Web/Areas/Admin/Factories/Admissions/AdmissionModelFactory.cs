@@ -1,6 +1,7 @@
 using Nop.Core.Domain.Admissions;
 using Nop.Core.Domain.GenericDropDowns;
 using Nop.Services.Admissions;
+using Nop.Services.AcademicYears;
 using Nop.Services.GradeManagement;
 using Nop.Services.Localization;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
@@ -15,6 +16,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     #region Fields
 
     protected readonly IAdmissionService _admissionService;
+    protected readonly IAcademicYearService _academicYearService;
     protected readonly IGradeService _gradeService;
     protected readonly ILocalizationService _localizationService;
     protected readonly ILocalizedModelFactory _localizedModelFactory;
@@ -26,6 +28,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     #region Ctor
 
     public AdmissionModelFactory(IAdmissionService admissionService,
+        IAcademicYearService academicYearService,
         IGradeService gradeService,
         ILocalizationService localizationService,
         ILocalizedModelFactory localizedModelFactory,
@@ -33,6 +36,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         IBaseAdminModelFactory baseAdminModelFactory)
     {
         _admissionService = admissionService;
+        _academicYearService = academicYearService;
         _gradeService = gradeService;
         _localizationService = localizationService;
         _localizedModelFactory = localizedModelFactory;
@@ -63,6 +67,21 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
         await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableQualifications, GenericDropdownEntity.Qualification);
         await _baseAdminModelFactory.PrepareStaticDropDownAsync(model.AvailableProfessions, GenericDropdownEntity.Profession);
 
+        var academicYears = await _academicYearService.GetAllAcademicYearsAsync();
+        if (model.Id == 0 && model.AcademicYearId <= 0)
+        {
+            var today = DateTime.Now.Date;
+            var currentAcademicYear = academicYears
+                .FirstOrDefault(academicYear => academicYear.StartDate.Date <= today && academicYear.EndDate.Date >= today);
+
+            model.AcademicYearId = currentAcademicYear?.Id ?? 0;
+        }
+
+        model.AvailableAcademicYears.Clear();
+        await _baseAdminModelFactory.PrepareAvailableYearsAsync(model.AvailableAcademicYears);
+        foreach (var academicYearItem in model.AvailableAcademicYears)
+            academicYearItem.Selected = academicYearItem.Value == model.AcademicYearId.ToString();
+
         model.AvailableGrades.Clear();
         model.AvailableGrades.Add(new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
         {
@@ -85,6 +104,7 @@ public partial class AdmissionModelFactory : IAdmissionModelFactory
     protected virtual void PrepareAdmissionDisplayNames(AdmissionModel model)
     {
         model.Status = GetSelectedText(model.AvailableAdmissionStatuses, model.StatusId);
+        model.AcademicYear = GetSelectedText(model.AvailableAcademicYears, model.AcademicYearId);
         model.PreviousSchool = GetSelectedText(model.AvailablePreviousSchools, model.PreviousSchoolId);
         model.BirthCityName = GetSelectedText(model.AvailableBirthCities, model.BirthCity);
         model.MontherTongueName = GetSelectedText(model.AvailableMotherTongues, model.MontherTongue);

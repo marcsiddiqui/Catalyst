@@ -21464,6 +21464,9 @@
   <LocaleResource Name="Admin.Configuration.Admissions.Fields.SRN">
     <Value>SRN</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.AcademicYearId">
+    <Value>Academic year</Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.Configuration.Admissions.Fields.Address">
     <Value>Address</Value>
   </LocaleResource>
@@ -21490,6 +21493,9 @@
   </LocaleResource>
   <LocaleResource Name="Admin.Admissions.Admissions.Fields.SRN">
     <Value>SRN</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.AcademicYearId">
+    <Value>Academic year</Value>
   </LocaleResource>
   <LocaleResource Name="Admin.Admissions.Admissions.Fields.Address">
     <Value>Address</Value>

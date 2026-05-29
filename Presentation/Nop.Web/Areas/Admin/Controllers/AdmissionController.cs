@@ -252,6 +252,7 @@ public partial class AdmissionController : BaseAdminController
         {
             case 1:
                 admission.StatusId = model.StatusId;
+                admission.AcademicYearId = model.AcademicYearId;
                 admission.GradeId = model.GradeId;
                 break;
             case 2:

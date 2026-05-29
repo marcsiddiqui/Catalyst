@@ -22,6 +22,7 @@ public partial record AdmissionModel : BaseNopEntityModel
         AvailableQualifications = new List<SelectListItem>();
         AvailableProfessions = new List<SelectListItem>();
         AvailableGrades = new List<SelectListItem>();
+        AvailableAcademicYears = new List<SelectListItem>();
         RequiredDocuments = new List<AdmissionRequiredDocumentModel>();
     }
 
@@ -34,6 +35,9 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.SRN")]
     public int SRN { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.AcademicYearId")]
+    public int AcademicYearId { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.StatusId")]
     public int StatusId { get; set; }
@@ -232,6 +236,8 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     public string Status { get; set; }
 
+    public string AcademicYear { get; set; }
+
     public string PreviousSchool { get; set; }
 
     public string BirthCityName { get; set; }
@@ -271,6 +277,8 @@ public partial record AdmissionModel : BaseNopEntityModel
     public IList<SelectListItem> AvailableProfessions { get; set; }
 
     public IList<SelectListItem> AvailableGrades { get; set; }
+
+    public IList<SelectListItem> AvailableAcademicYears { get; set; }
 
     public IList<AdmissionRequiredDocumentModel> RequiredDocuments { get; set; }
 
