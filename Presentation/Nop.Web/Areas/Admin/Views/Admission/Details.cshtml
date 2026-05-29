@@ -5,18 +5,298 @@
 @{
     ViewBag.PageTitle = T("Admin.Admissions.Admissions.EditAdmissionDetails").Text;
     NopHtml.SetActiveMenuItemSystemName("Admissions");
+    var studentPictureUrl = ViewBag.StudentPictureUrl as string;
+    var fullName = string.Join(" ", new[] { Model.FirstName, Model.MiddleName, Model.LastName }.Where(value => !string.IsNullOrWhiteSpace(value)));
 }
 
 @functions {
+    private static string Display(object value)
+    {
+        if (value == null)
+            return "-";
+
+        var text = value.ToString();
+        return string.IsNullOrWhiteSpace(text) || text == "0" ? "-" : text;
+    }
+
+    private static string DisplayDate(DateTime value)
+    {
+        return value == DateTime.MinValue ? "-" : value.ToString("dd MMM yyyy");
+    }
+
     private static string SelectedText(IEnumerable<SelectListItem> items, int value)
     {
-        return items?.FirstOrDefault(item => item.Value == value.ToString())?.Text ?? value.ToString();
+        return items?.FirstOrDefault(item => item.Value == value.ToString())?.Text ?? Display(value);
     }
 }
 
+<style>
+    .admission-sheet {
+        max-width: 1120px;
+        margin: 0 auto;
+        color: #1f2937;
+        background: #fff;
+        border: 1px solid #cfd7e3;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, .08);
+    }
+
+    .admission-sheet-header {
+        display: grid;
+        grid-template-columns: 150px 1fr 190px;
+        border-bottom: 2px solid #1f2937;
+    }
+
+    .admission-brand-box,
+    .admission-photo-box {
+        min-height: 165px;
+        padding: 18px;
+        border-right: 1px solid #cfd7e3;
+        text-align: center;
+    }
+
+    .admission-photo-box {
+        border-right: 0;
+        border-left: 1px solid #cfd7e3;
+    }
+
+    .admission-logo-mark {
+        display: inline-flex;
+        width: 82px;
+        height: 82px;
+        align-items: center;
+        justify-content: center;
+        margin-top: 18px;
+        color: #2563eb;
+        background: #eef4ff;
+        border: 1px solid #bfd1ff;
+        border-radius: 999px;
+        font-size: 38px;
+    }
+
+    .admission-title-box {
+        padding: 18px 24px;
+        text-align: center;
+    }
+
+    .admission-title-box h2 {
+        margin: 0 0 8px;
+        color: #111827;
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0;
+    }
+
+    .admission-title-box .subtitle {
+        margin-bottom: 16px;
+        color: #64748b;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .admission-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        text-align: left;
+    }
+
+    .admission-meta-item {
+        padding: 8px 10px;
+        background: #f8fafc;
+        border: 1px solid #dbe3ee;
+        border-radius: 6px;
+    }
+
+    .admission-meta-item span,
+    .admission-field-label {
+        display: block;
+        color: #64748b;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0;
+        text-transform: uppercase;
+    }
+
+    .admission-meta-item strong,
+    .admission-field-value {
+        display: block;
+        min-height: 20px;
+        color: #111827;
+        font-size: 14px;
+        font-weight: 700;
+        word-break: break-word;
+    }
+
+    .admission-photo-frame {
+        display: flex;
+        width: 125px;
+        height: 145px;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        color: #64748b;
+        background: #f8fafc;
+        border: 2px dashed #aab7c9;
+        border-radius: 8px;
+        overflow: hidden;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .admission-photo-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .admission-note {
+        padding: 10px 18px;
+        color: #475569;
+        background: #f8fafc;
+        border-bottom: 1px solid #dbe3ee;
+        font-size: 12px;
+    }
+
+    .admission-section {
+        border-bottom: 1px solid #cfd7e3;
+    }
+
+    .admission-section-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 14px;
+        color: #0f172a;
+        background: #eaf1ff;
+        border-bottom: 1px solid #cfd7e3;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .admission-section-title span {
+        display: inline-flex;
+        width: 24px;
+        height: 24px;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        background: #2563eb;
+        border-radius: 999px;
+        font-size: 12px;
+    }
+
+    .admission-field-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .admission-field {
+        min-height: 62px;
+        padding: 9px 12px;
+        border-right: 1px solid #dbe3ee;
+        border-bottom: 1px solid #dbe3ee;
+    }
+
+    .admission-field.wide-2 {
+        grid-column: span 2;
+    }
+
+    .admission-field.wide-3 {
+        grid-column: span 3;
+    }
+
+    .admission-field.wide-4 {
+        grid-column: span 4;
+    }
+
+    .admission-signatures {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        padding: 28px 18px 20px;
+    }
+
+    .admission-signature-line {
+        padding-top: 34px;
+        border-top: 1px solid #94a3b8;
+        color: #475569;
+        font-size: 12px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    [data-bs-theme="dark"] .admission-sheet {
+        color: var(--phoenix-nop-text);
+        background: var(--phoenix-nop-surface);
+        border-color: var(--phoenix-nop-border-soft);
+        box-shadow: none;
+    }
+
+    [data-bs-theme="dark"] .admission-sheet-header,
+    [data-bs-theme="dark"] .admission-brand-box,
+    [data-bs-theme="dark"] .admission-photo-box,
+    [data-bs-theme="dark"] .admission-section,
+    [data-bs-theme="dark"] .admission-section-title,
+    [data-bs-theme="dark"] .admission-field {
+        border-color: var(--phoenix-nop-border-soft);
+    }
+
+    [data-bs-theme="dark"] .admission-title-box h2,
+    [data-bs-theme="dark"] .admission-meta-item strong,
+    [data-bs-theme="dark"] .admission-field-value,
+    [data-bs-theme="dark"] .admission-section-title {
+        color: var(--phoenix-nop-text);
+    }
+
+    [data-bs-theme="dark"] .admission-meta-item,
+    [data-bs-theme="dark"] .admission-note,
+    [data-bs-theme="dark"] .admission-photo-frame {
+        background: var(--phoenix-nop-surface-soft);
+        border-color: var(--phoenix-nop-border);
+    }
+
+    [data-bs-theme="dark"] .admission-section-title {
+        background: var(--phoenix-nop-primary-soft);
+    }
+
+    @@media (max-width: 991.98px) {
+        .admission-sheet-header,
+        .admission-field-grid,
+        .admission-meta-grid,
+        .admission-signatures {
+            grid-template-columns: 1fr;
+        }
+
+        .admission-field.wide-2,
+        .admission-field.wide-3,
+        .admission-field.wide-4 {
+            grid-column: span 1;
+        }
+    }
+
+    @@media print {
+        .content-header,
+        .main-header,
+        .main-sidebar,
+        .main-footer {
+            display: none !important;
+        }
+
+        .content-wrapper {
+            margin: 0 !important;
+        }
+
+        .admission-sheet {
+            max-width: none;
+            border-color: #000;
+            box-shadow: none;
+        }
+    }
+</style>
+
 <div class="content-header clearfix">
     <h1 class="float-left">
-        @T("Admin.Common.View") - @Model.FormNo
+        Admission Form - @Display(Model.FormNo)
         <small>
             <i class="fas fa-arrow-circle-left"></i>
             <a asp-action="List">@T("Admin.Admissions.Admissions.BackToList")</a>
@@ -32,101 +312,114 @@
 
 <section class="content">
     <div class="container-fluid">
-        <div class="form-horizontal">
-            <div class="cards-group">
-                <div class="card card-default">
-                    <div class="card-header"><h3 class="card-title">Student Information</h3></div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FormNo")</dt><dd class="col-sm-9">@Model.FormNo</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.SRN")</dt><dd class="col-sm-9">@Model.SRN</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.StatusId")</dt><dd class="col-sm-9">@Model.Status</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FirstName")</dt><dd class="col-sm-9">@Model.FirstName @Model.MiddleName @Model.LastName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.CNIC")</dt><dd class="col-sm-9">@Model.CNIC</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.PreviousSchoolId")</dt><dd class="col-sm-9">@Model.PreviousSchool</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.DateOfBirth")</dt><dd class="col-sm-9">@Model.DateOfBirth</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.BirthCity")</dt><dd class="col-sm-9">@Model.BirthCityName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Address")</dt><dd class="col-sm-9">@Model.Address</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.SiblingsCount")</dt><dd class="col-sm-9">@Model.SiblingsCount</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.NoInSiblings")</dt><dd class="col-sm-9">@Model.NoInSiblings</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MontherTongue")</dt><dd class="col-sm-9">@Model.MontherTongueName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Nationality")</dt><dd class="col-sm-9">@Model.NationalityName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Religion")</dt><dd class="col-sm-9">@Model.ReligionName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.BloodGroup")</dt><dd class="col-sm-9">@Model.BloodGroupName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Caste")</dt><dd class="col-sm-9">@Model.CasteName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianTypeId")</dt><dd class="col-sm-9">@Model.GuardianType</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.IdentificationMark")</dt><dd class="col-sm-9">@Model.IdentificationMark</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Allergies")</dt><dd class="col-sm-9">@Model.Allergies</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MedicalNotes")</dt><dd class="col-sm-9">@Model.MedicalNotes</dd>
-                        </dl>
+        <div class="admission-sheet">
+            <div class="admission-sheet-header">
+                <div class="admission-brand-box">
+                    <div class="admission-logo-mark">
+                        <i class="fas fa-school"></i>
                     </div>
                 </div>
-
-                <div class="card card-default">
-                    <div class="card-header"><h3 class="card-title">Father Information</h3></div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherFullName")</dt><dd class="col-sm-9">@Model.FatherFullName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherCNIC")</dt><dd class="col-sm-9">@Model.FatherCNIC</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherDateOfBirth")</dt><dd class="col-sm-9">@Model.FatherDateOfBirth</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherIsDeceased")</dt><dd class="col-sm-9">@Model.FatherIsDeceased</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.FatherQaulification)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherPhoneNo")</dt><dd class="col-sm-9">@Model.FatherPhoneNo</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.FatherProfession)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherOfficeAddress")</dt><dd class="col-sm-9">@Model.FatherOfficeAddress</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherOfficePhoneNumber")</dt><dd class="col-sm-9">@Model.FatherOfficePhoneNumber</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherMonthlyIncome")</dt><dd class="col-sm-9">@Model.FatherMonthlyIncome</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Father_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Father_MontherTongue)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.FatherNationality)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.FatherReligion)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.FatherBloodGroup)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.FatherCaste)</dd>
-                        </dl>
+                <div class="admission-title-box">
+                    <h2>Student Admission Form</h2>
+                    <div class="subtitle">Official admission record</div>
+                    <div class="admission-meta-grid">
+                        <div class="admission-meta-item"><span>Form No.</span><strong>@Display(Model.FormNo)</strong></div>
+                        <div class="admission-meta-item"><span>SRN</span><strong>@Display(Model.SRN)</strong></div>
+                        <div class="admission-meta-item"><span>Status</span><strong>@Display(Model.Status)</strong></div>
+                        <div class="admission-meta-item"><span>Grade</span><strong>@SelectedText(Model.AvailableGrades, Model.GradeId)</strong></div>
+                        <div class="admission-meta-item"><span>Guardian Type</span><strong>@Display(Model.GuardianType)</strong></div>
+                        <div class="admission-meta-item"><span>Admission ID</span><strong>@Model.Id</strong></div>
                     </div>
                 </div>
-
-                <div class="card card-default">
-                    <div class="card-header"><h3 class="card-title">Mother Information</h3></div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherFullName")</dt><dd class="col-sm-9">@Model.MotherFullName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherCNIC")</dt><dd class="col-sm-9">@Model.MotherCNIC</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherDateOfBirth")</dt><dd class="col-sm-9">@Model.MotherDateOfBirth</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherIsDeceased")</dt><dd class="col-sm-9">@Model.MotherIsDeceased</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.MotherQaulification)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherPhoneNo")</dt><dd class="col-sm-9">@Model.MotherPhoneNo</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.MotherProfession)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherMonthlyIncome")</dt><dd class="col-sm-9">@Model.MotherMonthlyIncome</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherOfficeAddress")</dt><dd class="col-sm-9">@Model.MotherOfficeAddress</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherOfficePhoneNumber")</dt><dd class="col-sm-9">@Model.MotherOfficePhoneNumber</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Mother_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Mother_MontherTongue)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.MotherNationality)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.MotherReligion)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.MotherBloodGroup)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.MotherCaste)</dd>
-                        </dl>
+                <div class="admission-photo-box">
+                    <div class="admission-photo-frame">
+                        <img src="@studentPictureUrl" alt="Student picture" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';" />
+                        <span style="display:none">Student<br />Photo</span>
                     </div>
                 </div>
+            </div>
 
-                <div class="card card-default">
-                    <div class="card-header"><h3 class="card-title">Guardian Information</h3></div>
-                    <div class="card-body">
-                        <dl class="row">
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianFullName")</dt><dd class="col-sm-9">@Model.GuardianFullName</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianCNIC")</dt><dd class="col-sm-9">@Model.GuardianCNIC</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianDateOfBirth")</dt><dd class="col-sm-9">@Model.GuardianDateOfBirth</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianIsDeceased")</dt><dd class="col-sm-9">@Model.GuardianIsDeceased</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.GuardianQaulification)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianPhoneNo")</dt><dd class="col-sm-9">@Model.GuardianPhoneNo</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.GuardianProfession)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianMonthlyIncome")</dt><dd class="col-sm-9">@Model.GuardianMonthlyIncome</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Guardian_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Guardian_MontherTongue)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.GuardianNationality)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.GuardianReligion)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianBloodGroup")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableBloodGroups, Model.GuardianBloodGroup)</dd>
-                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.GuardianCaste")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableCastes, Model.GuardianCaste)</dd>
-                        </dl>
-                    </div>
+            <div class="admission-note">
+                Please verify all information carefully. Empty values are shown as "-".
+            </div>
+
+            <div class="admission-section">
+                <div class="admission-section-title"><span>1</span>Student Information</div>
+                <div class="admission-field-grid">
+                    <div class="admission-field wide-2"><span class="admission-field-label">Name</span><span class="admission-field-value">@Display(fullName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">CNIC</span><span class="admission-field-value">@Display(Model.CNIC)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Date of Birth</span><span class="admission-field-value">@DisplayDate(Model.DateOfBirth)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Birth City</span><span class="admission-field-value">@Display(Model.BirthCityName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Previous School</span><span class="admission-field-value">@Display(Model.PreviousSchool)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Tongue</span><span class="admission-field-value">@Display(Model.MontherTongueName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Nationality</span><span class="admission-field-value">@Display(Model.NationalityName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Religion</span><span class="admission-field-value">@Display(Model.ReligionName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Blood Group</span><span class="admission-field-value">@Display(Model.BloodGroupName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Caste</span><span class="admission-field-value">@Display(Model.CasteName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Siblings Count</span><span class="admission-field-value">@Display(Model.SiblingsCount)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">No. in Siblings</span><span class="admission-field-value">@Display(Model.NoInSiblings)</span></div>
+                    <div class="admission-field wide-4"><span class="admission-field-label">Address</span><span class="admission-field-value">@Display(Model.Address)</span></div>
+                    <div class="admission-field wide-2"><span class="admission-field-label">Identification Mark</span><span class="admission-field-value">@Display(Model.IdentificationMark)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Allergies</span><span class="admission-field-value">@Display(Model.Allergies)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Medical Notes</span><span class="admission-field-value">@Display(Model.MedicalNotes)</span></div>
+                </div>
+            </div>
+
+            <div class="admission-section">
+                <div class="admission-section-title"><span>2</span>Parent Information</div>
+                <div class="admission-field-grid">
+                    <div class="admission-field wide-2"><span class="admission-field-label">Father Name</span><span class="admission-field-value">@Display(Model.FatherFullName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father CNIC</span><span class="admission-field-value">@Display(Model.FatherCNIC)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Phone</span><span class="admission-field-value">@Display(Model.FatherPhoneNo)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father DOB</span><span class="admission-field-value">@DisplayDate(Model.FatherDateOfBirth)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Qualification</span><span class="admission-field-value">@SelectedText(Model.AvailableQualifications, Model.FatherQaulification)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Profession</span><span class="admission-field-value">@SelectedText(Model.AvailableProfessions, Model.FatherProfession)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Income</span><span class="admission-field-value">@Display(Model.FatherMonthlyIncome)</span></div>
+                    <div class="admission-field wide-4"><span class="admission-field-label">Father Office Address</span><span class="admission-field-value">@Display(Model.FatherOfficeAddress)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Office Phone</span><span class="admission-field-value">@Display(Model.FatherOfficePhoneNumber)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Nationality</span><span class="admission-field-value">@SelectedText(Model.AvailableNationalities, Model.FatherNationality)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Religion</span><span class="admission-field-value">@SelectedText(Model.AvailableReligions, Model.FatherReligion)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Father Deceased</span><span class="admission-field-value">@(Model.FatherIsDeceased ? "Yes" : "No")</span></div>
+
+                    <div class="admission-field wide-2"><span class="admission-field-label">Mother Name</span><span class="admission-field-value">@Display(Model.MotherFullName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother CNIC</span><span class="admission-field-value">@Display(Model.MotherCNIC)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Phone</span><span class="admission-field-value">@Display(Model.MotherPhoneNo)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother DOB</span><span class="admission-field-value">@DisplayDate(Model.MotherDateOfBirth)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Qualification</span><span class="admission-field-value">@SelectedText(Model.AvailableQualifications, Model.MotherQaulification)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Profession</span><span class="admission-field-value">@SelectedText(Model.AvailableProfessions, Model.MotherProfession)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Income</span><span class="admission-field-value">@Display(Model.MotherMonthlyIncome)</span></div>
+                    <div class="admission-field wide-4"><span class="admission-field-label">Mother Office Address</span><span class="admission-field-value">@Display(Model.MotherOfficeAddress)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Office Phone</span><span class="admission-field-value">@Display(Model.MotherOfficePhoneNumber)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Nationality</span><span class="admission-field-value">@SelectedText(Model.AvailableNationalities, Model.MotherNationality)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Religion</span><span class="admission-field-value">@SelectedText(Model.AvailableReligions, Model.MotherReligion)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Mother Deceased</span><span class="admission-field-value">@(Model.MotherIsDeceased ? "Yes" : "No")</span></div>
+                </div>
+            </div>
+
+            <div class="admission-section">
+                <div class="admission-section-title"><span>3</span>Guardian Information</div>
+                <div class="admission-field-grid">
+                    <div class="admission-field wide-2"><span class="admission-field-label">Guardian Name</span><span class="admission-field-value">@Display(Model.GuardianFullName)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Guardian CNIC</span><span class="admission-field-value">@Display(Model.GuardianCNIC)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Guardian Phone</span><span class="admission-field-value">@Display(Model.GuardianPhoneNo)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Guardian DOB</span><span class="admission-field-value">@DisplayDate(Model.GuardianDateOfBirth)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Qualification</span><span class="admission-field-value">@SelectedText(Model.AvailableQualifications, Model.GuardianQaulification)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Profession</span><span class="admission-field-value">@SelectedText(Model.AvailableProfessions, Model.GuardianProfession)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Monthly Income</span><span class="admission-field-value">@Display(Model.GuardianMonthlyIncome)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Nationality</span><span class="admission-field-value">@SelectedText(Model.AvailableNationalities, Model.GuardianNationality)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Religion</span><span class="admission-field-value">@SelectedText(Model.AvailableReligions, Model.GuardianReligion)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Blood Group</span><span class="admission-field-value">@SelectedText(Model.AvailableBloodGroups, Model.GuardianBloodGroup)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Caste</span><span class="admission-field-value">@SelectedText(Model.AvailableCastes, Model.GuardianCaste)</span></div>
+                    <div class="admission-field"><span class="admission-field-label">Deceased</span><span class="admission-field-value">@(Model.GuardianIsDeceased ? "Yes" : "No")</span></div>
+                </div>
+            </div>
+
+            <div class="admission-section">
+                <div class="admission-section-title"><span>4</span>Declarations</div>
+                <div class="admission-signatures">
+                    <div class="admission-signature-line">Parent / Guardian Signature</div>
+                    <div class="admission-signature-line">Admission Officer</div>
+                    <div class="admission-signature-line">Principal / Administrator</div>
                 </div>
             </div>
         </div>

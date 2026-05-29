@@ -178,12 +178,11 @@ public partial class AdmissionController : BaseAdminController
 
     protected virtual async Task<AdmissionDocument> GetAdmissionStudentPictureAsync(int admissionId)
     {
-        var pictures = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(
-            admissionId: admissionId,
-            admissionDocumentTypeIds: new[] { StudentPictureAdmissionDocumentTypeId },
-            pageSize: 1);
+        var pictures = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(admissionId: admissionId);
+        var studentPicturePath = $"/{StudentPictureAttachmentModuleName}/{admissionId}/";
 
-        return pictures.FirstOrDefault();
+        return pictures.FirstOrDefault(document => document.AdmissionDocumentTypeId == StudentPictureAdmissionDocumentTypeId)
+            ?? pictures.FirstOrDefault(document => document.FilePath?.Contains(studentPicturePath, StringComparison.InvariantCultureIgnoreCase) == true);
     }
 
     protected virtual async Task<IList<AdmissionRequiredDocumentModel>> PrepareAdmissionRequiredDocumentsAsync(Admission admission)
@@ -573,6 +572,20 @@ public partial class AdmissionController : BaseAdminController
         return PhysicalFile(physicalPath, contentType);
     }
 
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> PreviewStudentPicture(int admissionId)
+    {
+        var admission = await _admissionService.GetAdmissionByIdAsync(admissionId);
+        if (admission == null)
+            return NotFound();
+
+        var studentPicture = await GetAdmissionStudentPictureAsync(admission.Id);
+        if (studentPicture == null)
+            return NotFound();
+
+        return RedirectToAction("PreviewDocument", new { id = studentPicture.Id });
+    }
+
     [HttpPost]
     [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
     public virtual async Task<IActionResult> AdmissionList(AdmissionSearchModel searchModel)
@@ -647,6 +660,7 @@ public partial class AdmissionController : BaseAdminController
             return RedirectToAction("List");
 
         var model = await _admissionModelFactory.PrepareAdmissionModelAsync(null, admission);
+        ViewBag.StudentPictureUrl = Url.Action("PreviewStudentPicture", "Admission", new { admissionId = admission.Id });
 
         return View(model);
     }
