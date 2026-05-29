@@ -10,6 +10,7 @@ public partial class AdmissionService : IAdmissionService
 
     protected readonly IRepository<Admission> _admissionRepository;
     protected readonly IRepository<AdmissionGradeDocumentRequirement> _admissionGradeDocumentRequirementRepository;
+    protected readonly INopDataProvider _dataProvider;
 
     #endregion
 
@@ -17,11 +18,13 @@ public partial class AdmissionService : IAdmissionService
 
     public AdmissionService(
         IRepository<Admission> admissionRepository,
-        IRepository<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirementRepository
+        IRepository<AdmissionGradeDocumentRequirement> admissionGradeDocumentRequirementRepository,
+        INopDataProvider dataProvider
         )
     {
         _admissionRepository = admissionRepository;
         _admissionGradeDocumentRequirementRepository = admissionGradeDocumentRequirementRepository;
+        _dataProvider = dataProvider;
     }
 
     #endregion
@@ -274,6 +277,13 @@ public partial class AdmissionService : IAdmissionService
             return null;
 
         return await _admissionRepository.GetByIdsAsync(ids.ToList());
+    }
+
+    public virtual async Task<int> GenerateAdmissionSrnAsync()
+    {
+        var values = await _dataProvider.QueryAsync<int>("SELECT NEXT VALUE FOR [dbo].[AdmissionSrnSequence]");
+
+        return values.FirstOrDefault();
     }
 
     public virtual async Task InsertAdmissionAsync(Admission admission)

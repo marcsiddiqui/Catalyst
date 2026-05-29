@@ -39,12 +39,16 @@
                     <div class="card-body">
                         <dl class="row">
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FormNo")</dt><dd class="col-sm-9">@Model.FormNo</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.SRN")</dt><dd class="col-sm-9">@Model.SRN</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.StatusId")</dt><dd class="col-sm-9">@Model.Status</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FirstName")</dt><dd class="col-sm-9">@Model.FirstName @Model.MiddleName @Model.LastName</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.CNIC")</dt><dd class="col-sm-9">@Model.CNIC</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.PreviousSchoolId")</dt><dd class="col-sm-9">@Model.PreviousSchool</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.DateOfBirth")</dt><dd class="col-sm-9">@Model.DateOfBirth</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.BirthCity")</dt><dd class="col-sm-9">@Model.BirthCityName</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Address")</dt><dd class="col-sm-9">@Model.Address</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.SiblingsCount")</dt><dd class="col-sm-9">@Model.SiblingsCount</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.NoInSiblings")</dt><dd class="col-sm-9">@Model.NoInSiblings</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MontherTongue")</dt><dd class="col-sm-9">@Model.MontherTongueName</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Nationality")</dt><dd class="col-sm-9">@Model.NationalityName</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Religion")</dt><dd class="col-sm-9">@Model.ReligionName</dd>
@@ -69,6 +73,8 @@
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherQaulification")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableQualifications, Model.FatherQaulification)</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherPhoneNo")</dt><dd class="col-sm-9">@Model.FatherPhoneNo</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.FatherProfession)</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherOfficeAddress")</dt><dd class="col-sm-9">@Model.FatherOfficeAddress</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherOfficePhoneNumber")</dt><dd class="col-sm-9">@Model.FatherOfficePhoneNumber</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherMonthlyIncome")</dt><dd class="col-sm-9">@Model.FatherMonthlyIncome</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Father_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Father_MontherTongue)</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.FatherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.FatherNationality)</dd>
@@ -91,6 +97,8 @@
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherPhoneNo")</dt><dd class="col-sm-9">@Model.MotherPhoneNo</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherProfession")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableProfessions, Model.MotherProfession)</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherMonthlyIncome")</dt><dd class="col-sm-9">@Model.MotherMonthlyIncome</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherOfficeAddress")</dt><dd class="col-sm-9">@Model.MotherOfficeAddress</dd>
+                            <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherOfficePhoneNumber")</dt><dd class="col-sm-9">@Model.MotherOfficePhoneNumber</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.Mother_MontherTongue")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableMotherTongues, Model.Mother_MontherTongue)</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherNationality")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableNationalities, Model.MotherNationality)</dd>
                             <dt class="col-sm-3">@T("Admin.Configuration.Admissions.Fields.MotherReligion")</dt><dd class="col-sm-9">@SelectedText(Model.AvailableReligions, Model.MotherReligion)</dd>

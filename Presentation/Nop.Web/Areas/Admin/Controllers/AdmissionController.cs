@@ -20,6 +20,10 @@ namespace Nop.Web.Areas.Admin.Controllers;
 
 public partial class AdmissionController : BaseAdminController
 {
+    protected const int StudentPictureAdmissionDocumentTypeId = -1;
+    protected const string StudentPictureAttachmentModuleName = "AdmissionStudentPicture";
+    protected const string StudentPictureFileNamePrefix = "StudentPicture";
+
     #region Fields
 
     protected readonly IAdmissionModelFactory _admissionModelFactory;
@@ -85,12 +89,18 @@ public partial class AdmissionController : BaseAdminController
         var admission = new Admission
         {
             FormNo = formNo.Trim(),
+            SRN = await _admissionService.GenerateAdmissionSrnAsync(),
             FirstName = string.Empty,
             LastName = string.Empty,
+            Address = string.Empty,
             FatherFullName = string.Empty,
             FatherPhoneNo = string.Empty,
+            FatherOfficeAddress = string.Empty,
+            FatherOfficePhoneNumber = string.Empty,
             MotherFullName = string.Empty,
             MotherPhoneNo = string.Empty,
+            MotherOfficeAddress = string.Empty,
+            MotherOfficePhoneNumber = string.Empty,
             GuardianFullName = string.Empty,
             GuardianPhoneNo = string.Empty,
             DateOfBirth = now,
@@ -116,6 +126,14 @@ public partial class AdmissionController : BaseAdminController
         admission.UpdatedOnUtc = DateTime.UtcNow;
     }
 
+    protected virtual async Task EnsureAdmissionSrnAsync(Admission admission)
+    {
+        if (admission == null || admission.SRN > 0)
+            return;
+
+        admission.SRN = await _admissionService.GenerateAdmissionSrnAsync();
+    }
+
     protected virtual string ValidateAdmissionStep(AdmissionModel model, int step)
     {
         if (string.IsNullOrWhiteSpace(model.FormNo))
@@ -126,10 +144,7 @@ public partial class AdmissionController : BaseAdminController
             1 when model.GradeId <= 0 => "Grade is required.",
             2 when string.IsNullOrWhiteSpace(model.FirstName) => "First name is required.",
             2 when string.IsNullOrWhiteSpace(model.LastName) => "Last name is required.",
-            3 when string.IsNullOrWhiteSpace(model.FatherFullName) => "Father full name is required.",
-            3 when string.IsNullOrWhiteSpace(model.FatherPhoneNo) => "Father phone no. is required.",
-            4 when string.IsNullOrWhiteSpace(model.MotherFullName) => "Mother full name is required.",
-            4 when string.IsNullOrWhiteSpace(model.MotherPhoneNo) => "Mother phone no. is required.",
+            2 when string.IsNullOrWhiteSpace(model.Address) => "Address is required.",
             5 when string.IsNullOrWhiteSpace(model.GuardianFullName) => "Guardian full name is required.",
             5 when string.IsNullOrWhiteSpace(model.GuardianPhoneNo) => "Guardian phone no. is required.",
             _ => string.Empty
@@ -147,6 +162,28 @@ public partial class AdmissionController : BaseAdminController
         return extension == ".pdf" ||
             contentType?.StartsWith("image/") == true ||
             new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tif", ".tiff" }.Contains(extension);
+    }
+
+    protected virtual bool IsAllowedAdmissionPicture(IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return false;
+
+        var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+        var contentType = file.ContentType?.ToLowerInvariant();
+
+        return contentType?.StartsWith("image/") == true ||
+            new[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tif", ".tiff" }.Contains(extension);
+    }
+
+    protected virtual async Task<AdmissionDocument> GetAdmissionStudentPictureAsync(int admissionId)
+    {
+        var pictures = await _admissionDocumentService.GetAllAdmissionDocumentsAsync(
+            admissionId: admissionId,
+            admissionDocumentTypeIds: new[] { StudentPictureAdmissionDocumentTypeId },
+            pageSize: 1);
+
+        return pictures.FirstOrDefault();
     }
 
     protected virtual async Task<IList<AdmissionRequiredDocumentModel>> PrepareAdmissionRequiredDocumentsAsync(Admission admission)
@@ -228,6 +265,9 @@ public partial class AdmissionController : BaseAdminController
                 admission.IdentificationMark = model.IdentificationMark;
                 admission.DateOfBirth = model.DateOfBirth;
                 admission.BirthCity = model.BirthCity;
+                admission.Address = model.Address;
+                admission.SiblingsCount = model.SiblingsCount;
+                admission.NoInSiblings = model.NoInSiblings;
                 admission.Allergies = model.Allergies;
                 admission.MedicalNotes = model.MedicalNotes;
                 admission.MontherTongue = model.MontherTongue;
@@ -245,6 +285,8 @@ public partial class AdmissionController : BaseAdminController
                 admission.FatherQaulification = model.FatherQaulification;
                 admission.FatherPhoneNo = model.FatherPhoneNo;
                 admission.FatherProfession = model.FatherProfession;
+                admission.FatherOfficeAddress = model.FatherOfficeAddress;
+                admission.FatherOfficePhoneNumber = model.FatherOfficePhoneNumber;
                 admission.FatherMonthlyIncome = model.FatherMonthlyIncome;
                 admission.Father_MontherTongue = model.Father_MontherTongue;
                 admission.FatherNationality = model.FatherNationality;
@@ -261,6 +303,8 @@ public partial class AdmissionController : BaseAdminController
                 admission.MotherPhoneNo = model.MotherPhoneNo;
                 admission.MotherProfession = model.MotherProfession;
                 admission.MotherMonthlyIncome = model.MotherMonthlyIncome;
+                admission.MotherOfficeAddress = model.MotherOfficeAddress;
+                admission.MotherOfficePhoneNumber = model.MotherOfficePhoneNumber;
                 admission.Mother_MontherTongue = model.Mother_MontherTongue;
                 admission.MotherNationality = model.MotherNationality;
                 admission.MotherReligion = model.MotherReligion;
@@ -313,20 +357,14 @@ public partial class AdmissionController : BaseAdminController
             return Json(new { success = false, message = "Form no. is required." });
 
         var admission = await GetAdmissionByFormNoAsync(formNo);
-        var created = false;
-
-        if (admission == null)
-        {
-            admission = await CreateAdmissionDraftAsync(formNo);
-            created = true;
-        }
 
         return Json(new
         {
             success = true,
-            created,
-            id = admission.Id,
-            editUrl = Url.Action("Edit", new { id = admission.Id })
+            created = admission == null,
+            id = admission?.Id ?? 0,
+            srn = admission?.SRN ?? 0,
+            editUrl = admission != null ? Url.Action("Edit", new { id = admission.Id }) : null
         });
     }
 
@@ -357,6 +395,9 @@ public partial class AdmissionController : BaseAdminController
         }
 
         ApplyAdmissionStep(admission, model, step);
+        if (step == 1)
+            await EnsureAdmissionSrnAsync(admission);
+
         await TouchAdmissionAsync(admission);
         await _admissionService.UpdateAdmissionAsync(admission);
 
@@ -364,6 +405,7 @@ public partial class AdmissionController : BaseAdminController
         {
             success = true,
             id = admission.Id,
+            srn = admission.SRN,
             editUrl = Url.Action("Edit", new { id = admission.Id })
         });
     }
@@ -380,6 +422,69 @@ public partial class AdmissionController : BaseAdminController
         {
             success = true,
             documents = await PrepareAdmissionRequiredDocumentsAsync(admission)
+        });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> StudentPicture(int admissionId)
+    {
+        var admission = await _admissionService.GetAdmissionByIdAsync(admissionId);
+        if (admission == null)
+            return Json(new { success = false, message = "Admission not found." });
+
+        var picture = await GetAdmissionStudentPictureAsync(admission.Id);
+
+        return Json(new
+        {
+            success = true,
+            documentId = picture?.Id ?? 0,
+            fileName = picture?.FileName,
+            previewUrl = picture != null ? Url.Action("PreviewDocument", "Admission", new { id = picture.Id }) : null
+        });
+    }
+
+    [HttpPost]
+    [CheckPermission(StandardPermission.Admissions.MANAGE_ADMISSIONS)]
+    public virtual async Task<IActionResult> UploadStudentPicture(int admissionId, IFormFile file)
+    {
+        var admission = await _admissionService.GetAdmissionByIdAsync(admissionId);
+        if (admission == null)
+            return Json(new { success = false, message = "Admission not found." });
+
+        if (!IsAllowedAdmissionPicture(file))
+            return Json(new { success = false, message = "Only image files are allowed." });
+
+        var existingPicture = await GetAdmissionStudentPictureAsync(admission.Id);
+        if (existingPicture != null)
+        {
+            await _attachmentFileService.DeleteAttachmentAsync(existingPicture.FilePath);
+            await _admissionDocumentService.DeleteAdmissionDocumentAsync(existingPicture);
+        }
+
+        var savedFile = await _attachmentFileService.SaveAttachmentAsync(
+            file,
+            StudentPictureAttachmentModuleName,
+            admission.Id,
+            StudentPictureFileNamePrefix);
+
+        var admissionDocument = new AdmissionDocument
+        {
+            AdmissionId = admission.Id,
+            AdmissionDocumentTypeId = StudentPictureAdmissionDocumentTypeId,
+            FileName = savedFile.FileName,
+            FilePath = savedFile.FilePath,
+            Deleted = false
+        };
+
+        await _admissionDocumentService.InsertAdmissionDocumentAsync(admissionDocument);
+
+        return Json(new
+        {
+            success = true,
+            documentId = admissionDocument.Id,
+            fileName = admissionDocument.FileName,
+            previewUrl = Url.Action("PreviewDocument", "Admission", new { id = admissionDocument.Id })
         });
     }
 
@@ -494,6 +599,7 @@ public partial class AdmissionController : BaseAdminController
         if (ModelState.IsValid)
         {
             var admission = model.ToEntity<Admission>();
+            await EnsureAdmissionSrnAsync(admission);
             await _admissionService.InsertAdmissionAsync(admission);
 
             //activity log

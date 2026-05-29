@@ -68,6 +68,8 @@ public partial interface IAdmissionService
 
     Task<IList<Admission>> GetAdmissionsByIdsAsync(IEnumerable<int> ids);
 
+    Task<int> GenerateAdmissionSrnAsync();
+
     Task InsertAdmissionAsync(Admission admission);
     
     Task InsertAdmissionAsync(IEnumerable<Admission> admissions);

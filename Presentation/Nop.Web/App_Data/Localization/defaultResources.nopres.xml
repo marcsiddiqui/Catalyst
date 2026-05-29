@@ -21461,4 +21461,55 @@
   <LocaleResource Name="Admin.Configuration.Admissions.Fields.GradeId">
     <Value>Grade</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.SRN">
+    <Value>SRN</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.Address">
+    <Value>Address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.StudentPicture">
+    <Value>Student picture</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.SiblingsCount">
+    <Value>Siblings count</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.NoInSiblings">
+    <Value>No. in siblings</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.FatherOfficeAddress">
+    <Value>Father office address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.FatherOfficePhoneNumber">
+    <Value>Father office phone number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.MotherOfficeAddress">
+    <Value>Mother office address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Admissions.Fields.MotherOfficePhoneNumber">
+    <Value>Mother office phone number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.SRN">
+    <Value>SRN</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.Address">
+    <Value>Address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.SiblingsCount">
+    <Value>Siblings count</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.NoInSiblings">
+    <Value>No. in siblings</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.FatherOfficeAddress">
+    <Value>Father office address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.FatherOfficePhoneNumber">
+    <Value>Father office phone number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.MotherOfficeAddress">
+    <Value>Mother office address</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Admissions.Admissions.Fields.MotherOfficePhoneNumber">
+    <Value>Mother office phone number</Value>
+  </LocaleResource>
 </Language>

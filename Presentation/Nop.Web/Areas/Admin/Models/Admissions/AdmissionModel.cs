@@ -32,6 +32,9 @@ public partial record AdmissionModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FormNo")]
     public string FormNo { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.SRN")]
+    public int SRN { get; set; }
+
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.StatusId")]
     public int StatusId { get; set; }
 
@@ -61,6 +64,15 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.BirthCity")]
     public int BirthCity { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Address")]
+    public string Address { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.SiblingsCount")]
+    public int SiblingsCount { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.NoInSiblings")]
+    public int NoInSiblings { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Allergies")]
     public string Allergies { get; set; }
@@ -107,6 +119,12 @@ public partial record AdmissionModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FatherProfession")]
     public int FatherProfession { get; set; }
 
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FatherOfficeAddress")]
+    public string FatherOfficeAddress { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FatherOfficePhoneNumber")]
+    public string FatherOfficePhoneNumber { get; set; }
+
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.FatherMonthlyIncome")]
     public decimal FatherMonthlyIncome { get; set; }
 
@@ -148,6 +166,12 @@ public partial record AdmissionModel : BaseNopEntityModel
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.MotherMonthlyIncome")]
     public decimal MotherMonthlyIncome { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.MotherOfficeAddress")]
+    public string MotherOfficeAddress { get; set; }
+
+    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.MotherOfficePhoneNumber")]
+    public string MotherOfficePhoneNumber { get; set; }
 
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Mother_MontherTongue")]
     public int Mother_MontherTongue { get; set; }

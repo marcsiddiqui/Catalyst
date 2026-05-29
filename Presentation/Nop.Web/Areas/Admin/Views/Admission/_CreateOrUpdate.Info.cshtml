@@ -36,6 +36,13 @@
                     </div>
                 </div>
                 <div class="form-group row">
+                    <div class="col-md-3"><nop-label asp-for="SRN" /></div>
+                    <div class="col-md-9">
+                        <input asp-for="SRN" class="form-control" readonly="readonly" />
+                        <span asp-validation-for="SRN"></span>
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-md-3"><nop-label asp-for="GradeId" /></div>
                     <div class="col-md-9">
                         <nop-select asp-for="GradeId" asp-items="Model.AvailableGrades" />
@@ -60,6 +67,34 @@
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="IdentificationMark" /></div><div class="col-md-9"><nop-editor asp-for="IdentificationMark" /><span asp-validation-for="IdentificationMark"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="DateOfBirth" /></div><div class="col-md-9"><nop-editor asp-for="DateOfBirth" /><span asp-validation-for="DateOfBirth"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="BirthCity" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.BirthCity), FieldId = Html.IdFor(model => model.BirthCity), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBirthCities, SelectedValue = Model.BirthCity.ToString(), Category = GenericDropdownEntity.BirthCity.ToString() })<span asp-validation-for="BirthCity"></span></div></div>
+                <div class="form-group row">
+                    <div class="col-md-3">@T("Admin.Configuration.Admissions.Fields.StudentPicture")</div>
+                    <div class="col-md-9">
+                        <div class="d-flex align-items-start">
+                            <div class="border rounded bg-light mr-3 d-flex align-items-center justify-content-center" style="width:120px;height:140px;overflow:hidden;">
+                                <img id="admission-student-picture-preview" src="" alt="" style="display:none;max-width:100%;max-height:100%;" />
+                                <span id="admission-student-picture-empty" class="text-muted small">@T("Admin.Common.No")</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="mb-2">
+                                    <a id="admission-student-picture-view" href="#" class="btn btn-default btn-sm" target="_blank" style="display:none">
+                                        <i class="far fa-eye"></i>
+                                        @T("Admin.Common.View")
+                                    </a>
+                                    <button type="button" id="admission-student-picture-remove" class="btn btn-danger btn-sm ml-2" style="display:none">
+                                        <i class="far fa-trash-can"></i>
+                                        @T("Admin.Common.Delete")
+                                    </button>
+                                </div>
+                                <input type="file" id="admission-student-picture-upload" accept="image/*" />
+                                <div id="admission-student-picture-file-name" class="text-muted mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Address" /></div><div class="col-md-9"><nop-textarea asp-for="Address" /><span asp-validation-for="Address"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="SiblingsCount" /></div><div class="col-md-9"><nop-editor asp-for="SiblingsCount" /><span asp-validation-for="SiblingsCount"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="NoInSiblings" /></div><div class="col-md-9"><nop-editor asp-for="NoInSiblings" /><span asp-validation-for="NoInSiblings"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Allergies" /></div><div class="col-md-9"><nop-editor asp-for="Allergies" /><span asp-validation-for="Allergies"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MedicalNotes" /></div><div class="col-md-9"><nop-editor asp-for="MedicalNotes" /><span asp-validation-for="MedicalNotes"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MontherTongue), FieldId = Html.IdFor(model => model.MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="MontherTongue"></span></div></div>
@@ -78,6 +113,8 @@
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherQaulification" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherQaulification), FieldId = Html.IdFor(model => model.FatherQaulification), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableQualifications, SelectedValue = Model.FatherQaulification.ToString(), Category = GenericDropdownEntity.Qualification.ToString() })<span asp-validation-for="FatherQaulification"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherPhoneNo" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.FatherPhoneNo), FieldId = Html.IdFor(model => model.FatherPhoneNo), Value = Model.FatherPhoneNo })<span asp-validation-for="FatherPhoneNo"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherProfession" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherProfession), FieldId = Html.IdFor(model => model.FatherProfession), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableProfessions, SelectedValue = Model.FatherProfession.ToString(), Category = GenericDropdownEntity.Profession.ToString() })<span asp-validation-for="FatherProfession"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherOfficeAddress" /></div><div class="col-md-9"><nop-textarea asp-for="FatherOfficeAddress" /><span asp-validation-for="FatherOfficeAddress"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherOfficePhoneNumber" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.FatherOfficePhoneNumber), FieldId = Html.IdFor(model => model.FatherOfficePhoneNumber), Value = Model.FatherOfficePhoneNumber })<span asp-validation-for="FatherOfficePhoneNumber"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherMonthlyIncome" /></div><div class="col-md-9"><nop-editor asp-for="FatherMonthlyIncome" /><span asp-validation-for="FatherMonthlyIncome"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Father_MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Father_MontherTongue), FieldId = Html.IdFor(model => model.Father_MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.Father_MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="Father_MontherTongue"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="FatherNationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.FatherNationality), FieldId = Html.IdFor(model => model.FatherNationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.FatherNationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="FatherNationality"></span></div></div>
@@ -95,6 +132,8 @@
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherPhoneNo" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.MotherPhoneNo), FieldId = Html.IdFor(model => model.MotherPhoneNo), Value = Model.MotherPhoneNo })<span asp-validation-for="MotherPhoneNo"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherProfession" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherProfession), FieldId = Html.IdFor(model => model.MotherProfession), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableProfessions, SelectedValue = Model.MotherProfession.ToString(), Category = GenericDropdownEntity.Profession.ToString() })<span asp-validation-for="MotherProfession"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherMonthlyIncome" /></div><div class="col-md-9"><nop-editor asp-for="MotherMonthlyIncome" /><span asp-validation-for="MotherMonthlyIncome"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherOfficeAddress" /></div><div class="col-md-9"><nop-textarea asp-for="MotherOfficeAddress" /><span asp-validation-for="MotherOfficeAddress"></span></div></div>
+                <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherOfficePhoneNumber" /></div><div class="col-md-9">@await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.MotherOfficePhoneNumber), FieldId = Html.IdFor(model => model.MotherOfficePhoneNumber), Value = Model.MotherOfficePhoneNumber })<span asp-validation-for="MotherOfficePhoneNumber"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="Mother_MontherTongue" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Mother_MontherTongue), FieldId = Html.IdFor(model => model.Mother_MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.Mother_MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })<span asp-validation-for="Mother_MontherTongue"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherNationality" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherNationality), FieldId = Html.IdFor(model => model.MotherNationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.MotherNationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })<span asp-validation-for="MotherNationality"></span></div></div>
                 <div class="form-group row"><div class="col-md-3"><nop-label asp-for="MotherReligion" /></div><div class="col-md-9">@await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MotherReligion), FieldId = Html.IdFor(model => model.MotherReligion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.MotherReligion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })<span asp-validation-for="MotherReligion"></span></div></div>
@@ -139,7 +178,9 @@
         var currentStep = 1;
         var loadingFormNo = false;
         var documentsLoadedForAdmissionId = 0;
+        var pictureLoadedForAdmissionId = 0;
         var documentPonds = {};
+        var studentPicturePond = null;
         var $alert = $('#admission-step-alert');
 
         function showError(message) {
@@ -177,6 +218,9 @@
             if (step === 6) {
                 loadAdmissionDocuments();
             }
+            if (step === 2) {
+                loadStudentPicture();
+            }
             clearError();
         }
 
@@ -213,11 +257,19 @@
                         return;
                     }
 
+                    if (!data.id) {
+                        $('#@Html.IdFor(model => model.Id)').val(0);
+                        $('#@Html.IdFor(model => model.SRN)').val('');
+                        showStep(nextStep || 1);
+                        return;
+                    }
+
                     if ($('#@Html.IdFor(model => model.Id)').val() !== data.id.toString()) {
                         window.location.href = data.editUrl + '#step-' + (nextStep || 2);
                         return;
                     }
 
+                    $('#@Html.IdFor(model => model.SRN)').val(data.srn || '');
                     showStep(nextStep || 2);
                 },
                 error: function () {
@@ -234,6 +286,121 @@
                 documentPonds[key].destroy();
             });
             documentPonds = {};
+        }
+
+        function updateStudentPicture(data) {
+            var documentId = data.documentId || 0;
+            var previewUrl = data.previewUrl || '';
+            var fileName = data.fileName || '';
+            var hasPicture = documentId > 0 && previewUrl;
+
+            $('#admission-student-picture-preview')
+                .attr('src', hasPicture ? previewUrl : '')
+                .toggle(hasPicture);
+            $('#admission-student-picture-empty').toggle(!hasPicture);
+            $('#admission-student-picture-view').attr('href', hasPicture ? previewUrl : '#').toggle(hasPicture);
+            $('#admission-student-picture-remove').attr('data-document-id', documentId).toggle(hasPicture);
+            $('#admission-student-picture-file-name').text(fileName);
+        }
+
+        function initStudentPictureUploader() {
+            if (studentPicturePond) {
+                return;
+            }
+
+            if (!window.FilePond) {
+                setTimeout(initStudentPictureUploader, 100);
+                return;
+            }
+
+            studentPicturePond = FilePond.create(document.querySelector('#admission-student-picture-upload'), {
+                credits: false,
+                allowMultiple: false,
+                maxFiles: 1,
+                acceptedFileTypes: ['image/*'],
+                server: {
+                    process: function (fieldName, file, metadata, load, error, progress, abort) {
+                        var admissionId = $('#@Html.IdFor(model => model.Id)').val();
+                        if (!admissionId || admissionId === '0') {
+                            error('Please save the form no. and grade first.');
+                            return {
+                                abort: function () {
+                                    abort();
+                                }
+                            };
+                        }
+
+                        var formData = new FormData();
+                        formData.append('admissionId', admissionId);
+                        formData.append('file', file, file.name);
+                        formData.append('__RequestVerificationToken', $('input[name="__RequestVerificationToken"]').val());
+
+                        var request = new XMLHttpRequest();
+                        request.open('POST', '@Url.Action("UploadStudentPicture", "Admission")');
+                        request.upload.onprogress = function (event) {
+                            progress(event.lengthComputable, event.loaded, event.total);
+                        };
+                        request.onload = function () {
+                            var response = JSON.parse(request.responseText || '{}');
+                            if (request.status >= 200 && request.status < 300 && response.success) {
+                                updateStudentPicture(response);
+                                load(response.documentId);
+                            } else {
+                                error(response.message || 'Could not upload student picture.');
+                            }
+                        };
+                        request.onerror = function () {
+                            error('Could not upload student picture.');
+                        };
+                        request.send(formData);
+
+                        return {
+                            abort: function () {
+                                request.abort();
+                                abort();
+                            }
+                        };
+                    }
+                },
+                labelIdle: '@T("Common.FileUploader.DropFiles") / <span class="filepond--label-action">@T("Common.FileUploader.Browse")</span>',
+                labelFileProcessing: '@T("Common.FileUploader.Processing")'
+            });
+        }
+
+        function loadStudentPicture(force) {
+            var admissionId = Number($('#@Html.IdFor(model => model.Id)').val());
+            initStudentPictureUploader();
+
+            if (!admissionId) {
+                updateStudentPicture({});
+                return;
+            }
+
+            if (!force && pictureLoadedForAdmissionId === admissionId) {
+                return;
+            }
+
+            var postData = { admissionId: admissionId };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("StudentPicture", "Admission")',
+                data: postData,
+                success: function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    pictureLoadedForAdmissionId = admissionId;
+                    updateStudentPicture(data);
+                },
+                error: function () {
+                    showError('Could not load student picture.');
+                }
+            });
         }
 
         function getAdmissionDocumentValue(admissionDocument, camelCaseName, pascalCaseName) {
@@ -411,6 +578,7 @@
                     }
 
                     $('#@Html.IdFor(model => model.Id)').val(data.id);
+                    $('#@Html.IdFor(model => model.SRN)').val(data.srn || '');
                     showStep(2);
                 }).fail(function () {
                     showError('Could not save admission step.');
@@ -426,6 +594,7 @@
                 }
 
                 $('#@Html.IdFor(model => model.Id)').val(data.id);
+                $('#@Html.IdFor(model => model.SRN)').val(data.srn || $('#@Html.IdFor(model => model.SRN)').val());
 
                 var nextStep = currentStep + 1;
                 if (currentStep === 4 && !guardianIsOther()) {
@@ -470,6 +639,38 @@
                 },
                 error: function () {
                     showError('Could not remove document.');
+                }
+            });
+        });
+
+        $('#admission-student-picture-remove').on('click', function () {
+            var documentId = Number($(this).attr('data-document-id'));
+            if (!documentId) {
+                return;
+            }
+
+            var postData = { id: documentId };
+            addAntiForgeryToken(postData);
+
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: '@Url.Action("DeleteDocument", "Admission")',
+                data: postData,
+                success: function (data) {
+                    if (!data.success) {
+                        showError(data.message);
+                        return;
+                    }
+
+                    updateStudentPicture({});
+                    pictureLoadedForAdmissionId = 0;
+                    if (studentPicturePond) {
+                        studentPicturePond.removeFiles();
+                    }
+                },
+                error: function () {
+                    showError('Could not remove student picture.');
                 }
             });
         });

@@ -8,6 +8,8 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 {
     public string FormNo { get; set; }
 
+    public int SRN { get; set; }
+
     public int StatusId { get; set; }
 
     public int GradeId { get; set; }
@@ -27,6 +29,12 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
     public DateTime DateOfBirth { get; set; }
 
     public int BirthCity { get; set; }
+
+    public string Address { get; set; }
+
+    public int SiblingsCount { get; set; }
+
+    public int NoInSiblings { get; set; }
 
     public string Allergies { get; set; }
 
@@ -58,6 +66,10 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
 
     public int FatherProfession { get; set; }
 
+    public string FatherOfficeAddress { get; set; }
+
+    public string FatherOfficePhoneNumber { get; set; }
+
     public decimal FatherMonthlyIncome { get; set; }
 
     public int Father_MontherTongue { get; set; }
@@ -85,6 +97,10 @@ public partial class Admission : LogInfoSupportedBaseEntity, ISoftDeletedEntity
     public int MotherProfession { get; set; }
 
     public decimal MotherMonthlyIncome { get; set; }
+
+    public string MotherOfficeAddress { get; set; }
+
+    public string MotherOfficePhoneNumber { get; set; }
 
     public int Mother_MontherTongue { get; set; }
 
