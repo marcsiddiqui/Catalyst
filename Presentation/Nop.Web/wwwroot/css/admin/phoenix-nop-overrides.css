@@ -916,6 +916,44 @@ html[data-bs-theme="dark"] body.phoenix-nop-admin .form-horizontal .btn {
   color: var(--phoenix-nop-muted);
 }
 
+[data-bs-theme="dark"] .phoenix-nop-admin .form-control:disabled,
+[data-bs-theme="dark"] .phoenix-nop-admin .form-control[readonly],
+[data-bs-theme="dark"] .phoenix-nop-admin .custom-select:disabled {
+  color: var(--phoenix-nop-muted);
+  background: var(--phoenix-nop-surface-soft);
+  border-color: var(--phoenix-nop-border);
+  opacity: 0.85;
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin select.form-control,
+[data-bs-theme="dark"] .phoenix-nop-admin select.custom-select,
+[data-bs-theme="dark"] .phoenix-nop-admin select.form-control option,
+[data-bs-theme="dark"] .phoenix-nop-admin select.custom-select option {
+  color: var(--phoenix-nop-text);
+  background-color: var(--phoenix-nop-surface);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-selection--single .select2-selection__rendered,
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-selection--multiple .select2-selection__rendered,
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-selection--single .select2-selection__placeholder,
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-search--inline .select2-search__field {
+  color: var(--phoenix-nop-text);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-selection--single .select2-selection__arrow b {
+  border-top-color: var(--phoenix-nop-muted);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+  border-bottom-color: var(--phoenix-nop-muted);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .select2-container--default .select2-selection--multiple .select2-selection__choice {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface-soft);
+  border-color: var(--phoenix-nop-border);
+}
+
 [data-bs-theme="dark"] body.phoenix-nop-admin .select2-dropdown,
 [data-bs-theme="dark"] body.phoenix-nop-admin .select2-container--default .select2-results__option {
   color: var(--phoenix-nop-text);
@@ -926,6 +964,114 @@ html[data-bs-theme="dark"] body.phoenix-nop-admin .form-horizontal .btn {
 [data-bs-theme="dark"] body.phoenix-nop-admin .select2-container--default .select2-results__option--highlighted[aria-selected] {
   color: var(--phoenix-nop-primary);
   background: var(--phoenix-nop-primary-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .list-group-item {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface);
+  border-color: var(--phoenix-nop-border-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .list-group-item-action:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .list-group-item-action:focus {
+  color: var(--phoenix-nop-primary);
+  background: var(--phoenix-nop-primary-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .list-group-item.active {
+  color: #ffffff;
+  background: var(--phoenix-nop-primary);
+  border-color: var(--phoenix-nop-primary);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-wrapper,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-trigger-text {
+  color: var(--phoenix-nop-text);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-trigger,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-panel,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-search,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-add-input {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface-soft);
+  border-color: var(--phoenix-nop-border);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-panel {
+  background: var(--phoenix-nop-surface);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.35);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-trigger-text.ss-placeholder,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-chevron,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-search-icon,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-empty,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-saving-indicator {
+  color: var(--phoenix-nop-muted);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-option:hover,
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-add-trigger:hover {
+  background: var(--phoenix-nop-primary-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-option.ss-selected {
+  color: var(--phoenix-nop-primary);
+  background: var(--phoenix-nop-primary-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-footer {
+  background: var(--phoenix-nop-surface-soft);
+  border-color: var(--phoenix-nop-border-soft);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .ss-add-cancel {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface);
+  border-color: var(--phoenix-nop-border);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .cnic-digit,
+[data-bs-theme="dark"] .phoenix-nop-admin .phone-number-digit {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface-soft);
+  border-color: var(--phoenix-nop-border);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .cnic-separator,
+[data-bs-theme="dark"] .phoenix-nop-admin .phone-number-separator {
+  color: var(--phoenix-nop-muted);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .cnic-digit:focus,
+[data-bs-theme="dark"] .phoenix-nop-admin .phone-number-digit:focus {
+  border-color: var(--phoenix-nop-primary);
+  box-shadow: 0 0 0 0.2rem rgba(56, 116, 255, 0.25);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--root {
+  color: var(--phoenix-nop-text);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--panel-root {
+  background: var(--phoenix-nop-surface-soft);
+  border: 1px solid var(--phoenix-nop-border);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--drop-label {
+  color: var(--phoenix-nop-text);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--label-action {
+  color: var(--phoenix-nop-primary);
+  text-decoration-color: var(--phoenix-nop-primary);
+}
+
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--file,
+[data-bs-theme="dark"] .phoenix-nop-admin .filepond--item-panel {
+  color: var(--phoenix-nop-text);
+  background: var(--phoenix-nop-surface);
 }
 
 [data-bs-theme="dark"] .phoenix-nop-admin .dt-container .dt-scroll,
