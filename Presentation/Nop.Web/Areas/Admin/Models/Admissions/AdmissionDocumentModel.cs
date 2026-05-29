@@ -36,20 +36,6 @@ public partial record AdmissionDocumentModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.AdmissionDocuments.Fields.Deleted")]
     public bool Deleted { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.AdmissionDocuments.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionDocuments.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionDocuments.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionDocuments.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
-
-
     #endregion
 }
 

@@ -32,23 +32,10 @@ public partial record AdmissionGradeDocumentRequirementModel : BaseNopEntityMode
     [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.Deleted")]
     public bool Deleted { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.CreatedBy")]
-    public int CreatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.AdmissionGradeDocumentRequirements.Fields.AdmissionDocumentTypeId")]
     public IList<int> SelectedAdmissionDocumentTypeIds { get; set; }
 
     public IList<SelectListItem> AvailableAdmissionDocumentTypes { get; set; }
-
 
     #endregion
 }

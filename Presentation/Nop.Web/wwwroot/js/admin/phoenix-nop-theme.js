@@ -22,6 +22,22 @@
         return allowedThemes[theme] ? theme : 'light';
     }
 
+    function rememberTheme(theme) {
+        var storageKey = window.nopAdminPhoenixTheme && window.nopAdminPhoenixTheme.storageKey;
+
+        if (!storageKey) {
+            return;
+        }
+
+        try {
+            if (window.localStorage) {
+                window.localStorage.setItem(storageKey, theme);
+            }
+        } catch (e) {
+            // Storage can be disabled; the customer attribute remains the source of truth.
+        }
+    }
+
     function getSaveUrl() {
         var switchElement = document.querySelector('[data-nop-theme-save-url]');
         var configuredUrl = window.nopAdminPhoenixTheme && window.nopAdminPhoenixTheme.saveUrl;
@@ -30,6 +46,11 @@
     }
 
     function getAntiForgeryToken() {
+        var configuredToken = window.nopAdminPhoenixTheme && window.nopAdminPhoenixTheme.requestVerificationToken;
+        if (configuredToken) {
+            return configuredToken;
+        }
+
         var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
 
         return tokenInput ? tokenInput.value : '';
@@ -92,12 +113,18 @@
             body.append('__RequestVerificationToken', token);
         }
 
+        var headers = {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        };
+
+        if (token) {
+            headers.RequestVerificationToken = token;
+        }
+
         fetch(saveUrl, {
             method: 'POST',
             credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-            },
+            headers: headers,
             body: body.toString()
         }).then(function (response) {
             if (!response.ok) {
@@ -116,6 +143,7 @@
 
         currentSelectedTheme = selectedTheme;
 
+        rememberTheme(selectedTheme);
         document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
         setBodyThemeClass(resolvedTheme);
         updateControls(selectedTheme, resolvedTheme);

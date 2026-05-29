@@ -68,8 +68,6 @@ using Nop.Services.GradeManagement;
 using Nop.Services.Subjects;
 using Nop.Services.Students;
 using Nop.Services.Admissions;
-using Nop.Services.Admissions;
-using Nop.Services.Admissions;
 //{{AddNewServicesNamespacesHereWithNopCCodeGenerator}}
 
 

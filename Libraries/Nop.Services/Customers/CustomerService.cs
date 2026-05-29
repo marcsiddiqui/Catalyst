@@ -1850,7 +1850,7 @@ public partial class CustomerService : ICustomerService
 
             if (clearCache) await _staticCacheManager.RemoveByPrefixAsync(NopCustomerServicesDefaults.CustomerSessionCacheKeyPrefix);
         }
-        catch (Exception ex)
+        catch
         {
             await _logger.ErrorAsync("Error occurred while Expiring Customer Session");
         }

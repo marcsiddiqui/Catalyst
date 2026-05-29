@@ -86,10 +86,6 @@ using Nop.Core;
 using Nop.Services.Customers;
 using Nop.Web.Areas.Admin.Models.Admissions;
 using Nop.Core.Domain.Admissions;
-using Nop.Web.Areas.Admin.Models.Admissions;
-using Nop.Core.Domain.Admissions;
-using Nop.Web.Areas.Admin.Models.Admissions;
-using Nop.Core.Domain.Admissions;
 //{{AddNewModelNamespacesHereWithNopCCodeGenerator}}
 
 

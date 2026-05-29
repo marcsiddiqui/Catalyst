@@ -203,18 +203,6 @@ public partial record AdmissionModel : BaseNopEntityModel
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.GuardianCaste")]
     public int GuardianCaste { get; set; }
 
-    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Createdby")]
-    public int Createdby { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.CreatedOnUtc")]
-    public DateTime CreatedOnUtc { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.UpdatedBy")]
-    public int UpdatedBy { get; set; }
-
-    [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.UpdatedOnUtc")]
-    public DateTime? UpdatedOnUtc { get; set; }
-
     [NopResourceDisplayName("Admin.Configuration.Admissions.Fields.Deleted")]
     public bool Deleted { get; set; }
 

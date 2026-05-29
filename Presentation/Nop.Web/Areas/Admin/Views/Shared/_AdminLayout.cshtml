@@ -7,6 +7,7 @@
 @inject AdminAreaSettings adminAreaSettings
 @inject Nop.Services.Localization.ILanguageService languageService
 @inject Nop.Services.Common.IGenericAttributeService genericAttributeService
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
 
 @using Nop.Core.Domain
 @using Nop.Core.Domain.Localization
@@ -27,10 +28,14 @@
     //avatar
     var currentCustomer = await workContext.GetCurrentCustomerAsync();
 
-    var selectedPhoenixAdminTheme = (await genericAttributeService.GetAttributeAsync<string>(currentCustomer, NopCustomerDefaults.PhoenixAdminThemeAttribute))?.Trim().ToLowerInvariant();
+    var selectedPhoenixAdminTheme = (await genericAttributeService.GetAttributeAsync<Customer, string>(currentCustomer.Id, NopCustomerDefaults.PhoenixAdminThemeAttribute))?.Trim().ToLowerInvariant();
+    var hasSavedPhoenixAdminTheme = selectedPhoenixAdminTheme == "light" || selectedPhoenixAdminTheme == "dark" || selectedPhoenixAdminTheme == "auto";
 
-    if (selectedPhoenixAdminTheme != "light" && selectedPhoenixAdminTheme != "dark" && selectedPhoenixAdminTheme != "auto")
+    if (!hasSavedPhoenixAdminTheme)
         selectedPhoenixAdminTheme = "light";
+
+    var adminThemeAntiforgeryToken = antiforgery.GetAndStoreTokens(Context).RequestToken;
+    var resolvedPhoenixAdminTheme = selectedPhoenixAdminTheme == "dark" ? "dark" : "light";
 
     //event
     await eventPublisher.PublishAsync(new PageRenderingEvent(NopHtml));
@@ -38,7 +43,7 @@
     //info: we specify "Admin" area for actions and widgets here for cases when we use this layout in a plugin that is running in a different area than "admin"
 }
 <!DOCTYPE html>
-<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" dir="@Html.GetUIDirection(localizationSettings.IgnoreRtlPropertyForAdminArea)">
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" dir="@Html.GetUIDirection(localizationSettings.IgnoreRtlPropertyForAdminArea)" data-bs-theme="@resolvedPhoenixAdminTheme" data-nop-admin-theme-choice="@selectedPhoenixAdminTheme" data-nop-admin-theme-resolved="@resolvedPhoenixAdminTheme">
 <head>
     <title>@adminPageTitle</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
@@ -51,9 +56,22 @@
         (function () {
             var allowedThemes = { light: true, dark: true, auto: true };
             var selectedTheme = '@selectedPhoenixAdminTheme';
+            var hasSavedTheme = @hasSavedPhoenixAdminTheme.ToString().ToLowerInvariant();
+            var storageKey = 'nop.admin.phoenix.theme.@currentCustomer.Id';
 
             if (!allowedThemes[selectedTheme]) {
                 selectedTheme = 'light';
+            }
+
+            if (!hasSavedTheme) {
+                try {
+                    var storedTheme = window.localStorage && window.localStorage.getItem(storageKey);
+                    if (allowedThemes[storedTheme]) {
+                        selectedTheme = storedTheme;
+                    }
+                } catch (e) {
+                    // Ignore storage errors and keep the server default.
+                }
             }
 
             var resolvedTheme = selectedTheme;
@@ -63,11 +81,14 @@
 
             window.nopAdminPhoenixTheme = {
                 selectedTheme: selectedTheme,
-                saveUrl: '@Url.Action("SaveAdminThemePreference", "Preferences", new { area = AreaNames.ADMIN })'
+                storageKey: storageKey,
+                saveUrl: '@Url.Action("SaveAdminThemePreference", "Preferences", new { area = AreaNames.ADMIN })',
+                requestVerificationToken: '@adminThemeAntiforgeryToken'
             };
 
             document.documentElement.setAttribute('data-bs-theme', resolvedTheme);
             document.documentElement.setAttribute('data-nop-admin-theme-choice', selectedTheme);
+            document.documentElement.setAttribute('data-nop-admin-theme-resolved', resolvedTheme);
         })();
     </script>
     @* Phoenix admin theme integration end *@
@@ -92,7 +113,7 @@
     <link rel="stylesheet" src="~/lib/magnific-popup/magnific-popup.css" />
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open phoenix-nop-admin">
+<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open phoenix-nop-admin admin-theme-@resolvedPhoenixAdminTheme">
 
     @* Phoenix admin theme integration start: shared antiforgery token for vanilla theme preference POST. *@
     <form id="nop-admin-antiforgery-form" method="post" class="d-none">
@@ -161,15 +182,15 @@
                         @* Phoenix admin theme integration start: switch-style controls, vanilla JS behavior. *@
                         <li class="nav-item phoenix-nop-theme-switcher px-2">
                             <div class="phoenix-nop-theme-switch" role="group" aria-label="Theme" data-nop-theme-save-url="@Url.Action("SaveAdminThemePreference", "Preferences", new { area = AreaNames.ADMIN })">
-                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="light" value="light" title="Light theme">
+                                <button class="phoenix-nop-theme-switch-option @(selectedPhoenixAdminTheme == "light" ? "active" : null)" type="button" data-nop-theme-control="light" value="light" title="Light theme" aria-pressed="@(selectedPhoenixAdminTheme == "light" ? "true" : "false")">
                                     <span class="fas fa-sun" aria-hidden="true"></span>
                                     <span class="sr-only">Light</span>
                                 </button>
-                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="auto" value="auto" title="Auto theme">
+                                <button class="phoenix-nop-theme-switch-option @(selectedPhoenixAdminTheme == "auto" ? "active" : null)" type="button" data-nop-theme-control="auto" value="auto" title="Auto theme" aria-pressed="@(selectedPhoenixAdminTheme == "auto" ? "true" : "false")">
                                     <span class="fas fa-adjust" aria-hidden="true"></span>
                                     <span class="sr-only">Auto</span>
                                 </button>
-                                <button class="phoenix-nop-theme-switch-option" type="button" data-nop-theme-control="dark" value="dark" title="Dark theme">
+                                <button class="phoenix-nop-theme-switch-option @(selectedPhoenixAdminTheme == "dark" ? "active" : null)" type="button" data-nop-theme-control="dark" value="dark" title="Dark theme" aria-pressed="@(selectedPhoenixAdminTheme == "dark" ? "true" : "false")">
                                     <span class="fas fa-moon" aria-hidden="true"></span>
                                     <span class="sr-only">Dark</span>
                                 </button>

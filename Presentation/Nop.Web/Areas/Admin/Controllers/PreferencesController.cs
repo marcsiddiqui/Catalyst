@@ -52,11 +52,14 @@ public partial class PreferencesController : BaseAdminController
         if (value != "light" && value != "dark" && value != "auto")
             return BadRequest(new { Result = false });
 
-        await _genericAttributeService.SaveAttributeAsync(await _workContext.GetCurrentCustomerAsync(), NopCustomerDefaults.PhoenixAdminThemeAttribute, value);
+        var currentCustomer = await _workContext.GetCurrentCustomerAsync();
+
+        await _genericAttributeService.SaveAttributeAsync(new Customer { Id = currentCustomer.Id }, NopCustomerDefaults.PhoenixAdminThemeAttribute, value);
 
         return Json(new
         {
-            Result = true
+            Result = true,
+            success = true
         });
     }
 
