@@ -66,9 +66,23 @@ CREATE TABLE [dbo].[Admission](
 	[UpdatedBy] [int] NOT NULL,
 	[UpdatedOnUtc] [datetime] NULL,
 	[Deleted] [bit] NOT NULL,
+	[GradeId] [int] NOT NULL,
+	[SRN] [int] NOT NULL,
+	[Address] [nvarchar](1000) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[SiblingsCount] [int] NOT NULL,
+	[NoInSiblings] [int] NOT NULL,
+	[FatherOfficeAddress] [nvarchar](1000) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[FatherOfficePhoneNumber] [nvarchar](50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[MotherOfficeAddress] [nvarchar](1000) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[MotherOfficePhoneNumber] [nvarchar](50) COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
+	[AcademicYearId] [int] NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[SRN] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
 UNIQUE NONCLUSTERED 
 (
@@ -115,4 +129,8 @@ ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [GuardianCaste]
 ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [Createdby]
 ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [UpdatedBy]
 ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [Deleted]
+ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [GradeId]
+ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [SiblingsCount]
+ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [NoInSiblings]
+ALTER TABLE [dbo].[Admission] ADD  DEFAULT ((0)) FOR [AcademicYearId]
 END
