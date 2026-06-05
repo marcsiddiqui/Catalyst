@@ -264,4 +264,22 @@ public partial class Customer : BaseEntity, ISoftDeletedEntity
     }
 
     #endregion
+
+    #region School Customizations
+
+    public string CNIC { get; set; }
+
+    public int MontherTongue { get; set; }
+
+    public int Nationality { get; set; }
+
+    public int Religion { get; set; }
+
+    public int BloodGroup { get; set; }
+
+    public int Caste { get; set; }
+
+    public string PhoneNumber { get; set; }
+
+    #endregion
 }

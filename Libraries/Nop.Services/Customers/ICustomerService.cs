@@ -170,6 +170,16 @@ public partial interface ICustomerService
     Task<Customer> GetCustomerByEmailAsync(string email);
 
     /// <summary>
+    /// Get customer by CNIC
+    /// </summary>
+    /// <param name="cnic">CNIC</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the customer
+    /// </returns>
+    Task<Customer> GetCustomerByCnicAsync(string cnic);
+
+    /// <summary>
     /// Get customer by system role
     /// </summary>
     /// <param name="systemName">System name</param>

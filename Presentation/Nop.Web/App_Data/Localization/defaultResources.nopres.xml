@@ -21518,4 +21518,142 @@
   <LocaleResource Name="Admin.Admissions.Admissions.Fields.MotherOfficePhoneNumber">
     <Value>Mother office phone number</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students">
+    <Value>Students</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.AddNew">
+    <Value>Add a new student</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.EditStudentDetails">
+    <Value>Edit student details</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.BackToList">
+    <Value>back to student list</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Info">
+    <Value>Student information</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Added">
+    <Value>The student has been added successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Updated">
+    <Value>The student has been updated successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Deleted">
+    <Value>The student has been deleted successfully.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.ActivateSelected">
+    <Value>Activate selected</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.DeactivateSelected">
+    <Value>Deactivate selected</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.CustomerId">
+    <Value>Customer</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.PictureId">
+    <Value>Student picture</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.GrNumber">
+    <Value>GR number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Username">
+    <Value>Username</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Email">
+    <Value>Email</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.FirstName">
+    <Value>First name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.MiddleName">
+    <Value>Middle name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.LastName">
+    <Value>Last name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.CNIC">
+    <Value>CNIC</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.DateOfBirth">
+    <Value>Date of birth</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.PhoneNumber">
+    <Value>Phone number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.PreviousSchoolId">
+    <Value>Previous school</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.IdentificationMark">
+    <Value>Identification mark</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.BirthCity">
+    <Value>Birth city</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Allergies">
+    <Value>Allergies</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.MedicalNotes">
+    <Value>Medical notes</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.MontherTongue">
+    <Value>Mother tongue</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Nationality">
+    <Value>Nationality</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Religion">
+    <Value>Religion</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.BloodGroup">
+    <Value>Blood group</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Caste">
+    <Value>Caste</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.GuardianTypeId">
+    <Value>Guardian type</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.IsActive">
+    <Value>Active</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Configuration.Students.Fields.Deleted">
+    <Value>Deleted</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.GrNumber">
+    <Value>GR number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.FullName">
+    <Value>Name</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.CNIC">
+    <Value>CNIC</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.PhoneNumber">
+    <Value>Phone number</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.PreviousSchoolId">
+    <Value>Previous school</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.BirthCity">
+    <Value>Birth city</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.GuardianTypeId">
+    <Value>Guardian type</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.IsActive">
+    <Value>Active</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Students.Students.Fields.CreatedOnUtc">
+    <Value>Created on</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.AddNewStudent">
+    <Value>Added a new student ('{0}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.EditStudent">
+    <Value>Edited a student ('{0}')</Value>
+  </LocaleResource>
+  <LocaleResource Name="ActivityLog.DeleteStudent">
+    <Value>Deleted a student ('{0}')</Value>
+  </LocaleResource>
 </Language>

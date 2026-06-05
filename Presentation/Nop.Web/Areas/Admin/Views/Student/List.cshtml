@@ -1,0 +1,192 @@
+@using Nop.Web.Areas.Admin.Models.Students
+@model StudentSearchModel
+
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Students.Students").Text;
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Students");
+}
+
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Admin.Students.Students")
+    </h1>
+    <div class="float-right">
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-square-plus"></i>
+            @T("Admin.Common.AddNew")
+        </a>
+        <button type="button" id="activate-selected" class="btn bg-teal">
+            <i class="fas fa-square-check"></i>
+            @T("Admin.Students.Students.ActivateSelected")
+        </button>
+        <button type="button" id="deactivate-selected" class="btn btn-secondary">
+            <i class="fas fa-square-minus"></i>
+            @T("Admin.Students.Students.DeactivateSelected")
+        </button>
+
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="form-horizontal">
+        <div class="cards-group">
+            <div class="card card-default">
+                <div class="card-body">
+                    @await Html.PartialAsync("Table", new DataTablesModel
+                    {
+                        Name = "students-grid",
+                        UrlRead = new DataUrl("StudentList", "Student", null),
+                        SearchButtonId = "search-categories",
+                        Length = Model.PageSize,
+                        LengthMenu = Model.AvailablePageSizes,
+                        ColumnCollection = new List<ColumnProperty>
+                        {
+                            new ColumnProperty(nameof(StudentModel.Id))
+                            {
+                                IsMasterCheckBox = true,
+                                Render = new RenderCheckBox("checkbox_students"),
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                                Width = "50"
+                            },
+                            new ColumnProperty(nameof(StudentModel.GrNumber))
+                            {
+                                Title = T("Admin.Students.Students.Fields.GrNumber").Text,
+                                Width = "100",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.FullName))
+                            {
+                                Title = T("Admin.Students.Students.Fields.FullName").Text,
+                                Width = "180",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.CNIC))
+                            {
+                                Title = T("Admin.Students.Students.Fields.CNIC").Text,
+                                Width = "130",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.PhoneNumber))
+                            {
+                                Title = T("Admin.Students.Students.Fields.PhoneNumber").Text,
+                                Width = "120",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.PreviousSchool))
+                            {
+                                Title = T("Admin.Students.Students.Fields.PreviousSchoolId").Text,
+                                Width = "140",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.BirthCityName))
+                            {
+                                Title = T("Admin.Students.Students.Fields.BirthCity").Text,
+                                Width = "120",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.GuardianType))
+                            {
+                                Title = T("Admin.Students.Students.Fields.GuardianTypeId").Text,
+                                Width = "120",
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.IsActive))
+                            {
+                                Title = T("Admin.Students.Students.Fields.IsActive").Text,
+                                Width = "100",
+                                ClassName =  NopColumnClassDefaults.CenterAll,
+                            },
+
+                            new ColumnProperty(nameof(StudentModel.CreatedOnUtc))
+                            {
+                                Title = T("Admin.Students.Students.Fields.CreatedOnUtc").Text,
+                                Width = "140",
+                            },
+
+
+                            new ColumnProperty(nameof(StudentModel.Id))
+                            {
+                                Title = T("Admin.Common.Edit").Text,
+                                Width = "50",
+                                ClassName =  NopColumnClassDefaults.Button,
+                                Render = new RenderButtonEdit(new DataUrl("~/Admin/Student/Edit"))
+                            }
+                        }
+                    })
+
+                    <script>
+                        $(function() {
+                            //"activate selected" button
+                            $('#activate-selected').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("ActivateSelected", "Student"))",
+                                    data: postData,
+                                    traditional: true,
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#students-grid');
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('activateSelectedFailed', errorThrown);
+                                    }
+                                });
+                                return false;
+                            });
+
+                            //"deactivate selected" button
+                            $('#deactivate-selected').click(function (e) {
+                                e.preventDefault();
+
+                                var postData = {
+                                    selectedIds: selectedIds
+                                };
+                                addAntiForgeryToken(postData);
+
+                                $.ajax({
+                                    cache: false,
+                                    type: "POST",
+                                    url: "@(Url.Action("DeactivateSelected", "Student"))",
+                                    data: postData,
+                                    traditional: true,
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        showAlert('deactivateSelectedFailed', errorThrown);
+                                    },
+                                    complete: function (jqXHR, textStatus) {
+                                        if (jqXHR.status === 204)
+                                        {
+                                            showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                            return;
+                                        }
+                                        updateTable('#students-grid');
+                                    }
+                                });
+                                return false;
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+<nop-alert asp-alert-id="activateSelectedFailed" />
+<nop-alert asp-alert-id="deactivateSelectedFailed" />
+<nop-alert asp-alert-id="nothingSelectedAlert" />

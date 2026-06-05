@@ -465,6 +465,29 @@ public partial class CustomerService : ICustomerService
     }
 
     /// <summary>
+    /// Get customer by CNIC
+    /// </summary>
+    /// <param name="cnic">CNIC</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the customer
+    /// </returns>
+    public virtual async Task<Customer> GetCustomerByCnicAsync(string cnic)
+    {
+        if (string.IsNullOrWhiteSpace(cnic))
+            return null;
+
+        cnic = cnic.Trim();
+
+        var query = from c in _customerRepository.Table
+                    orderby c.Id
+                    where c.CNIC == cnic
+                    select c;
+
+        return await query.FirstOrDefaultAsync();
+    }
+
+    /// <summary>
     /// Get customer by system name
     /// </summary>
     /// <param name="systemName">System name</param>

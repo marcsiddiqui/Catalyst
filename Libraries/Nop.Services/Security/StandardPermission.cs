@@ -195,7 +195,13 @@ public partial class StandardPermission
         public const string MANAGE_ADMISSIONS = $"{nameof(Admissions)}.ManageAdmissions";
     }
 
+    public partial class Students
+    {
+        public const string MANAGE_STUDENTS = $"{nameof(Students)}.ManageStudents";
+    }
+
 //{{NewPermissionsToken}}
+
 
 
 

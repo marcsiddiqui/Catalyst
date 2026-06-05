@@ -1,0 +1,321 @@
+@using Nop.Core.Domain.GenericDropDowns
+@using Nop.Web.Areas.Admin.Models.Common
+@using Nop.Web.Areas.Admin.Models.Students
+@model StudentModel
+
+<link rel="stylesheet" href="~/lib_npm/filepond/filepond.min.css" />
+<script asp-exclude-from-bundle="true" src="~/lib_npm/filepond/filepond.min.js" asp-location="Footer"></script>
+
+<input asp-for="CustomerId" type="hidden" />
+<input asp-for="PictureId" type="hidden" />
+<input asp-for="CreatedBy" type="hidden" />
+<input asp-for="CreatedOnUtc" type="hidden" />
+<input asp-for="UpdatedBy" type="hidden" />
+<input asp-for="UpdatedOnUtc" type="hidden" />
+<input asp-for="Deleted" type="hidden" />
+<input asp-for="RemovePicture" type="hidden" />
+<input asp-for="TemporaryPicturePath" type="hidden" />
+<input asp-for="TemporaryPictureFileName" type="hidden" />
+
+<div class="card-body">
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GrNumber" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="GrNumber" />
+            <span asp-validation-for="GrNumber"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Username" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Username" />
+            <span asp-validation-for="Username"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Email" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="FirstName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="FirstName" />
+            <span asp-validation-for="FirstName"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MiddleName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MiddleName" />
+            <span asp-validation-for="MiddleName"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="LastName" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="LastName" />
+            <span asp-validation-for="LastName"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="CNIC" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_CnicInput", new CnicInputModel { FieldName = nameof(Model.CNIC), FieldId = Html.IdFor(model => model.CNIC), Value = Model.CNIC })
+            <span asp-validation-for="CNIC"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="DateOfBirth" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DateOfBirth" />
+            <span asp-validation-for="DateOfBirth"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="PhoneNumber" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_PhoneNumberInput", new PhoneNumberInputModel { FieldName = nameof(Model.PhoneNumber), FieldId = Html.IdFor(model => model.PhoneNumber), Value = Model.PhoneNumber })
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            @T("Admin.Configuration.Students.Fields.PictureId")
+        </div>
+        <div class="col-md-9">
+            <div class="d-flex align-items-start">
+                <div class="border rounded bg-light mr-3 d-flex align-items-center justify-content-center" style="width:120px;height:140px;overflow:hidden;">
+                    @{
+                        var studentPicturePreviewUrl = !string.IsNullOrWhiteSpace(Model.TemporaryPictureUrl) ? Model.TemporaryPictureUrl : Model.PictureUrl;
+                    }
+                    <img id="student-picture-preview" src="@studentPicturePreviewUrl" alt="" style="@(string.IsNullOrWhiteSpace(studentPicturePreviewUrl) ? "display:none;" : "")max-width:100%;max-height:100%;" />
+                    <span id="student-picture-empty" class="text-muted small" style="@(string.IsNullOrWhiteSpace(studentPicturePreviewUrl) ? "" : "display:none;")">@T("Admin.Common.No")</span>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="mb-2">
+                        <a id="student-picture-view" href="@(studentPicturePreviewUrl ?? "#")" class="btn btn-default btn-sm" target="_blank" style="@(string.IsNullOrWhiteSpace(studentPicturePreviewUrl) ? "display:none" : "")">
+                            <i class="far fa-eye"></i>
+                            @T("Admin.Common.View")
+                        </a>
+                        <button type="button" id="student-picture-remove" class="btn btn-danger btn-sm ml-2" style="@((Model.PictureId > 0 || !string.IsNullOrWhiteSpace(Model.TemporaryPicturePath)) ? "" : "display:none")">
+                            <i class="far fa-trash-can"></i>
+                            @T("Admin.Common.Delete")
+                        </button>
+                    </div>
+                    <input type="file" id="student-picture-upload" name="StudentPictureFile" accept="image/*" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="PreviousSchoolId" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.PreviousSchoolId), FieldId = Html.IdFor(model => model.PreviousSchoolId), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailablePreviousSchools, SelectedValue = Model.PreviousSchoolId.ToString(), Category = GenericDropdownEntity.PreviousSchoolName.ToString() })
+            <span asp-validation-for="PreviousSchoolId"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IdentificationMark" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IdentificationMark" />
+            <span asp-validation-for="IdentificationMark"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="BirthCity" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.BirthCity), FieldId = Html.IdFor(model => model.BirthCity), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBirthCities, SelectedValue = Model.BirthCity.ToString(), Category = GenericDropdownEntity.BirthCity.ToString() })
+            <span asp-validation-for="BirthCity"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MontherTongue" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.MontherTongue), FieldId = Html.IdFor(model => model.MontherTongue), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableMotherTongues, SelectedValue = Model.MontherTongue.ToString(), Category = GenericDropdownEntity.MotherTounge.ToString() })
+            <span asp-validation-for="MontherTongue"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Nationality" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Nationality), FieldId = Html.IdFor(model => model.Nationality), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableNationalities, SelectedValue = Model.Nationality.ToString(), Category = GenericDropdownEntity.Nationality.ToString() })
+            <span asp-validation-for="Nationality"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Religion" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Religion), FieldId = Html.IdFor(model => model.Religion), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableReligions, SelectedValue = Model.Religion.ToString(), Category = GenericDropdownEntity.Religion.ToString() })
+            <span asp-validation-for="Religion"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="BloodGroup" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.BloodGroup), FieldId = Html.IdFor(model => model.BloodGroup), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableBloodGroups, SelectedValue = Model.BloodGroup.ToString(), Category = GenericDropdownEntity.BloodGroup.ToString() })
+            <span asp-validation-for="BloodGroup"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Caste" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.Caste), FieldId = Html.IdFor(model => model.Caste), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableCastes, SelectedValue = Model.Caste.ToString(), Category = GenericDropdownEntity.Caste.ToString() })
+            <span asp-validation-for="Caste"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="GuardianTypeId" />
+        </div>
+        <div class="col-md-9">
+            @await Html.PartialAsync("_SearchableSelect", new SearchableSelectModel { FieldName = nameof(Model.GuardianTypeId), FieldId = Html.IdFor(model => model.GuardianTypeId), Placeholder = T("Admin.Common.Select").Text, Items = Model.AvailableGuardianTypes, SelectedValue = Model.GuardianTypeId.ToString(), Category = GenericDropdownEntity.GuardianType.ToString() })
+            <span asp-validation-for="GuardianTypeId"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Allergies" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Allergies" />
+            <span asp-validation-for="Allergies"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="MedicalNotes" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="MedicalNotes" />
+            <span asp-validation-for="MedicalNotes"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="IsActive" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="IsActive" />
+            <span asp-validation-for="IsActive"></span>
+        </div>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(function () {
+        var studentPicturePond;
+
+        function updateStudentPicture(data) {
+            var pictureId = data.pictureId || 0;
+            var previewUrl = data.previewUrl || '';
+            var hasPicture = pictureId > 0 && previewUrl;
+
+            $('#@Html.IdFor(model => model.PictureId)').val(pictureId);
+            $('#student-picture-preview')
+                .attr('src', hasPicture ? previewUrl : '')
+                .toggle(hasPicture);
+            $('#student-picture-empty').toggle(!hasPicture);
+            $('#student-picture-view').attr('href', hasPicture ? previewUrl : '#').toggle(hasPicture);
+            $('#student-picture-remove').toggle(hasPicture);
+        }
+
+        function previewSelectedStudentPicture(file) {
+            if (!file) {
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (event) {
+                $('#student-picture-preview')
+                    .attr('src', event.target.result)
+                    .show();
+                $('#student-picture-empty').hide();
+                $('#student-picture-view').attr('href', event.target.result).show();
+                $('#student-picture-remove').show();
+                $('#@Html.IdFor(model => model.RemovePicture)').val('False');
+                $('#@Html.IdFor(model => model.TemporaryPicturePath)').val('');
+                $('#@Html.IdFor(model => model.TemporaryPictureFileName)').val('');
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function initStudentPictureUploader() {
+            if (studentPicturePond) {
+                return;
+            }
+
+            if (!window.FilePond) {
+                setTimeout(initStudentPictureUploader, 100);
+                return;
+            }
+
+            studentPicturePond = FilePond.create(document.querySelector('#student-picture-upload'), {
+                credits: false,
+                allowMultiple: false,
+                maxFiles: 1,
+                acceptedFileTypes: ['image/*'],
+                storeAsFile: true,
+                labelIdle: '@T("Common.FileUploader.DropFiles") / <span class="filepond--label-action">@T("Common.FileUploader.Browse")</span>',
+                labelFileProcessing: '@T("Common.FileUploader.Processing")'
+            });
+
+            studentPicturePond.on('addfile', function (error, fileItem) {
+                if (error || !fileItem) {
+                    return;
+                }
+
+                previewSelectedStudentPicture(fileItem.file);
+            });
+        }
+
+        $('#student-picture-remove').on('click', function () {
+            $('#@Html.IdFor(model => model.RemovePicture)').val('True');
+            $('#@Html.IdFor(model => model.TemporaryPicturePath)').val('');
+            $('#@Html.IdFor(model => model.TemporaryPictureFileName)').val('');
+            updateStudentPicture({});
+            if (studentPicturePond) {
+                studentPicturePond.removeFiles();
+            }
+        });
+
+        initStudentPictureUploader();
+    });
+</script>

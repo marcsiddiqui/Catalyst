@@ -80,6 +80,7 @@ using Nop.Services.Admissions;
 
 
 
+
 namespace Nop.Web.Framework.Infrastructure;
 
 /// <summary>
@@ -281,7 +282,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IAdmissionService, AdmissionService>();
         services.AddScoped<IAdmissionDocumentService, AdmissionDocumentService>();
         services.AddScoped<IAttachmentFileService, AttachmentFileService>();
+        services.AddScoped<IStudentService, StudentService>();
 //{{AddNewServicesScopeHereWithNopCCodeGenerator}}
+
 
 
 
